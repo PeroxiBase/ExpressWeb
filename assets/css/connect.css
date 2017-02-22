@@ -1,0 +1,33 @@
+body,html{
+	text-align: center;
+	font-family: 'Arvo';
+  margin: 0;
+}
+html{
+	background-image: url(../img/footer_lodyas.png);
+	background-repeat:repeat;
+	background-position: center;
+	background-attachment: fixed;
+}
+
+.formID{
+	background-color: #004687;
+	width:50%;
+	margin-left:25%;
+	position: fixed;
+	z-index: 10;
+}
+h2{
+	margin-top: 10%;
+	color:aliceblue;
+}
+fieldset{
+	font-size: 20px;
+	padding:2%;
+	border: none;
+}
+#connectWrapper{
+	height: 100%;
+	width: 100%;
+	z-index: -1;
+}
