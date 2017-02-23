@@ -121,7 +121,7 @@ OR
     Resolving deltas: 100% (504/504), done.
 
     ```
-### Apache configuration###     
+### Apache configuration    
 1. Edit your Apache conf file (/etc/httpd/conf/httpd.conf | /etc/apache2/apache2.conf & sites-enabled/)         
 1.1. look at <code>install/apache_conf/httpd.conf</code> for example  
 1.2. define a new virtual host (website.domain.org) or  create an alias (ExpressWeb)  
