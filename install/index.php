@@ -92,10 +92,30 @@ install/
         </ul>
         
         <br />
-        <legend>Apache configuration</legend>
+        <legend>Download/clone code</legend>
          <ol>
-                <li>Create a directory located in your web space (under <code>DocumentRoot</code> ) (ex: /var/www/htm/ExpressWeb)</li>
-                <li>Copy the archive in this directory and Unzip it</li>                
+                <li>Create a directory located in your web space (under <code>DocumentRoot</code> ) (ex: /var/www/htm/ExpressWeb)
+                <li>Copy the archive in this directory and Unzip it</li>
+         </ol>
+                OR 
+          <ol>
+                <li> Clone gitHub repository:
+                        <ol><li>cd to your <code>ex: cd /var/www/html/</code> </li>
+                        <li>if you want to rename default directory (ExpressWeb) add 'my_directory_name' as last argument   </li>
+                 <pre>git clone https://github.com/PeroxiBase/ExpressWeb.git [my_directory_name]
+         
+Initialized empty Git repository in /var/www/html/ExpressWeb/.git/
+[ Initialized empty Git repository in /var/www/html/my_directory_name/.git ]
+remote: Counting objects: 2247, done.
+remote: Compressing objects: 100% (1703/1703), done.
+remote: Total 2247 (delta 504), reused 2238 (delta 500), pack-reused 0
+Receiving objects: 100% (2247/2247), 15.31 MiB | 690 KiB/s, done.
+Resolving deltas: 100% (504/504), done.</pre> 
+                </li>
+         </ol>
+         </ol>
+         <legend>Apache configuration</legend>
+         <ol>    
                 <li>Edit your Apache conf file (/etc/httpd/conf/httpd.conf | /etc/apache2/apache2.conf & sites-enabled/) 
                     <ul>
                         <li>look at <code>install/apache_conf/httpd.conf</code> for example</li>
@@ -105,25 +125,26 @@ install/
                 <li>reload apache config and open page <code>http://website.domain.org/install/</code> 
                 or <code>http://website.domain.org/ExpressWeb/install</code></li>
                 <li>you should display the first page of the installer "Before installing Your Expression Database App" </li>
-         </ol>
+       </ol>
        
         <br />
         <legend>Database settings</legend>
         
         Before proceeding to configuration of your local copy of Expression Db , you need to create the database on your mysql server.<br />
-        <b>Note:</b> Replace <i>username,hostname,password</i> and <i>dbname</i> by your own value.<hr />
-        <b>Note II:</b> Even if your mysql server is located on the same machine as your Apache server, Do not use 'localhost' as hostname. <br />
+        <b>Note:</b> <blockquote style="font-size:1em">Replace <i>username,hostname,password</i> and <i>dbname</i> by your own value.</blockquote ><hr />
+        <b>Note II:</b> <blockquote  style="font-size:1em">Even if your mysql server is located on the same machine as your Apache server, 
+        <b>Do not use</b> <i>'localhost'</i> as hostname. <br />
         Use '%' (for any host) to allow cluster to connect to your database<br />
-        When you launch job on the cluster, 'localhost' will be interpreted as local from cluster !! <hr />
-            <ol>
-                <li>define a username with all privileges and grants on the new database:<br />
-                        <code>* CREATE USER 'username'@'hostname' IDENTIFIED BY 'password';<br />
-                        * GRANT ALL PRIVILEGES ON `dbname`.* TO 'username'@'hostname' WITH GRANT OPTION;<br />
-                        * FLUSH PRIVILEGES ;
-                        </code>
+        When you launch job on the cluster, <i>'localhost'</i> will be interpreted as local from cluster !! </blockquote > 
+        <ol>
+            <li>define a username with all privileges and grants on the new database:<br />
+                    <code>* CREATE USER 'username'@'hostname' IDENTIFIED BY 'password';<br />
+                    * GRANT ALL PRIVILEGES ON `dbname`.* TO 'username'@'hostname' WITH GRANT OPTION;<br />
+                    * FLUSH PRIVILEGES ;
+                    </code>
 <pre>ex:
-CREATE USER 'expres_db'@'%' IDENTIFIED BY 'my_super_password';
-GRANT ALL PRIVILEGES ON `DbExpres_db`.* TO 'expres_db'@'%' WITH GRANT OPTION;
+CREATE USER 'express_web'@'%' IDENTIFIED BY 'my_super_password';
+GRANT ALL PRIVILEGES ON `express_web`.* TO 'express_web'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 <b>paranoid</b>
@@ -131,21 +152,30 @@ FLUSH PRIVILEGES;
 With mysql server and apache server on same machine
 1) create user localhost with All privileges:
 GRANT USAGE ON *.* TO 'express_web'@'localhost' IDENTIFIED BY PASSWORD 'my_super_password';
-GRANT ALL PRIVILEGES ON `DbExpres_db`.* TO 'express_web'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `express_web`.* TO 'express_web'@'localhost' WITH GRANT OPTION;
 
 2) create user % with limited access for the cluster:
 GRANT USAGE ON *.* TO 'express_web'@'%.cluster.org'' IDENTIFIED BY PASSWORD 'my_super_password'; //any of cluster's node with dns record
 or
 GRANT USAGE ON *.* TO 'express_web'@'192.168.25.%' IDENTIFIED BY PASSWORD 'my_super_password'; // any of cluster's node by subnet @IP address
 
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, CREATE VIEW, SHOW VIEW ON `DbExpres_db`.* TO 'express_web'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, CREATE VIEW, SHOW VIEW ON `express_web`.* TO 'express_web'@'%';
 
 </pre>
                 </li>
                 <li>Keep these credentials for next steps</li>
+                <li> <b>If you change database name</b> 
+                <ol><li> edit express_web.sql (in install/sql/) and change 'express_web' by your database name</li>
+                    <pre>
+--
+-- Base de données: `express_web`
+--
+CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `express_web`;</pre>
+                    </ol>
                 <li>import express_web.sql (in install/sql/) . Database will be created with table and user accounts<br />
                         from command prompt:<br />
-                        <code>mysql -u username -p<br />
+                        <code>$ mysql -u username -p<br />
                         mysql > source install/sql/express_web.sql
                         </code>
                 </li>
