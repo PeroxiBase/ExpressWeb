@@ -10,10 +10,10 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Base de données: `express_db`
+-- Base de données: `express_web`
 --
-CREATE DATABASE IF NOT EXISTS `express_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `express_db`;
+CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `express_web`;
 
 -- --------------------------------------------------------
 
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`) VALUES
      ('1','127.0.0.1','administrator','$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36','','admin@admin.com','',NULL,'1268889823','1268889823','1', 'Admin','istrator','ADMIN'),
-     ('3 ','127.0.0.1','demo','$2y$08$FX8LnT8CWMaEyLmc3OZzueIXT/AhqgyKgUEfmclk8fOD0jyyUmMQO','Fp8NaXlRIvKSzykA3NGu7e','demo@admin.org','NULL','NULL','NULL','NULL','1268889823','1268889823','1','demo','demo','demo');
+     ('2','127.0.0.1','demo','$2y$08$FX8LnT8CWMaEyLmc3OZzueIXT/AhqgyKgUEfmclk8fOD0jyyUmMQO','Fp8NaXlRIvKSzykA3NGu7e','demo@admin.org','',NULL,'1268889823','1268889823','1','demo','demo','demo');
 
 -- --------------------------------------------------------
 
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
      
-SET FOREIGN_KEY_CHECKS=1;
+
 --
 -- Contraintes pour les tables exportées
 --
@@ -224,7 +224,7 @@ ALTER TABLE `users_groups`
   ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-  
+  SET FOREIGN_KEY_CHECKS=1;
 -- -------------------------------------------------------------------
 
 --
