@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['domain'] = '';
 $domain=$config['domain'];
-if ( ! empty($_SERVER['HTTPS']))
+if ( ! empty($_SERVER['HTTPS']) )
 {
         $config['base_url'] = 'https://'.$domain;
         $config['base_urlNS'] = 'http://'.$domain;
