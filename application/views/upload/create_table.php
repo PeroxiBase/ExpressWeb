@@ -9,7 +9,7 @@
 *@package expressionWeb
 */
 ?>
-
+<!-- //////////////    upload/create_table  //////////////  -->
 <div id="left">
     <h2>Table generation</h2>
     <h3>Your SQL table <?php $tableSql; ?></h3>
@@ -24,16 +24,8 @@
 <!--DIV RIGHT -->
 <div id="right">
         <?php 
-       print "$debug <br />";
-      # print "Table created <br />";
-      ## print "_POST<pre>".print_r($_POST,1)."</pre>"; 
+        print "$debug <br />";
         print "createtable<pre>".print_r($createtable,1)."</pre>"; 
-      /*   print "insertData<pre>".wordwrap(print_r($insertData,1),100)."</pre>"; 
-     //  print "max_value_col<pre>".print_r($max_value_col,1)."</pre>"; 
-   */    
-    /*    print " <td>is_index<pre>".print_r($is_index,1)."</pre></td>"; 
-        print " <td>SqlOption<pre>".print_r($SqlOption,1)."</pre></td>"; 
-        print " <td>SqlType<pre>".print_r($SqlType,1)."</pre></td>"; */
         if(isset($replicate))
         {
             print "<table border=1>\n";
@@ -43,10 +35,10 @@
         print "</tr>\n";
         print "</table>\n";
         print "max(replicate) :".max($replicate)."<br />";
-    #   asort($replicate);
-#$highestValue       = end($replicate);
+        
 $max =max(array_map('strlen', $replicate));
  print "max(replicate) :".$replicate[$max]."<br />";
 }
         ?>
 </div>
+<!-- //////////////    upload/create_table  //////////////  -->

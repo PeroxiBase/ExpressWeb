@@ -1,14 +1,16 @@
 <?php
 /**
 * The Expression Database.
-*
+*       view upload/upload_tair.php
 *@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
 *@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
 *@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
 *@version 1.0
 *@package expressionWeb
+*@subpackage views
 */
 ?>
+<!-- //////////////    upload/upload_tair  //////////////  -->
 
 <div id="form-group">
     <h2>Update annotation with TAIR annotation</h2>
@@ -63,5 +65,5 @@
                 <li><a href="https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGO_and_PO_Annotations%2FGene_Ontology_Annotations" target="_blank">GO</a></li>
                 <li><a href="https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGO_and_PO_Annotations%2FPlant_Ontology_Annotations" target="_blank">PO</a>.</li>
              </ul>
-</div>
-<!--END DIV RIGHT -->
+</div><!--END DIV RIGHT -->
+<!-- //////////////    upload/upload_tair  //////////////  -->

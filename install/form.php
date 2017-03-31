@@ -33,6 +33,9 @@ if (isset($_POST['btn-install']))
     $inputSiteurl = trim( $_POST['inputSiteurl']);
     $inputSiteurl = preg_replace("/http:\/\/|https:\/\//","",$inputSiteurl);
     $inputSiteurl = preg_replace("/\/$/","",$inputSiteurl);
+    ######  copy original file  ##############
+    copy("config/config.php","../application/config/config.php");
+    ################################################################
     $file_config = "../application/config/config.php";
     $Content_config = file_get_contents($file_config);
     $content_config = preg_replace("/config\['domain'\] = '.*';/", "config['domain'] = '$inputSiteurl';",$Content_config);
@@ -41,8 +44,15 @@ if (isset($_POST['btn-install']))
     print "<pre>Write $file_config</pre><br />\n";
     if($debug) print "<pre>".htmlentities($content_config)."</pre> domain: $inputSiteurl key ".$_POST['inputEncryption_key'].".<br />\n";
     
+    // modify .htaccess !!
+    copy("config/.htaccess","../.htaccess");
+    $get_path = pathinfo($inputSiteurl);
+    $Base = $path_parts['filename'];
+    $ChBase =exec("sed -i 's/RewriteBase \/ExpressWeb\//RewriteBase \/$Base\//' ../.htaccess ",$ShebR);
     // setting database
-    
+    ######  copy original file  ##############
+    copy("config/database.php","../application/config/database.php");
+    ################################################################
     $file_db = "../application/config/database.php";
     $Content_db = file_get_contents($file_db);
     if(isset($_POST['inputDBusername']) && isset($_POST['inputDBpassword']))
@@ -102,9 +112,9 @@ if (isset($_POST['btn-install']))
         if($check_db==1)
         {                    
           $content_db = preg_replace("/'hostname' => '.*'/","'hostname' => '$hostname'", $Content_db);
-          $content_db = preg_replace("/'database' => '.*'/","'database' => '$database'",  $content_db);
           $content_db = preg_replace("/'username' => '.*'/","'username' => '$username'",  $content_db);
           $content_db = preg_replace("/'password' => '.*'/","'password' => '$password'",  $content_db);
+          $content_db = preg_replace("/'database' => '.*'/","'database' => '$database'",  $content_db);
           file_put_contents($file_db, $content_db);   
           print "<pre>Write $file_db </pre><br />\n";
         }
@@ -130,6 +140,7 @@ if (isset($_POST['btn-install']))
     $web_path = preg_replace("/\/$/","",trim($_POST['input_web_path']) );
     $input_apache_user = trim($_POST['input_apache_user']);
     $input_admin_email = trim($_POST['input_admin_email']);
+    $input_admin_name = trim($_POST['input_admin_name']);
     if (filter_var($input_admin_email, FILTER_VALIDATE_EMAIL)) 
     {
         print "<pre>Email $input_admin_email is a valid email address</pre><br />";
@@ -155,14 +166,16 @@ if (isset($_POST['btn-install']))
     $maxError = trim($_POST['input_maxError']);
     if ($MaxGeneNameSize == '' ) $MaxGeneNameSize = '15';
     if ($maxError == '' ) $maxError = '50';
-    
+    $qdelay = trim($_POST['input_qdelay']);
+    if ($qdelay == '' ) $qdelay = '30';
     ////////////////////////////////////////
     //// check directory existance !!
     ////////////////////////////////////////
-    $network_path = $web_path.'/'.trim($_POST['input_network']);
-    
+    $network_path = $web_path.'/'.$input_network;
+    $similarity_path = $web_path.'/'.$input_similarity;
     $dir_paths = array('web_path' => $web_path,
         'network_path' => $network_path,
+        'similarity_path' => $similarity_path ,
         'cluster_env' => $cluster_env,
         'cluster_app' => $cluster_app,
         'work_cluster' => $work_cluster,
@@ -201,13 +214,26 @@ if (isset($_POST['btn-install']))
     
     if($wrong_dir == TRUE)
     {
+        #############  check admin name  ####################
+        if($input_admin_email != "administrator")
+        {
+            
+            $query = "UPDATE users SET username = '$input_admin_email' WHERE id =1; ";
+            do_sql($username,$password,$localhost,$database,$query);
+        }
+        
         ////////////////////////////////////////
         ///  OK: write conf/expressWeb.php
         ////////////////////////////////////////
+        
+        ######  copy original file  ##############
+        copy("config/expressWeb.php","../application/config/expressWeb.php");
+        ################################################################
         $file_Express = "../application/config/expressWeb.php";
         $Content_Express = file_get_contents($file_Express);
         $content_Express = preg_replace("/config\['header_name'\] = '.*';/","config['header_name'] = '$input_header_name';", $Content_Express);
         $content_Express = preg_replace("/config\['web_path'\] = '.*';/","config['web_path'] = '$web_path';", $content_Express);
+        $content_Express = preg_replace("/config\['admin_name'\] = '.*';/","config['admin_name'] = '$input_admin_name';", $content_Express);
         $content_Express = preg_replace("/config\['apache_user'\] = '.*';/","config['apache_user'] = '$input_apache_user';", $content_Express);
         $content_Express = preg_replace("/config\['network'\] = .*\.'.*';/","config['network'] = \$web_path.'/$input_network';", $content_Express);
         $content_Express = preg_replace("/config\['similarity'\] = .*\.'.*';/","config['similarity'] = \$web_path.'/$input_similarity';", $content_Express);
@@ -217,11 +243,15 @@ if (isset($_POST['btn-install']))
         $content_Express = preg_replace("/config\['work_cluster'\] = '.*';/","config['work_cluster'] = '$work_cluster';", $content_Express);
         $content_Express = preg_replace("/config\['MaxGeneNameSize'\] = '.*';/","config['MaxGeneNameSize'] = '$MaxGeneNameSize';", $content_Express);
         $content_Express = preg_replace("/config\['maxError'\] = '.*';/","config['maxError'] = '$maxError';", $content_Express);
+        $content_Express = preg_replace("/config\['qdelay'\] = '.*';/","config['qdelay'] = '$qdelay';", $content_Express);
         print "<pre>Write $file_Express</pre><br />\n";
         file_put_contents($file_Express, $content_Express);
         $check_cluster = "export SGE_ROOT= $cluster_env && ${cluster_app}/qstat -u $input_apache_user ";
         
         ///////////// update config/ion_auth.php
+        ######  copy original file  ##############
+        copy("config/ion_auth.php","../application/config/ion_auth.php");
+        ################################################################
         $file_Ion_auth = "../application/config/ion_auth.php";
         $Content_Ion = file_get_contents($file_Ion_auth);
         $content_Ion = preg_replace("/config\['site_title'\]\s*= '.*';/","config['site_title'] = '$input_header_name';", $Content_Ion);
@@ -230,6 +260,9 @@ if (isset($_POST['btn-install']))
         file_put_contents($file_Ion_auth, $content_Ion);
         
         ///////////// update view/admin/login.php 
+        ######  copy original file  ##############
+        copy("config/login.php","../application/view/admin/ion_auth.php");
+        ################################################################
         $file_Login = "../application/view/admin/login.php";
         $Content_Login = file_get_contents($file_Login);
         $content_Login = preg_replace("/Expression database/","$input_header_name", $Content_Login);
@@ -298,6 +331,9 @@ echo '************* end script *************'
     // All path and command Ok            //
     ////////////////////////////////////////
     $debug='1';
+    ######  copy original file  ##############
+    copy("scripts/ExpressWeb.conf","../assets/scripts/ExpressWeb.conf");
+    ################################################################
     $Script_Express = "../assets/scripts/ExpressWeb.conf";
     $Content_SExpress = file_get_contents($Script_Express);
     $content_SExpress = preg_replace("/path_cluster='.*'/","path_cluster='$work_cluster'", $Content_SExpress);
@@ -310,13 +346,18 @@ echo '************* end script *************'
     $content_SExpress = preg_replace("/qstat='.*'/","qstat='$cluster_app/qstat'", $content_SExpress);
     $content_SExpress = preg_replace("/debug='.*'/","debug='$debug'", $content_SExpress);
     $content_SExpress = preg_replace("/maxError='.*'/","maxError='$maxError'", $content_SExpress);
+    $content_SExpress = preg_replace("/qdelay='.*'/","qdelay='$qdelay'", $content_SExpress);
     $content_SExpress = preg_replace("/host='.*'/","host='$DNS_hostname'", $content_SExpress);
     $content_SExpress = preg_replace("/dbUser='.*'/","dbUser='$username'", $content_SExpress);
     $content_SExpress = preg_replace("/dbPwd='.*'/","dbPwd='$password'", $content_SExpress);
     $content_SExpress = preg_replace("/db='.*'/","db='$database'", $content_SExpress);
     print "<pre><b>Write $Script_Express </b><br>$content_SExpress</pre><br />\n";
     file_put_contents($Script_Express, $content_SExpress);
-        
+
+    
+    ######  copy original file  ##############
+    copy("scripts/config.R","../assets/scripts/config.R");
+    ################################################################
     $Script_Rscript = "../assets/scripts/config.R";
     $Content_RExpress = file_get_contents($Script_Rscript);
     $hostname='peroxibase.toulouse.inra.fr';
@@ -381,12 +422,14 @@ echo '************* end script *************'
     print "</pre>\n";
     
     unset($_SESSION['running_job']);
+    
     print " <form class=\"form-horizontal\" action=\"check_cluster.php\" method=\"post\" style=\"margin-top:30px;\">
                 <div class=\"control-group\">
                     <div class=\"controls\">
                         <input type=\"hidden\" name=\"web_path\" value=\"$web_path\" />
                         <input type=\"hidden\" name=\"work_cluster\" value=\"$work_cluster\" />
                         <input type=\"hidden\" name=\"apache_user\" value=\"$input_apache_user\" />
+                        <input type=\"hidden\" name=\"admin_name\" value=\"$input_admin_name\" />
                         <input type=\"hidden\" name=\"check_cluster\" value=\"$check_cluster\" /> 
                         <input type=\"submit\" class=\"btn btn-primary\" name=\"btn-check\" value=\"Check cluster\"/>
                     </div>
@@ -414,20 +457,43 @@ function show_error($message,$post)
 }
 function check_connect($username,$password,$localhost,$database)
 {  
-    $dsn = mysql_connect($localhost,$username,$password) ;#or die("error connect mysql".mysqli_errno());
-    $check_db = mysql_select_db("$database",$dsn) ;
-     
+    #$dsn = mysql_connect($localhost,$username,$password) ;#or die("error connect mysql".mysqli_errno());
+    #$check_db = mysql_select_db("$database",$dsn) ;
+    $dsn = new mysqli($username,$password,$localhost,$database);    
     // check connection details
      print "<h4>Try to connect to database $database ...</h4>\n";
-    if($dsn)
+    if($dsn->connect_errno)
     {
         // if connection details incorrect show error
+         print "<pre>Oops ! Unable to connect to Database $database.<br />Please check your credentail :<br />\n";
+        print "<ul><li>username: $username</li>
+        <li>password: $password</li>
+        <li>localhost: $localhost</li>
+        <li>database: $database</li></ul>\n";
+        print " and database exist !!<br />\n";
+        $data=0;
         
-        print "<pre>Correct ! database information provided are valid.</pre><br />" ;
-        $data =1;
     }
     else
     {
+       print "<pre>Correct ! database information provided are valid.</pre><br />" ;
+       $data =1;
+    }
+    
+    return $data;
+}
+
+function do_sql($username,$password,$localhost,$database,$query)
+{  
+    #$dsn = mysql_connect($localhost,$username,$password) ;#or die("error connect mysql".mysqli_errno());
+    #$check_db = mysql_select_db("$database",$dsn) ;
+    $dsn = new mysqli($username,$password,$localhost,$database);    
+ 
+    // check connection details
+     print "<h4>Try to connect to database $database ...</h4>\n";
+    if($dsn->connect_errno)
+    {
+        // if connection details incorrect show error        
         print "<pre>Oops ! Unable to connect to Database $database.<br />Please check your credentail :<br />\n";
         print "<ul><li>username: $username</li>
         <li>password: $password</li>
@@ -436,9 +502,20 @@ function check_connect($username,$password,$localhost,$database)
         print " and database exist !!<br />\n";
         $data=0;
     }
+    else
+    {
+         print "<pre>Correct ! database information provided are valid.</pre><br />" ;
+       if (!$mysqli->query($query) )
+       {
+           print  "Error on query: $query <br /> : (" . $mysqli->errno . ") " . $mysqli->error;
+
+       }
+        $data =1;
+    }
     
     return $data;
 }
+
 ?>
 
 

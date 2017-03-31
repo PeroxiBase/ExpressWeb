@@ -32,9 +32,9 @@ class Visualizer extends CI_Model {
 
         public function __construct()
         {
-                // Call the CI_Model constructor
-                parent::__construct();
-                $this->database = $this->db->database;
+            // Call the CI_Model constructor
+            parent::__construct();
+            $this->database = $this->db->database;
         }
     
         /**
@@ -45,7 +45,8 @@ class Visualizer extends CI_Model {
 	*@return Gene_ID
         **/
         
-	public function get_geneId_from_geneName($filename,$gene){
+	public function get_geneId_from_geneName($filename,$gene)
+	{
 		$query = $this->db->query("SELECT Gene_ID FROM $filename WHERE Gene_Name='$gene'");
 		$res=$query->result_array();
 		return $res[0]['Gene_ID'];
@@ -59,7 +60,8 @@ class Visualizer extends CI_Model {
 	*@return Gene_Name
         **/
 	
-	public function get_geneName_from_geneID($filename,$geneID){
+	public function get_geneName_from_geneID($filename,$geneID)
+	{
 		$query = $this->db->query("SELECT Gene_Name FROM $filename WHERE Gene_ID='$geneID'");
 		$res=$query->result_array();
 		return $res;
@@ -83,7 +85,6 @@ class Visualizer extends CI_Model {
 	    $result->sql = $sql_query;
 	    if( !$this->db->simple_query($sql_query) )
 	    {
-	        
 	        $result->error = $this->db->error();
 	        $result->nbr = 0;
 	        return $result;
@@ -105,11 +106,12 @@ class Visualizer extends CI_Model {
 	*@return table_in_array
         **/
 	
-	public function get_Values($filename,$seuil){
-		$seuilName=str_replace(".","_",$seuil);
-		$OrderTable=$filename."_".$seuilName."_Order";
-		$query = $this->db->query("SELECT a.*, b.Gene_Name FROM ".$OrderTable." as a, ".$filename." as b WHERE a.Gene_ID=b.Gene_ID");
-		return $query->result_array();
+	public function get_Values($filename,$seuil)
+	{
+            $seuilName=str_replace(".","_",$seuil);
+            $OrderTable=$filename."_".$seuilName."_Order";
+            $query = $this->db->query("SELECT a.*, b.Gene_Name FROM ".$OrderTable." as a, ".$filename." as b WHERE a.Gene_ID=b.Gene_ID");
+            return $query->result_array();
 	}
 
         /**
@@ -120,18 +122,21 @@ class Visualizer extends CI_Model {
 	*@return values(array)
         **/
 	
-	public function get_Values_from_GeneDict($filename,$seuil,$geneDict){
-		$values=array();
-		$seuilName=str_replace(".","_",$seuil);
-		$OrderTable=$filename."_".$seuilName."_Order";
-		foreach($geneDict as $gene){
-                        $index=$gene;
-                        $query = $this->db->query("SELECT a.*, b.Gene_Name FROM $OrderTable as a, $filename as b WHERE a.Gene_ID=$index AND a.Gene_ID=b.Gene_ID");
-                        foreach($query->result_array() as $res){
-                                array_push($values,$res);    
-                        }
-		}
-		return $values;		
+	public function get_Values_from_GeneDict($filename,$seuil,$geneDict)
+	{
+            $values=array();
+            $seuilName=str_replace(".","_",$seuil);
+            $OrderTable=$filename."_".$seuilName."_Order";
+            foreach($geneDict as $gene)
+            {
+                $index=$gene;
+                $query = $this->db->query("SELECT a.*, b.Gene_Name FROM $OrderTable as a, $filename as b WHERE a.Gene_ID=$index AND a.Gene_ID=b.Gene_ID");
+                foreach($query->result_array() as $res)
+                {
+                    array_push($values,$res);    
+                }
+            }
+            return $values;		
 	}
 
         /**
@@ -142,18 +147,21 @@ class Visualizer extends CI_Model {
 	*@return values(array)
         **/
 
-	public function get_Cluster_from_GeneDict($filename,$seuil,$geneDict){
-		$values=array();
-		$seuilName=str_replace(".","_",$seuil);
-		$tableTest=$filename."_".$seuilName."_Cluster";
-		foreach($geneDict as $gene){
-                        $index=($gene['id']);
-                        $query = $this->db->query("SELECT * FROM ".$tableTest." WHERE Gene_ID=".$index);
-                        foreach($query->result_array() as $res){
-                                array_push($values,$res);    
-                        }
+	public function get_Cluster_from_GeneDict($filename,$seuil,$geneDict)
+	{
+            $values=array();
+            $seuilName=str_replace(".","_",$seuil);
+            $tableTest=$filename."_".$seuilName."_Cluster";
+            foreach($geneDict as $gene)
+            {
+                $index=($gene['id']);
+                $query = $this->db->query("SELECT * FROM ".$tableTest." WHERE Gene_ID=".$index);
+                foreach($query->result_array() as $res)
+                {
+                        array_push($values,$res);    
                 }
-		return $values;
+            }
+            return $values;
 	}
 
         /**
@@ -164,10 +172,10 @@ class Visualizer extends CI_Model {
 	*@return comments_in_array
         **/
 	
-	public function get_Table_Comment($filename){
-		$query = $this->db->query("SELECT comment FROM tables WHERE TableName='".$filename."'");
-		return $query->result_array();
-		
+	public function get_Table_Comment($filename)
+	{
+            $query = $this->db->query("SELECT comment FROM tables WHERE TableName='".$filename."'");
+            return $query->result_array();
 	}
 
         /**
@@ -178,13 +186,13 @@ class Visualizer extends CI_Model {
 	*@return conditions_in_array
         **/
 	
-	public function get_Column_Names($filename){
-	    
-		$query = $this->db->query("SELECT COLUMN_NAME 
-						FROM INFORMATION_SCHEMA.COLUMNS 
-						WHERE TABLE_SCHEMA='$this->database' 
-    						AND TABLE_NAME='".$filename."'");
-		return $query->result_array();
+	public function get_Column_Names($filename)
+	{
+            $query = $this->db->query("SELECT COLUMN_NAME 
+                                        FROM INFORMATION_SCHEMA.COLUMNS 
+                                        WHERE TABLE_SCHEMA='$this->database' 
+                                        AND TABLE_NAME='".$filename."'");
+            return $query->result_array();
 	}
 
         /**
@@ -195,9 +203,10 @@ class Visualizer extends CI_Model {
 	*@return organism Name
         **/
 	
-	public function get_Organism($filename){
-		$query= $this->db->query("SELECT Organism FROM tables WHERE TableName='".$filename."'");
-		return $query->result_array();		
+	public function get_Organism($filename)
+	{
+            $query= $this->db->query("SELECT Organism FROM tables WHERE TableName='".$filename."'");
+            return $query->row();		
 	}		
 
         /**
@@ -208,9 +217,10 @@ class Visualizer extends CI_Model {
 	*@return geneName list
         **/
 	
-	public function get_Genes($filename){
-		$query=$this->db->query("SELECT Gene_Name FROM ".$filename);
-		return $query->result_array();		
+	public function get_Genes($filename)
+	{
+            $query=$this->db->query("SELECT Gene_Name FROM ".$filename);
+            return $query->result_array();		
 	}
 
         /**
@@ -221,14 +231,28 @@ class Visualizer extends CI_Model {
 	*@return Analysis list if table exists
         **/
 
-	public function get_Analyse($organism){
-		$annoTable="Annotation_".$organism;
-		$errorMsg="There is no Annotation Table for this Organism, please provide one.";
-		if($this->db->table_exists($annoTable)){
-			$query=$this->db->query("SELECT DISTINCT Analyse FROM `".$annoTable."`");
-			return $query->result_array();
-		}
-		else{ return $errorMsg; }
+	public function get_Analyse($organism)
+	{
+	    $result = new stdClass();
+            $annoTable="Annotation_".$organism;
+            $errorMsg="There is no Annotation Table for this Organism, please provide one.";
+            
+            if($this->db->table_exists($annoTable))
+            {
+                $sql_query = "SELECT DISTINCT Analyse FROM `".$annoTable."`";
+                $query=$this->db->query($sql_query);
+                $result->sql = $sql_query;
+                $result->nbr = $query->num_rows();
+                $result->result = $query->result_array();
+                return $result;
+            }
+            else
+            {
+                $result->sql = "";
+                $result->nbr = 0;
+                $result->result = $errorMsg; 
+                return $result;
+            }
 	}
 
         /**
@@ -239,14 +263,19 @@ class Visualizer extends CI_Model {
 	*@return Signatures if table exists
         **/
 
-	public function get_Signatures($filename,$analyse){
-		$annoTable="Annotation_".$filename;
-		$errorMsg="There is no Annotation Table for this Organism, please provide one.";
-		if($this->db->table_exists($annoTable)){
-			$query=$this->db->query("SELECT Signature FROM `$annoTable` WHERE Analyse='$analyse'");
-			return $query->result_array();
-		}
-		else{ return $errorMsg; }
+	public function get_Signatures($filename,$analyse)
+	{
+            $annoTable="Annotation_".$filename;
+            $errorMsg="There is no Annotation Table for this Organism, please provide one.";
+            if($this->db->table_exists($annoTable))
+            {
+                $query=$this->db->query("SELECT Signature FROM `$annoTable` WHERE Analyse='$analyse'");
+                return $query->result_array();
+            }
+            else
+            {
+                return $errorMsg; 
+            }
 	}
 
         /**
@@ -257,16 +286,21 @@ class Visualizer extends CI_Model {
 	*@return descriptions if table exists
         **/
 
-	public function get_Annot_Gene($filename,$signature){
-		$annoTable="Annotation_".$filename;
-		$errorMsg="There is no Annotation Table for this Organism, please provide one.";
-		if($this->db->table_exists($annoTable)){
-			$query=$this->db->query("SELECT Gene_Name, Description FROM `$annoTable` WHERE Signature='$signature'");
-			return $query->result_array();
-		}
-		else{ return $errorMsg; }
-		
+	public function get_Annot_Gene($filename,$signature)
+	{
+            $annoTable="Annotation_".$filename;
+            $errorMsg="There is no Annotation Table for this Organism, please provide one.";
+            if($this->db->table_exists($annoTable))
+            {
+                $query=$this->db->query("SELECT Gene_Name, Description FROM `$annoTable` WHERE Signature='$signature'");
+                return $query->result_array();
+            }
+            else
+            {
+                return $errorMsg; 
+            }
 	}
+	
         /**
         *function save_Modif_Table 
         *
@@ -275,86 +309,97 @@ class Visualizer extends CI_Model {
 	*@return newName ; name if the newly created table 
         **/
 	
-	public function save_Modif_Table($filename,$conditions,$organism,$submitter,$group){
-		$this->load->dbforge();
-		// Name for New Table //
-		$cpt=1;
-		$newName=$filename."_".$cpt;
-		$queryText="SELECT ";
-		while($this->db->table_exists($newName)){
-			$cpt+=1;
-			$newName=$filename."_".$cpt;
-		}
+	public function save_Modif_Table($filename,$conditions,$organism,$submitter,$group)
+	{
+            $this->load->dbforge();
+            ### Name for New Table //
+            ## get last sub_table ID !!
+            $get_lastId = $this->generic->get_last_sub($filename."_");
+            $last_id = explode("_",$get_lastId->result->TableName);
+            $last_id = end($last_id ) + 1;
+            $newName=$filename."_".$last_id;
 
-		// GET VALUES //
-		foreach($conditions as $cond){
-			if($cond == "Gene_ID"){
-				$queryText.="`".$cond."`";
-			}
-			else{	
-				$queryText.=", `".$cond."`";		
-			}
-		}
-		$queryText.=" FROM `".$filename."`";
-		$queryRes=$this->db->query($queryText)->result_array();
+            // GET VALUES //
+            $queryText="SELECT ";
+            foreach($conditions as $cond)
+            {
+                    if($cond == "Gene_ID")
+                    {
+                            $queryText.="`".$cond."`";
+                    }
+                    else
+                    {	
+                            $queryText.=", `".$cond."`";		
+                    }
+            }
+            $queryText.=" FROM `".$filename."`";
+            $queryRes=$this->db->query($queryText)->result_array();
 
-		// CREATE TABLE //
-		$colnames=array_keys($queryRes[0]);
-		$fields=array();
-		foreach($colnames as $col){
-			$tab=array();
-			if($col == 'Gene_Name'){
-				$tab['type']='VARCHAR';
-				$tab['constraint']='14';
-			}
-			else if($col == 'Gene_ID'){
-				$tab['type']='INT';
-				$tab['constraint']=10;
-				$tab['unsigned']=true;	
-			}
-			else{
-				$tab['type']='DOUBLE';
-			}
-			$fields[$col]=$tab;
-		}
-		$this->dbforge->add_field($fields);
-		$this->dbforge->add_key('Gene_ID', TRUE);
-		$this->dbforge->create_table($newName);
-		foreach($queryRes as $res){
-			$this->db->insert($newName, $res); 
-		}
+            // CREATE TABLE //
+            $colnames=array_keys($queryRes[0]);
+            $fields=array();
+            foreach($colnames as $col)
+            {
+                $tab=array();
+                if($col == 'Gene_Name'){
+                        $tab['type']='VARCHAR';
+                        $tab['constraint']='14';
+                }
+                else if($col == 'Gene_ID'){
+                        $tab['type']='INT';
+                        $tab['constraint']=10;
+                        $tab['unsigned']=true;	
+                }
+                else{
+                        $tab['type']='DOUBLE';
+                }
+                $fields[$col]=$tab;
+            }
+            $this->dbforge->add_field($fields);
+            $this->dbforge->add_key('Gene_ID', TRUE);
+            $engine = array('ENGINE' => 'MyISAM');
+            $this->dbforge->create_table($newName,FALSE,$engine);
+            foreach($queryRes as $res)
+            {
+                    $this->db->insert($newName, $res); 
+            }
 
-		// ADD DEPENDECIES IN TABLES AND TABLEGROUP //
-		// TABLES //
-		$query = $this->db->query("SELECT id FROM groups WHERE name='".$group[0]."'");
-		$queryRes=$query->result_array();
-		$masterGroup=$queryRes[0]['id'];
-		$data=array(
-			'TableName' => $newName,
-			'MasterGroup' =>$masterGroup,
-			'Organism' => $organism,
-			'Submitter' => $submitter,
-			'version' => '1.0',
-			'comment' => "Sub-Table comming from ".$filename ,
-			'original_file' => $filename,
-		); 
-		$this->db->insert('tables', $data);
+            // ADD DEPENDECIES IN TABLES AND TABLEGROUP //
+            // TABLES //
+            $query = $this->db->query("SELECT id FROM groups WHERE name='".$group[0]."'");
+            $queryRes=$query->result_array();
+            $masterGroup=$queryRes[0]['id'];
+            $data=array(
+                    'TableName' => $newName,
+                    'MasterGroup' =>$masterGroup,
+                    'Organism' => $organism,
+                    'Submitter' => $submitter,
+                    'version' => '1.0',
+                    'comment' => "Sub-Table comming from ".$filename ,
+                    'original_file' => $filename,
+                    'Root' =>1
+            ); 
+            $this->db->insert('tables', $data);
 
-		// TABLE_GROUP //
- 		$query = $this->db->query("SELECT IdTables FROM tables WHERE TableName='".$newName."'");
-		$queryRes=$query->result_array();
-		$newID=$queryRes[0]['IdTables'];
- 		
-		$query = $this->db->query("SELECT IdTables FROM tables WHERE TableName='".$filename."'");
-		$queryRes=$query->result_array();
-		$oldID=$queryRes[0]['IdTables'];
-		$groups = $this->db->query("SELECT group_id FROM tables_groups WHERE table_id='".$oldID."'")->result_array();
-		
-		foreach($groups as $gr){
-			$data=array('table_id' => $newID,'group_id' => $gr['group_id']);
-			$this->db->insert('tables_groups', $data);
-		}
-		return($newName);
+            // TABLE_GROUP //
+            $query = $this->db->query("SELECT IdTables FROM tables WHERE TableName='".$newName."'");
+            $queryRes=$query->result_array();
+            $newID=$queryRes[0]['IdTables'];
+            
+            $query = $this->db->query("SELECT IdTables FROM tables WHERE TableName='".$filename."'");
+            $queryRes=$query->result_array();
+            $oldID=$queryRes[0]['IdTables'];
+            $groups = $this->db->query("SELECT group_id FROM tables_groups WHERE table_id='".$oldID."'")->result_array();
+            
+            foreach($groups as $gr)
+            {
+                $data=array('table_id' => $newID,'group_id' => $gr['group_id']);
+                $this->db->insert('tables_groups', $data);
+            }
+            $result = new stdclass;
+            $result->name = $newName;
+            $result->Child = $newID;
+            return $result;
 	}
 	
 
@@ -366,7 +411,10 @@ class Visualizer extends CI_Model {
             {
                 return $query->result_array();
             }
-            else { return $errorMsg; }
+            else 
+            {
+                return $errorMsg; 
+            }
         }
         
         public function dim_table($table_name)

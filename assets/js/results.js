@@ -1,5 +1,6 @@
 // Functions //
 // Create list of cluster //
+var debug =0;
 
 function createList(url,filename,orderTable){
 $.ajax({
@@ -51,21 +52,24 @@ $.ajax({
 				solo.push(current[0])	
 			}
 		}
-		$('#accordion').append('<div class="panel panel-default" id="panelOut" data-sort=0></div>')
-		$('#panelOut').append('<div class="panel-heading" id="headingOut"></div>')
-		$('#headingOut').append('<h4 class="panel-title" id="titleOut"></h4>')
-		$('#titleOut').append('Alone Genes ')
-		$('#titleOut').append('&nbsp;- &nbsp;Size : '+solo.length+' - ')
-		$('#titleOut').append('<a data-toggle="collapse" data-parent="#accordion" href="#collapseOut" class="openLink"><b>Open</b></a>')
-		$('#titleOut').append('<a data-toggle="collapse" data-parent="#accordion" href="#collapseOut" class="closeLink" style="display:none"><b>Close</b></a>')
-		$('#headingOut').append('<input class="cluster-cb checkbox-inline" type="checkbox" id="cbOut" value="Out">')
-		$('#panelOut').append('<div id="collapseOut" class="panel-collapse collapse">')
-		for(j=0;j<solo.length;j++){
-			var geneID=solo[j]['Gene_ID']
-			var geneName=solo[j]['Gene_Name']
-			$('#collapseOut').append('<div class="panel-body" id='+geneID+'>'+geneName+'</div>')
+		if(solo.length >0)
+		{
+		    // don't create a div if we don't have solo genes
+                    $('#accordion').append('<div class="panel panel-default" id="panelOut" data-sort=0></div>')
+                    $('#panelOut').append('<div class="panel-heading" id="headingOut"></div>')
+                    $('#headingOut').append('<h4 class="panel-title" id="titleOut"></h4>')
+                    $('#titleOut').append('Alone Genes ')
+                    $('#titleOut').append('&nbsp;- &nbsp;Size : '+solo.length+' - ')
+                    $('#titleOut').append('<a data-toggle="collapse" data-parent="#accordion" href="#collapseOut" class="openLink"><b>Open</b></a>')
+                    $('#titleOut').append('<a data-toggle="collapse" data-parent="#accordion" href="#collapseOut" class="closeLink" style="display:none"><b>Close</b></a>')
+                    $('#headingOut').append('<input class="cluster-cb checkbox-inline" type="checkbox" id="cbOut" value="Out">')
+                    $('#panelOut').append('<div id="collapseOut" class="panel-collapse collapse">')
+                    for(j=0;j<solo.length;j++){
+                            var geneID=solo[j]['Gene_ID']
+                            var geneName=solo[j]['Gene_Name']
+                            $('#collapseOut').append('<div class="panel-body" id='+geneID+'>'+geneName+'</div>')
+                    }
 		}
-	
 		$('.openLink').click(function(){
 			$(this).next().fadeIn()
 			$(this).fadeOut()
@@ -96,7 +100,8 @@ $.ajax({
 		$('.loader').fadeOut('slow')
 		$('.glyphicon-new-window').click(function(){
 			geneID=parseInt($(this).parent('div').attr('id'));
-			geneName=$(this).parent('div').text();
+			geneName=$(this).parent('div').text(); 
+			if(debug) { console.log('geneID %s geneName %s ' ,geneID,geneName) }
 			$.ajax({
 				url:url+'visual/coex',
 				type:'POST',
@@ -134,7 +139,7 @@ function findGeneList(gene){
 	$('*').removeClass('activePanel')
 	$('.panel-body:contains('+gene+')').addClass('activeGene')
         $('.panel-body:contains('+gene+')').parent('.panel-collapse').parent('.panel').addClass('activePanel')
-	console.log($('.panel-body:contains('+gene+')').parent('.panel-collapse').parent('.panel').offset().top)
+	if(debug) { console.log('138 findGeneList '+$('.panel-body:contains('+gene+')').parent('.panel-collapse').parent('.panel').offset().top); }
 	$('#accordion').animate({
 		scrollTop:$('.panel-body:contains('+gene+')').parent('.panel-collapse').parent('.panel').offset().top - 323
 		},'slow');
@@ -144,9 +149,9 @@ function findGeneList(gene){
 
 // Draw heatmap with selected clusters //
 
-function drawHeatmap(url,geneDict,filename,seuil){
+function drawHeatmap(geneDict,filename,seuil){
 $.ajax({
-url:url+'display/getClustersValues',
+url: '../display/getClustersValues',
 type: 'POST',
 data:{filename:filename,geneDict:geneDict,seuil:seuil},
 success:function(data){
@@ -315,86 +320,91 @@ $('.loader').fadeOut('slow')
 
 // Expression Profiles //
 
-function drawProfiles(url,geneDict,filename,seuil){
-$.ajax({
-url:url+'display/getClustersValues',
-type: 'POST',
-data:{filename:filename,geneDict:geneDict,seuil:seuil},
-success:function(data){
-if(data)
-data=JSON.parse(data)
-                                                                                                                                                                                     
-if(data.length == 0 ){
-	$('.Container').append('<div " class="alert alert-danger"><strong>Error !</strong> Please select at least one Cluster.</div>')
-	$('.alert-danger').append('<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>')	
-}
-else{
-var conditions=Object.keys(data[0])
-conditions.pop()
-conditions.splice(0,1)	
-var values=[]
-for(i=0;i<data.length;i++){
-	var dict={}
-	dict.data=[]
-	for(var k in data[i]){
-		if(k == "Gene_Name"){
-			dict.name=data[i][k]
-		}
-		else if(k != "Gene_Name" && k != "Gene_ID"){
-			dict.data.push(parseFloat(data[i][k]))
-		}
-	}
-	values.push(dict)
-}
-
-var buttons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
-// CONSTRUCTION DU CHART //
-	$('.Container').highcharts({
-	title: {
-		text: 'Coexpression profile',
-		x: -20 //center
-	},  
-	xAxis:{
-		categories:conditions
-	},  
-	yAxis: {
-		title: {
-			text: 'Value',
-		},
-	},  
-	plotOptions: {
-		line: {
-			events: {
-				'click': function () {
-				this.hide();
-				}
-			}
-		}
-	},  
-	legend: {
-		layout: 'vertical',
-		align: 'right',
-		verticalAlign: 'middle',
-		borderWidth: 0
-	},  
-	credits: {
-		enabled: false
-	},  
-	series:values,
-	exporting: {
-		buttons: {
-			contextButton: {
-				menuItems: buttons
-			}
-		},
-		sourceWidth: 1000,
-		sourceHeight: 500,  
-		},
-});        
-}
-$('.loader').fadeOut('slow')
-}
-});
+function drawProfiles(geneDict,filename,seuil)
+{
+  //  console.log("url: " +url);
+  
+    $.ajax({        
+    url:'../display/getClustersValues',
+    type: 'POST',
+    data:{filename:filename,geneDict:geneDict,seuil:seuil},
+    success:function(data){
+    if(data)
+    {
+        if(debug) { console.log("329 result.js drawProfiles data : " +data);} 
+        data=JSON.parse(data)
+    }
+    if(data.length == 0 ){
+            $('.Container').append('<div " class="alert alert-danger"><strong>Error !</strong> Please select at least one Cluster.</div>')
+            $('.alert-danger').append('<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>')	
+    }
+    else{
+    var conditions=Object.keys(data[0])
+    conditions.pop()
+    conditions.splice(0,1)	
+    var values=[]
+    for(i=0;i<data.length;i++){
+            var dict={}
+            dict.data=[]
+            for(var k in data[i]){
+                    if(k == "Gene_Name"){
+                            dict.name=data[i][k]
+                    }
+                    else if(k != "Gene_Name" && k != "Gene_ID"){
+                            dict.data.push(parseFloat(data[i][k]))
+                    }
+            }
+            values.push(dict)
+    }
+    
+    var buttons = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+    // CONSTRUCTION DU CHART //
+            $('.Container').highcharts({
+            title: {
+                    text: 'Coexpression profile',
+                    x: -20 //center
+            },  
+            xAxis:{
+                    categories:conditions
+            },  
+            yAxis: {
+                    title: {
+                            text: 'Value',
+                    },
+            },  
+            plotOptions: {
+                    line: {
+                            events: {
+                                    'click': function () {
+                                    this.hide();
+                                    }
+                            }
+                    }
+            },  
+            legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+            },  
+            credits: {
+                    enabled: false
+            },  
+            series:values,
+            exporting: {
+                    buttons: {
+                            contextButton: {
+                                    menuItems: buttons
+                            }
+                    },
+                    sourceWidth: 1000,
+                    sourceHeight: 500,  
+                    },
+    });        
+    }
+    $('.loader').fadeOut('slow')
+    }
+    });
 }
 // Network //
 
@@ -465,7 +475,7 @@ function drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile){
       				}
 			}
 			var network = new vis.Network(container, data, options);
-			console.log("network ok");
+			if(debug) { console.log("network ok"); }
 			
 			var nodesList=n
 			var clusList=[]
@@ -578,14 +588,17 @@ network.on("selectNode", function(params){
 			cID=params.nodes[0]
 			split=cID.split('cluster:')
 			i=split[1]
-			console.log(i)
+			if(debug) { console.log('588 result.js network.on node i'+ i); }
 			network.openCluster(params.nodes[0])
 			$('#closeSelect').append('<option value='+params.nodes[0]+'>Close '+params.nodes[0]+'</option>')
 		}
 		else if(network.isCluster(params.nodes[0]) == false){
 			if(params.event)
-			$(".custom-menu").finish().toggle(100).css({top: (event.pageY-150) + "px",left: event.pageX + "px"});
+			{
+			   $(".custom-menu").finish().toggle(100).css({top: (params.event.pageY -100),left: (params.event.pageX ),display: 'inline',position: 'absolute'});
+			}
 			$(".custom-menu li").unbind("click") .click(function(){
+			        
 				switch($(this).attr("data-action")){
 					case "first":
 						if( params.nodes.length > 0 ){
@@ -604,6 +617,9 @@ network.on("selectNode", function(params){
 									geneIDs.push(c[1])
 								}
 							}
+							//if we have more than one gene in the cluster
+							if(geneIDs.length==0) { geneIDs = nodeId; }
+							//console.log('geneIDs 614: "'+geneIDs+'" nodes '+nodeId)
 							filename=$('#fileP').text()
 							filename=filename.split(" ")[2]
 							seuil=$('#seuilhide').val()
@@ -618,12 +634,13 @@ network.on("selectNode", function(params){
 							$('.Container').remove()
 							$('#displayDiv').append('<div class="Container" id="container"></div>');
 							$('.Container').css('height','400px')
-							drawProfiles(geneIDs,filename,seuil)
-							$('.loader').fadeOut()
-							$('.Container').append('<p> You can click on a <b>line</b> to hide it. Click on <b>the gene name</b> to show it.</p>')
+							//console.log('geneIDs len: "'+geneIDs.length+'"')
+                                                        drawProfiles(geneIDs,filename,seuil)
+                                                        $('.loader').fadeOut()
+                                                        $('.Container').append('<p> You can click on a <b>line</b> to hide it. Click on <b>the gene name</b> to show it.</p>')
 							$('.nav-pills li').removeClass('active')
 							$('#profLink').parent('li').addClass('active')
-						}	
+						}
 					break;
 				case "second": 
 					id=params.nodes[0]
@@ -681,52 +698,65 @@ $('#closeSelect').change(function(){
 		}
 		});
 
-$(document).on('click', '#closeCluster', function(){ 
-		cID=$('#closeSelect').val()
-		if(cID!=0){
-		split=cID.split('Cluster')
-		i=split[1]
-		if( split.length <= 1 ){
-		split=cID.split('cluster:')
-		i=split[1]
-		}	
-		var clusterOptionsByData = {
-joinCondition:function(childOptions) {
-console.log(childOptions.cluster)
-return childOptions.cluster == i;
-},
-processProperties: function (clusterOptions, childNodes, childEdges) {
-var totalMass = 0;
-var select=false
-for (var j = 0; j < childNodes.length; j++) {
-totalMass += childNodes[j].mass;
-if(childNodes[j].shape == "star"){
-select=true
-}
-}
-if( totalMass*10 < 300){
-	clusterOptions.size = totalMass*10;
-}
-else{ clusterOptions.size = 300 };
-clusterOptions.color =childNodes[0].color.background;
-clusterOptions.label ='Cluster n° '+i+', Size:'+ childNodes.length;
-clusterOptions.title ="<p style='color:black' 'font-size:10px' >Cluster n° <b> "+i+"</b><br> Size: <b>"+ childNodes.length+"</b></p>";
-if(select == true){ 
-	clusterOptions.shape = 'star'
-}
-else{ 
-	clusterOptions.shape = 'square' 
-		//clusterOptions.size = 100
-}
-return clusterOptions;
-},
-clusterNodeProperties: {id:'Cluster' + i, borderWidth:3}
-}
-network.cluster(clusterOptionsByData);
-$('#closeSelect option[value="'+cID+'"]').remove();
-$('#closeCluster').prop('disabled',true);
-$('#closeCluster').css('cursor','not-allowed')
-}
+$(document).on('click', '#closeCluster', function()
+{ 
+    cID=$('#closeSelect').val()
+    if(cID!=0)
+    {
+        split=cID.split('Cluster')
+        i=split[1]
+        if( split.length <= 1 )
+        {
+            split=cID.split('cluster:')
+            i=split[1]
+        }	
+        var clusterOptionsByData = {
+            joinCondition:function(childOptions) 
+            {
+                if(debug) { console.log('713 result.js #closeCluster childOptions.cluster:'+childOptions.cluster) ; }
+                return childOptions.cluster == i;
+            },
+            processProperties: function (clusterOptions, childNodes, childEdges)
+            {
+                var totalMass = 0;
+                var select=false
+                for (var j = 0; j < childNodes.length; j++) 
+                {
+                    totalMass += childNodes[j].mass;
+                    if(childNodes[j].shape == "star")
+                    {
+                        select=true
+                    }
+                }
+                if( totalMass*10 < 300)
+                {
+                        clusterOptions.size = totalMass*10;
+                }
+                else
+                {
+                        clusterOptions.size = 300;
+                }
+                clusterOptions.color =childNodes[0].color.background;
+                clusterOptions.label ='Cluster n° '+i+', Size:'+ childNodes.length;
+                clusterOptions.title ="<p style='color:black' 'font-size:10px' >Cluster n° <b> "+i+"</b><br> Size: <b>"+ childNodes.length+"</b></p>";
+                if(select == true)
+                { 
+                        clusterOptions.shape = 'star'
+                }
+                else
+                { 
+                        clusterOptions.shape = 'square' 
+                                //clusterOptions.size = 100
+                }
+                return clusterOptions;
+            },
+            clusterNodeProperties: {id:'Cluster' + i, borderWidth:3}
+        }
+        network.cluster(clusterOptionsByData);
+        $('#closeSelect option[value="'+cID+'"]').remove();
+        $('#closeCluster').prop('disabled',true);
+        $('#closeCluster').css('cursor','not-allowed')
+        }
 }); 
 
 // Draw profile of connected nodes //
@@ -747,28 +777,33 @@ network.on("doubleClick",function(params){
                                 geneIDs.push(c[1])
                         }
                 }
-		console.log(geneIDs)
+		//console.log('geneIDs 761: "'+geneIDs+'"')
+		// if we have more than one gene in cluster ...
+		if(geneIDs.length==0) { geneIDs = nodeId; }
 		filename=$('#fileP').text()
 		filename=filename.split(" ")[2]
 		seuil=$('#seuilhide').val()
 		//seuil=seuil.split(" ")[2]
 		//seuil=seuil.replace('.','_')
-		$('#dlnDIV').remove()
+		
+                $('#dlnDIV').remove()
                 $('#closeDiv').fadeOut()
-		$('#netcontainer').fadeOut('slow')
+                $('#netcontainer').fadeOut('slow')
                 $('#selP').fadeOut()
-		$('#legendDiv').fadeOut()
+                $('#legendDiv').fadeOut()
                 $('#searcher').fadeOut()
                 $('#annotSel').fadeOut()
                 $('.loader').fadeIn('slow')
                 $('#accordion').fadeOut()
                 $('.Container').remove()
                 $('#displayDiv').append('<div class="Container" id="container"></div>');
-                $('.Container').css('height','400px')
-		drawProfiles(geneIDs,filename,seuil)
-		$('.loader').fadeOut()
-		$('.Container').append('<p> You can click on a <b>line</b> to hide it. Click on <b>the gene name</b> to show it.</p>')
-		$('.nav-pills li').removeClass('active')
+                $('.Container').css('height','400px')                
+                //console.log('geneIDs len: "'+geneIDs.length+'"')
+                drawProfiles(geneIDs,filename,seuil)
+            
+                $('.loader').fadeOut()
+                $('.Container').append('<p> You can click on a <b>line</b> to hide it. Click on <b>the gene name</b> to show it.</p>')
+                $('.nav-pills li').removeClass('active')
                 $('#profLink').parent('li').addClass('active')
 	}
 })
@@ -821,4 +856,6 @@ $('.loader').fadeOut('slow')
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
+
+
 

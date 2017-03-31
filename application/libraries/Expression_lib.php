@@ -1,171 +1,203 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
-class Expression_lib {
-  	private $CI;
-  	#define ('_ERROR','');
-  	#define ('_WARNING','');
+/**
+* The Expression Database.
+*
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package expressionWeb
+*@subpackage     Libraries
+*/
+class Expression_lib 
+{
+    private $CI; 
+  	
     public function __construct()
     {
        $this->CI =& get_instance();
        $this->auth = new stdClass;
        $this->CI->load->model('generic');
-       $this->CI->load->library('session');
-       #$this->CI->load->library('flexi_auth');
-      # $this->CI->load->library('files');
+       # $this->CI->load->library('session');
+       $this->CI->config->load('expressWeb');
+       $this->apache_user = $this->CI->config->item('apache_user');
     }
-  	
+    
+    /**
+    * function  getPid
+    *     generate pid value
+    *
+    * @param integer $pid 
+    * @return integer 
+    */  
     public function getPid()
     {
-     # $session_id =$this->CI->session->userdata('session_id');
-     # $pid = substr($session_id,0,10);     
       $pid=trim(strstr(microtime(),' '));
       return $pid;
     }
  
+    
+    /**
+    * function  working_space
+    *   create working directory for current user. 
+    *   If no session username detected (oops! ) create a temporary user temp
+    *   call with pid, transmit pid value in return value
+    *   else generate new pid
+    *   call with Prg string, add a directory to user path
+    *
+    * @param integer $pid
+    * @param string $Prg 
+    * @return object    $WP :: $WP->pid, $WP->working_path
+    * @return session 
+    */  
     public function working_space($pid='',$Prg='')
     {
         $WS = new stdclass;
         $username= $this->CI->session->username;
-        $working_project= $this->CI->session->working_project;
-        $pid = $this->CI->session->pid;
         $day_date=date("Y_m_d");
-        if($pid=='')  
+        $debug ="";
+        $debug .="working_space(pid:$pid,Prg:$Prg)|";
+        #### pid. first check if we have a pid as argument.
+        # check if a session pid is defined
+        # else generate new pid
+        ###################################################
+        if($pid !="" && is_numeric($pid) && strlen($pid)== 10 )  
         {
-            $session = $this->getPid();
-            
+            $WS->pid =$pid;
+            $debug .= "pid numeric L10";
         }
-        else $session = $pid;
-        $WS->pid =$session;
+        elseif($pid == "")
+        {
+            # look for session pid
+            if( $this->CI->session->pid !== FALSE)
+            {
+                $WS->pid = $this->CI->session->pid;
+                $debug .=" pid session";
+            }
+            else
+            {           
+                $WS->pid = $this->getPid();
+                $debug .="generate pid $WS->pid";
+            }
+        }
+        
         if(isset($username) AND $username!='')
         {
-          # Check user dir exist
-          if(is_dir("./assets/users/$username")==false)
-          {
-            mkdir("./assets/users/$username",0775);
-             chmod("./assets/users/$username",0775);
-             chgrp("./assets/users/$username","perox");
-          }
-          if(isset($working_project) AND $working_project!='')
-          {
             # Check user dir exist
-            if(is_dir("./assets/users/$username/$working_project")==false)
+            if(is_dir("./assets/users/$username")==false)
             {
-              mkdir("./assets/users/$username/$working_project",0775);
-              chmod("./assets/users/$username/$working_project",0775);
-              chgrp("./assets/users/$username/$working_project","perox");
+                mkdir("./assets/users/$username",0775);
+                chmod("./assets/users/$username",0775);
+                chown("./assets/users/$username",$this->apache_user);
             }
-             $Path=$username.'/'.$working_project;
-          }
-          else { $Path=$username; }
-          # Check or create dir of the day
-         /*
-          if(is_dir("./assets/users/$Path/$day_date")==false)
-          {
-            mkdir("./assets/users/$Path/$day_date",0775);
-            chmod ("./assets/users/$Path/$day_date",0775);
-            chgrp("./assets/users/$Path/$day_date","perox");
-          }
-          else chmod ("./assets/users/$Path/$day_date",0775);
-          if($Prg!='')
-          {
-             if(is_dir("./assets/users/$Path/$day_date/$Prg")==false)
+            $Path = $username;
+            
+            if($Prg!='')
             {
-              mkdir("./assets/users/$Path/$day_date/$Prg",0775);
-              chmod("./assets/users/$Path/$day_date/$Prg",0775);
-              chgrp("./assets/users/$Path/$day_date/$Prg","perox");
+                if(is_dir("./assets/users/$Path/$Prg")==false)
+                {
+                    mkdir("./assets/users/$Path/$Prg",0775);
+                    chmod("./assets/users/$Path/$Prg",0775);
+                    chown("./assets/users/$Path/$Prg",$this->apache_user);
+                }
+                $WS->Path = "./assets/users/$Path/$Prg/";     
             }
-            $WS->Path = "./assets/users/$Path/$day_date/$Prg/";     
-          }
-          else
-          {
-            $WS->Path = "./assets/users/$Path/$day_date/";
-          }
-          */
-          if($Prg!='')
-          {
-              
-              if(is_dir("./assets/users/$Path/$Prg")==false)
+            else
             {
-              mkdir("./assets/users/$Path/$Prg",0775);
-              chmod("./assets/users/$Path/$Prg",0775);
-              chgrp("./assets/users/$Path/$Prg","perox");
+                $WS->Path = "./assets/users/$Path/";
             }
-            $WS->Path = "./assets/users/$Path/$Prg/";     
-          }
-          else
-         {
-             $WS->Path = "./assets/users/$Path/";
-         }
-          $WS->session = $session;
-          # $username= $this->CI->session->username;
-          #$working_project= $this->CI->session->working_project;
-          $this->CI->session->set_userdata('working_path',$WS->Path);
-          $this->CI->session->set_userdata('pid',$WS->pid);
-         # $this->CI->session->set_userdata(array($this->CI->auth->session_name['name'] => $this->CI->auth->session_data));
-    
-          return $WS;
         }
         else
         {
-          if($Prg!='')
-          {
-             if(is_dir("./assets/temp/$Prg")==false)
+            if($Prg!='')
             {
-              mkdir("./assets/temp/$Prg",0775);
-              chgrp("./assets/temp/$Prg","perox");
+                if(is_dir("./assets/temp/$Prg")==false)
+                {
+                    mkdir("./assets/temp/$Prg",0775);
+                    chown("./assets/temp/$Prg",$this->apache_user);
+                }
+                $WS->Path = "./assets/temp/$Prg/";     
             }
-            $WS->Path = "./assets/temp/$Prg/";     
-          }
-          else
-          {
-            $WS->Path = "./assets/temp/";
-          }
-          #$this->CI->auth->session_data[$this->CI->auth->session_name['working_path']] =   $WS->Path ;
-         #   $this->CI->session->set_userdata(array($this->CI->auth->session_name['name'] => $this->CI->auth->session_data));
-            #$WS->Path =  "assets/temp/";	
-            $this->CI->session->set_userdata('working_path',$WS->Path);
-            $this->CI->session->set_userdata('pid',$WS->pid);
-          $WS->session = $session;
-          return $WS;
+            else
+            {
+                $WS->Path = "./assets/temp/";
+            }
         }
+        $this->CI->session->set_userdata('debug',$debug);
+        $this->CI->session->set_userdata('working_path',$WS->Path);
+        $this->CI->session->set_userdata('pid',$WS->pid);  
+        return $WS;
   }
   
- 
-    public function do_debug($active)
+   /**
+    * function readCSV 
+    * @author janos Szabo
+    * @see http://stackoverflow.com/questions/4053599/how-to-detect-a-delimiter-in-a-string-in-php
+    * @param string $param2 
+    * @return integer 
+    */  
+    public function readCSV($Data)
     {
-        $debug=0;
-        if($active==1)
-        {
-            #  define("DO_DEBUG",true);
-            $active=1;
-        }
-        else 
-        {
-            # define("DO_DEBUG",false);
-            $active=0;
-        }
-        
-        /*$network=ip2long("194.199.55.0");
-        $mask=ip2long("255.255.255.0");
-        $remote=ip2long($_SERVER['REMOTE_ADDR']);
-        
-        if (($remote & $mask)==$network)
-        {
-            $debug=1;
-        }
-       */
-        if($_SERVER["REMOTE_ADDR"]=="194.199.55.237" or 
-        $_SERVER["REMOTE_ADDR"]=="82.241.248.32" 
-        or $_SERVER["REMOTE_ADDR"]=="194.199.55.117" 
-        or $_SERVER["REMOTE_ADDR"]=="194.199.55.51" 
-        or $_SERVER["REMOTE_ADDR"]=="194.199.55.43"
-        ) 
-        {
-            $debug=$active; $AddFields=1; $MasterIP=1;
-        }
-        return $debug;
-    }
+        //detect these delimeters
+        $delA = array(";", ",", "|", "\t");
+        $linesA = array();
+        $resultA = array();
     
+        foreach ($delA as $key => $del) 
+        {
+            $linesA[$key] = array();
+            $data = explode($del,$Data);
+            $linesA[$key][] = count($data);
+        }
+        //count rows delimiter number discrepancy from each other
+        foreach ($delA as $key => $del) {
+            #echo 'try for key=' . $key . ' delimeter=' . $del;
+            $discr = 0;
+            foreach ($linesA[$key] as $actNum) {
+                if ($actNum == 1) {
+                    $resultA[$key] = 65535; //there is only one column with this delimeter in this line, so this is not our delimiter, set this discrepancy to high
+                    break;
+                }
+    
+                foreach ($linesA[$key] as $actNum2) {
+                    $discr += abs($actNum - $actNum2);
+                }
+    
+                //if its the real delimeter this result should the nearest to 0
+                //because in the ideal (errorless) case all lines have same column number
+                $resultA[$key] = $discr;
+            }
+        }
+        
+        //select the discrepancy nearest to 0, this would be our delimiter
+        $delRes = 65535;
+        foreach ($resultA as $key => $res) {
+            if ($res < $delRes) {
+                $delRes = $res;
+                $delKey = $key;
+            }
+        }
+    
+        $delimeter = $delA[$delKey];
+        if($delKey==3) $info_delimeter = "'TAB'";
+        else $info_delimeter="'$delimeter'";
+        
+        $return_val=new stdclass;
+        $return_val->delimeter = $delimeter;
+        $return_val->info = $info_delimeter;
+        return $return_val;
+        
+    }
+
+    /**
+    * function  formatLink
+    *   generate anchor for outside links
+    *
+    * @param string $source
+    * @param string $name
+    * @param string $format
+    * @return string $anchor 
+    */  
     public function formatLink($source,$name,$format='Source')
     {
         if($format=='' OR $format=='Source') $ad_format="<b>$source:</b> ";
@@ -237,6 +269,56 @@ class Expression_lib {
         return $anchor; 
     }
  
+    /**
+    * function 
+    * check if current user belong to group Demo only
+    * 
+    * @return boolean 
+    */  
+    public function in_Demo_grp()
+    {
+        $userGroups=$this->CI->session->userdata['groups'];
+        $userGroup=$userGroups[0];
+        if($userGroup == 'Demo')
+        {
+            return "Demo";
+        }
+        return "";
+    }
+    
+    
+    public function do_debug($active)
+    {
+        $debug=0;
+        if($active==1)
+        {
+            #  define("DO_DEBUG",true);
+            $active=1;
+        }
+        else 
+        {
+            # define("DO_DEBUG",false);
+            $active=0;
+        }
+        
+        /*
+        $network=ip2long("194.199.55.0");
+        $mask=ip2long("255.255.255.0");
+        $remote=ip2long($_SERVER['REMOTE_ADDR']);
+        
+        if (($remote & $mask)==$network)
+        {
+            $debug=1;
+        }
+       */
+        if($_SERVER["REMOTE_ADDR"]=="194.199.55.237" or $_SERVER["REMOTE_ADDR"]=="82.241.248.32")
+        {
+            $debug=$active; $AddFields=1; $MasterIP=1;
+        }
+        
+        return $debug;
+    }
+    
     
     public function var_debug($mode)
     {  
@@ -248,20 +330,29 @@ class Expression_lib {
     {
         #print "classe  $classe, contents $contents, message $message <br />";
         $data = array(
-              'title'=>"The peroxidase: $classe",
+              'title'=>"$this->CI->header_name: $classe",
               'contents' => "$contents/error",
+              'footer_title' => $this->footer_title,
               'left_div' => $left_div,
               'message' =>  $message,
               'back' => $this->CI->back()
               );
         return $data;
     }
-
+    
+    /**
+    * function  back
+    *   generate anchor button to go back previous page
+    *
+    * @param integer $step negative number !!
+    * @return string  
+    */  
     public function back($step = -1) 
-     {
-            return "    <a href=\"javascript:history.go($step)\"  class=\"ui-button ui-widget ui-state-default ui-corner-all\">&lt;&lt; Back</a>";
-     }
+    {
+        return "    <a href=\"javascript:history.go($step)\"  class=\"ui-button ui-widget ui-state-default ui-corner-all\">&lt;&lt; Back</a>";
+    }
      
+    
     public function getGenre($GeneGenre,$format='Genre') 
     {
         $GeneGenre=trim(strtolower($GeneGenre));
@@ -279,8 +370,7 @@ class Expression_lib {
             case "ptr":
                 $GeneGenre="Ptr";
                 $GeneGenreFull="Populus";
-                $GeneSpecie= "trichocarpa";
-                
+                $GeneSpecie= "trichocarpa";                
                 break;  
             case "arabidospsis":
             case "ara":
@@ -451,5 +541,8 @@ class Expression_lib {
         return $GName;      
     }
 
+    
+    
+     
 
 }

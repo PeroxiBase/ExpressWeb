@@ -18,8 +18,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Create_table extends MY_Controller 
 {
     
-     public $required_tag;
-     
+     public $required_tag;     
      
      /**
      * Class constructor
@@ -30,7 +29,6 @@ class Create_table extends MY_Controller
      */
     public function __construct()
     {
-        //  Obligatoire
         parent::__construct();
         $this->output->enable_profiler(false);
         $this->required_tag = "<a title=\"required\" class=\"glyphicon glyphicon-asterisk\"></a>";
@@ -46,8 +44,7 @@ class Create_table extends MY_Controller
             redirect(base_url()."welcome/restricted", 'refresh');
         }
         
-        $this->load->library("expression_lib"); 
-        
+        $this->load->library("expression_lib");        
     }
     
     /**
@@ -60,6 +57,7 @@ class Create_table extends MY_Controller
         $data = array(
            'title'=>"$this->header_name: Menu operation",
            'contents' => 'upload/index',
+           'footer_title' => $this->footer_title
           );
         $this->load->view('templates/template', $data);
     }
@@ -78,7 +76,7 @@ class Create_table extends MY_Controller
     */  
     public function upload_csv()
     {
-        $GetWS=$this->expression_lib->working_space('Upload');
+        $GetWS=$this->expression_lib->working_space('','Upload');
         if(isset($GetWS->Path))
         {
             $Path= $GetWS->Path;
@@ -101,6 +99,7 @@ class Create_table extends MY_Controller
         $data = array(
            'title'=>"$this->header_name: Convert CSV to MySQL",
            'contents' => 'upload/upload_form',
+           'footer_title' => $this->footer_title,
            'pid' =>$pid,
            'error' =>'',
            'master_group' => $master_group,
@@ -172,6 +171,7 @@ class Create_table extends MY_Controller
                     $data = array(
                        'title'=>"$this->header_name: Convert CSV to MySQL",
                        'contents' => 'upload/upload_form',
+                       'footer_title' => $this->footer_title,
                        'pid' =>$pid,
                        'error' =>'',
                        'master_group' => $master_group,
@@ -219,6 +219,7 @@ class Create_table extends MY_Controller
                     $data = array(
                        'title'=>"$this->header_name: Upload file $import_file",
                        'contents' => 'upload/process_upload',
+                       'footer_title' => $this->footer_title,
                        'debug' => $debug,
                        'file_name' =>$File2Upload,
                        'Path' => $Path,
@@ -247,7 +248,7 @@ class Create_table extends MY_Controller
          {
             $message =validation_errors();
             $this->session->set_flashdata('message', $message);
-          redirect("create_table/upload_csv");
+            redirect("create_table/upload_csv");
          }
     }
     
@@ -284,9 +285,7 @@ class Create_table extends MY_Controller
         {
             $UploadedFile= file($Filename);
             $LenFile = get_file_info($Filename);
-            $countFile =count( $UploadedFile);
-            #$debug .=  " L113 check_csvfile $Filename exist  with length :$countFile  and FileSize ".$LenFile['size']."!<br />";
-        }
+            $countFile =count( $UploadedFile);        }
         else
         {
             $Data->debug =  "file $Filename doesn't exist !";
@@ -318,18 +317,14 @@ class Create_table extends MY_Controller
                     
                     array_push($header_columns,$cols);
                 }
-               # $debug .= "nbr_header_col  $nbr_header_col<br />";
                 array_shift($UploadedFile);
         }
             
         ## new file size after header remove
         $countFile =count( $UploadedFile);
-      #  $debug .= "New count size : $countFile <br />";
-         $i=0;
+        $i=0;
         foreach($UploadedFile as $lines)
-        {
-           # $debug .=  "lines $lines <br>";
-           
+        {           
             $line=explode($separator,$lines);
             $nbr_col = count($line);
             if($nbr_col >$nbr_header_col) 
@@ -345,12 +340,10 @@ class Create_table extends MY_Controller
                 $cols = str_replace(CHR(13),"",$cols);  #retrait retour chariot 
                 $cols = str_replace(CHR(10),"",$cols);  #retrait saut de ligne
                 $col_size=strlen($cols);
-                #check type
+                #### check type
                 $type="unknown";
                 $option ="";
-               if(preg_match('/^[0-9]*$/',$cols)) $type="INT";
-               # elseif(preg_match('/^-?[\d*]/',$cols)) $type="INTS";
-              #if(is_int($cols)) $type="INT";
+                if(preg_match('/^[0-9]*$/',$cols)) $type="INT";
                 elseif(preg_match('/-?[\d*][\.,][0-9]*$/',$cols)) $type="DOUBLE";
                 elseif(preg_match('/[0-9]{2}-[0-9]{2}-[0-9]{4}/',$cols))  $type="DATE";
                 elseif(preg_match('/[a-zA-Z\s-]/',$cols)) 
@@ -379,7 +372,6 @@ class Create_table extends MY_Controller
                       $option = "SIGNED";
                      break;
                 }
-                # $debug.=" i $i k $key size $col_size <br />";
                 
                  if($i==0)
                  {
@@ -394,10 +386,7 @@ class Create_table extends MY_Controller
                      $prev_option= $max_value_col[$clnb]['option'];
                      if ($col_size > $prev_size) 
                      {
-                       #  $debug.=" clnb $clnb  size $col_size  > prev $prev_size<br />";
                         $max_value_col[$clnb]['size']= $col_size;
-                        
-                       #  array_push($max_value_col,array($i=>array($key=>$col_size)));
                      }
                      
                      if($type != $prev_type)
@@ -406,17 +395,14 @@ class Create_table extends MY_Controller
                          if($prev_option == "SIGNED")
                              $max_value_col[$clnb]['option']= "SIGNED";
                          else  $max_value_col[$clnb]['option']= $option;
-                         # $debug.=" i $i clnb $clnb type $type  > prev_type $prev_type<br />";
                      }                         
                  }
                  
                  array_push($data_columns,$cols);                     
                  $clnb++;
             }
-           #  if($i==0) $debug .=  "max_value_col : ".print_r($max_value_col,1)."<br />";
             array_push($Datas_columns,$data_columns);
-          # if($i==2) break;
-          if(isset($limit) && $i> $limit) 
+           if(isset($limit) && $i> $limit) 
            {
                $debug .=  "limit $limit i $i <br>";
                 break;
@@ -427,10 +413,6 @@ class Create_table extends MY_Controller
         $Data->info ="$countFile";
         $Data->header =$header_columns;
         $Working_array=array();
-       /* for($i=0;$i<$clnb;$i++)
-        {
-            array_push($Working_array,$Datas_columns[$i]);
-        }*/
         $Data->data_columns =$Datas_columns[0];
         $Data->max_value_col =$max_value_col;
         return $Data;
@@ -504,7 +486,6 @@ class Create_table extends MY_Controller
                 $UploadedFile= file($Filename);
                 $LenFile = get_file_info($Filename);
                 $countFile =count( $UploadedFile);
-                #$debug .=  " L113 check_csvfile $Filename exist  with length :$countFile  and FileSize ".$LenFile['size']."!<br />";
             }
             
             $Datas_columns = array(); 
@@ -512,11 +493,10 @@ class Create_table extends MY_Controller
             $nbr_header_col =count($columns);
             $debug .= "Create_table::Filename: $Filename<br />Nbr lines: $countFile<br />";
             $debug .= "Process SqL: $Do_Sql <br />Header size : $nbr_header_col<br />";
-             array_shift($UploadedFile);
+            array_shift($UploadedFile);
             ####################  Create Array to store File Data ##################################
             foreach($UploadedFile as $lines)
             {
-               # if($i==0) $debug .=  "lines $lines <br>";
                 $line=explode($separator,$lines);
                 $nbr_col = count($line);
                 if($nbr_col >$nbr_header_col) 
@@ -534,12 +514,9 @@ class Create_table extends MY_Controller
                         $cols = str_replace(CHR(13),"",$cols);  #retrait retour chariot 
                         $cols = str_replace(CHR(10),"",$cols);  #retrait saut de ligne    
                         $cols=addslashes(trim($cols,'"'));
-                        array_push($data_columns,$cols);
-                        #  $debug .= "Loop file : $key  / $cols  <br />";
-                         
+                        array_push($data_columns,$cols);                         
                      }
                 }
-               #  if($i==0) $debug .=  "max_value_col : ".print_r($max_value_col,1)."<br />";
                 array_push($Datas_columns,$data_columns);
                #################  LIMIT nbr lines to import ############################
                if($limit >0 && $i> $limit) 
@@ -552,13 +529,12 @@ class Create_table extends MY_Controller
             
              $debug .= " End parse:<br /> limit $limit<br />  lines: $i <br /> Size Datas_columns ".count($Datas_columns)." <br />";
             ########################  CREATE TABLE   ########################################
-            #$sql_data_CT1  = "DROP TABLE IF EXISTS `$table_name` ;";
             $sql_data_CT = "CREATE TABLE `$table_name` (" ;
             $sql_data_CT .= " `Gene_ID` INT(11) unsigned NOT NULL AUTO_INCREMENT, ";            
-                                ####pour debug #############            
-                                $sql_data_CT_deb  = "DROP TABLE IF EXISTS `$table_name` ;<br />";
-                                $sql_data_CT_deb .= "CREATE TABLE IF NOT EXISTS `$table_name` (<br />" ;
-                                $sql_data_CT_deb .= " `Gene_ID` INT(11) unsigned NOT NULL AUTO_INCREMENT, <br />";
+                    ####pour debug #############            
+                    $sql_data_CT_deb  = "DROP TABLE IF EXISTS `$table_name` ;<br />";
+                    $sql_data_CT_deb .= "CREATE TABLE IF NOT EXISTS `$table_name` (<br />" ;
+                    $sql_data_CT_deb .= " `Gene_ID` INT(11) unsigned NOT NULL AUTO_INCREMENT, <br />";
             
             ############# Define columns data and size ##################
             $ColNames="";
@@ -637,9 +613,9 @@ class Create_table extends MY_Controller
             }
             $sql_data_CT = trim($sql_data_CT,', ');
             $sql_data_CT_deb = trim($sql_data_CT_deb,', <br />');
-            $sql_data_CT .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+            $sql_data_CT .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8;";
             $sql_data_CT_deb .= "
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;<br />";
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8;<br />";
             
             $ColNames = trim($ColNames,', ');
             
@@ -685,7 +661,6 @@ class Create_table extends MY_Controller
                     $idx=0;
                     foreach ($values as $key=>$value)
                     {
-                        # $debug .= "Datas_columns :key $key line $line  value ".$value." <br />";
                         if($idx==0)
                         {
                             $GeneName = $value;
@@ -719,7 +694,6 @@ class Create_table extends MY_Controller
                              $insertData .=" '',"; 
                         }
                     } 
-                   # $debug .= "Datas_columns :key $key line $line i $i non_exist_column $non_exist_column include_size $include_size<br>";
                     if($comment_geneName==1) $insertData .=" '$comment_value',";
                     $insertData = trim($insertData,',');
                     $insertData .= "),";
@@ -727,7 +701,6 @@ class Create_table extends MY_Controller
                     
                     if($insert_size >1000000)
                     {
-                        #$debug .= "create_table  insert_size: $insert_size <br />";
                         $insertData = trim($insertData,','); 
                         $insertData .= ";";
                         $lines= $ll - $prev_lines;
@@ -736,8 +709,6 @@ class Create_table extends MY_Controller
                         $debug .= "Ins:".$insert_in_db->info."<br />";
                         $insert_size =0;
                         $prev_lines = $ll;
-                        #$ll=0;
-                        
                     }
                      if($line ==3) $insertData_deb .= preg_replace("/\),/","),<br />",$insertData);
                      $ll++;
@@ -750,28 +721,27 @@ class Create_table extends MY_Controller
              
                 ###########################  extract annotation for current data #######################
 		$originalAnnot="Annotation_$IdOrganism";
-                if($this->db->table_exists($originalAnnot)){
+                if($this->db->table_exists($originalAnnot))
+                {
                    $rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
                    $test= $this->generic->extract_annot($originalAnnot,$table_name,$rules);
                 } 
-                
+                else
+                {
+                 
+                   $rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
+                   $test= $this->generic->extract_annot($originalAnnot,$table_name,$rules);
+                }
                 ########################################################################################
              
                 $data = array(
                    'title'=>"$this->header_name: Table successfully created",
                    'contents' => 'upload/create_table',
+                   'footer_title' => $this->footer_title,
                     'POST' =>$_POST,
                    'createtable' => $sql_data_CT_deb,
                    'insertData' => $insertData_deb,
 		   'test' => $test,
-                 /*  'include' => $include,
-                    'is_index' => $is_index,
-                   'SqlOption' => $SqlOption,
-                   'SqlType' => $SqlType,
-                   'SqlSize' => $SqlSize,
-                   'require' => $require,
-                   'columns' => $columns,*/
-                   
                   // 'replicate_SQL' => $replicate_SQL,
                    'tableSql' => $table_name,
                    'debug' => $debug
@@ -789,7 +759,8 @@ class Create_table extends MY_Controller
                  $data = array(
                    'title'=>"$this->header_name: Table already created",
                    'contents' => 'upload/create_table',
-                    'POST' =>$_POST,
+                   'footer_title' => $this->footer_title,
+                   'POST' =>$_POST,
                    'createtable' => "table exist",
                    'insertData' => "No data inserted",
                    'tableSql' => $table_name,
@@ -802,6 +773,7 @@ class Create_table extends MY_Controller
             $data = array(
                'title'=>"$this->header_name: Error while processing",
                'contents' => 'upload/error',
+               'footer_title' => $this->footer_title,
                'error' =>  " Missing values ! ".print_r($this->form_validation->run(),1)."<br />"             
                );
             $this->load->view("templates/template", $data);
@@ -829,6 +801,7 @@ class Create_table extends MY_Controller
 	{
             $id=$_POST['selectID'];
             $annoTable="Annotation_$id";
+            
             $file_name=$_FILES['upload_file']['name'];
             $annotFile=$_FILES['upload_file']['tmp_name'];
             
@@ -845,6 +818,7 @@ class Create_table extends MY_Controller
             $data = array(
                'title'=>"$this->header_name: Create annotation ",
                'contents' => 'upload/create_annotation',
+               'footer_title' => $this->footer_title,
                'organisms' => json_encode($organisms->result),
                'debug' => $debug,
                'success' => 'none',
@@ -854,120 +828,212 @@ class Create_table extends MY_Controller
     }
 
     /**
+    * function 
+    * 
+    * @staticvar integer $staticvar 
+    * @param string $param1 
+    * @param string $param2 
+    * @return integer 
+    */  
+    public function update_tables_annot()
+    {
+        if(isset($_POST['submit']) )
+	{
+	     $this->load->library('form_validation');
+	     
+	    if(isset($_POST['update_table'])  )
+	    {	        
+	        $type_submit = $this->input->post('submit');
+	        $table_name = $this->input->post('update_table');
+	        $id= $this->input->post('organism');
+	        $id= $id[$table_name];
+	        #### check if user resubmit same page !!
+	        $annot_session = $this->session->userdata('updated_annotation');
+	        if ($annot_session == $table_name)
+	        {
+	            $this->session->unset_userdata('updated_annotation');
+                    $_POST =array();
+                    redirect('create_table','refresh');
+                    
+                }
+                else
+                {
+                   $create_annot= "  organism $id table_name $table_name type_submit $type_submit <br />";
+                    
+                    $annoTable="Annotation_$id";
+                    if( $type_submit == "Re-Generate")
+                    {
+                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,0,1); 
+                        #$tables = array('TableName' =>$annoTable);*/
+                        $process =" renew";
+                    }
+                    else
+                    {
+                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,0,0);     
+                        $process =" new";
+                    }                
+                
+                    $data = array(
+                       'title'=>"$this->header_name: Update annotation ",
+                       'contents' => 'upload/process_annotation_update',
+                       'footer_title' => $this->footer_title,
+                       'info' => $create_annot,
+                       'table_name' => $table_name,
+                       'process' => $process
+                      );
+                    $this->load->view('templates/template', $data);
+                }
+                
+            }
+        }
+        else
+        {
+            $this->session->unset_userdata('updated_annotation');
+            $listeTbls =$this->generic->get_removable_table("TableName  LIKE 'Annotation_%'");
+            $tables = $this->generic->get_tables('',1);
+            $data = array(
+               'title'=>"$this->header_name: Check annotation Tables ",
+               'contents' => 'upload/list_tables',
+               'footer_title' => $this->footer_title,
+               'listeTbls' => $listeTbls->result,
+               'tables' => $tables,
+              );
+            $this->load->view('templates/template', $data);
+        }
+    }
+    
+    /**
     * function  edit_annot_page
     * 
     * 
     * @param string $param2 
     * @return integer 
     */  
-    public function edit_annot_page()
+    public function update_annot_page()
     {
         $organisms = $this->generic->get_organisms();
         $data = array(
            'title'=>"$this->header_name: Edit annotation ",
-           'contents' => 'upload/edit_annotation',
+           'contents' => 'upload/update_annotation',
+           'footer_title' => $this->footer_title,
            'success' => 'none',
            'organisms' => json_encode($organisms->result),
           );
         $this->load->view('templates/template', $data);
     }
 
+    
+    
     public function load_annot()
     {
 	$this->load->dbforge();
+	$this->load->library('form_validation');
 	if(isset($_POST['selectID']) && isset($_FILES['upload_file'] ) )
 	{
-		$id=$_POST['selectID'];
-		$annoTable="Annotation_$id";
-		$file_name=$_FILES['upload_file']['name'];
-		$annotFile=$_FILES['upload_file']['tmp_name'];
-		
-		$tables=$this->generic->get_Subtables($id);
-		if($tables->nbr==0)
-		{
-		    $this->generic->create_annot_table($annoTable,$id,15,$file_name);
-		    $tables = array('TableName' =>$annoTable);
-		}
-		// READ ANNOTATION FILE //
-		$csv = array();
-		$lines = file($annotFile, FILE_IGNORE_NEW_LINES);
-		$error=FALSE;
+            $id = $this->input->post('selectID');
+            $annoTable = "Annotation_$id";
+            $file_name = $_FILES['upload_file']['name'];
+            $annotFile = $_FILES['upload_file']['tmp_name'];
+            $Force_Update = $this->input->post('Force_Update');
+            $header = $this->input->post('header');
+            ############# check if table exist. otherwise create it
+            $tables=$this->db->table_exists($annoTable);
+           
+            if($tables==0)
+            {
+                $this->generic->create_annot_table($annoTable,$id,15,$file_name);
+                $tables = array('TableName' =>$annoTable);
+            }
+             
+            ############## READ ANNOTATION FILE //
+            $csv = array();
+            $lines = file($annotFile, FILE_IGNORE_NEW_LINES);
+            $error=FALSE;
+            $upload_error = "";
+            #############  find seprator used and check field's number
+            $del=$this->expression_lib->readCSV($lines[0]);
+            $good_del=$del->delimeter;
+            $csv_count = count(str_getcsv($lines[0],"$good_del"));
+            if($csv_count >5 ) 
+            {
+                $data = array(
+                        'title'=>"$this->header_name: Error in file",
+                        'contents' => 'upload/error',
+                        'footer_title' => $this->footer_title,
+                        'success' => 'success',
+                        'error' => "File $file_name contains $csv_count fields !!. Upload aborted",
+                         
+                     );
+                
+                $this->load->view('templates/template', $data);                 
+            }
+            else
+            {
 		foreach ($lines as $key => $value)
 		{
-			$del=$this->expression_lib->readCSV($value);
-			$good_del=$del->delimeter;
-    			$csv[$key] = str_getcsv($value,$good_del);
+			$csv[$key] = str_getcsv($value,"\t");
 		}
-
-		if(isset($_POST['header']) && $_POST['header'] ==1) array_shift($csv);
-
+		### remove first line if header
+		if(isset($header) && $header ==1) array_shift($csv);
+		
+		##### if force update truncate table
+		if($Force_Update ==1) 
+                {
+                    $Table_already_set="";
+                    $truncate = $this->db->query("TRUNCATE $annoTable");   
+                    #$upload_error .= "Erase previous table $annoTable. return : <pre>".print_r($truncate,1)."</pre><br />";
+                }
+               
 		// ADD INTO ANNOTATION TABLE //
+		$i=1; 
+		
 		foreach($csv as $line)
 		{
-		    #print "D: line ".print_r($line,1)." <br />";
-			if(!isset($line[4])){
-				$line[4]="";
-			}
-			//if( strlen($line[0])<=15 && strlen($line[1])<=21 && strlen($line[2])<=18 && strlen($line[3])<=255 && strlen($line[4])<=15 ){
-			if(strlen($line[0])==0) continue;
-			if(strlen($line[2])==0) continue;
-				$data=array(
-					'Ref_Gene' => $line[0],
-					'Analyse' => $line[1],
-					'Signature' => $line[2],
-					'Description' => $line[3],
-					'misc' => $line[4]
-				);
-				
-				$query = $this->db->select('*')->where($data)->get($annoTable);
-				#print "D: $query <br />";
-				if(count($query->result_array()) ==0 )
-				{
-					$this->db->insert($annoTable, $data);
-
-					// UPDATE SUB ANNOTATION TABLES //
-					foreach($tables->result as $table){
-						$annotName=$table['TableName'];//sub annot
-						$tableName=explode("_",$annotName,2);
-						$tableName=$tableName[1];//file name
-						$gene=explode('.',$line[0],2);
-						$gene=$gene[0];
-						$query2 = $this->db->query("SELECT Gene_Name FROM $tableName WHERE Gene_Name='$gene'");
-						if(count($query2->result_array()) !=0 ){ //if gene in file
-							$data2=array(
-								'Gene_Name' => $gene,
-								'Analyse' => $line[1],
-								'Signature' => $line[2],
-							);
-							$this->db->insert($annotName, $data2);
-						}
-					}
-				}
-				else{
-					$match=$query->result_array();
-				}
-			//}
+		     if(count($line) <4 ) 
+		     {
+		         $upload_error .= "error on line $i . nbr fields ".count($line)."<br />";
+		         $i++;
+		         continue;
+		     }
+		     
+                    if(!isset($line[4])){
+                            $line[4]="";
+                    }
+                    if(strlen($line[0])==0) continue;
+                    if(strlen($line[2])==0) continue;
+                    $data=array(
+                            'Gene_Name' => $line[0],
+                            'Analyse' => $line[1],
+                            'Signature' => $line[2],
+                            'Description' => $line[3],
+                            'misc' => $line[4]
+                    );
+                    ### check if exist in table
+                    $query = $this->db->select('*')->where($data)->get($annoTable);
+                    #   print "D: $i <pre>".print_r($query->result_array(),1)."  ".print_r($data,1)." ".print_r($tables,1)." </pre>  <br />";
+                    if(count($query->result_array()) ==0 )
+                    {
+                        $this->db->insert($annoTable, $data);
+                    }
+                $i++;
 		}
-		
-
-
 		// LOAD RESULTS VIEW //
-		if($error == FALSE){ 
-			$organisms = $this->generic->get_organisms();
-			$data = array(
-				'title'=>"$this->header_name: Create annotation ",
-				'contents' => 'upload/edit_annotation',
-				'success' => 'success',
-				'organisms' => json_encode($organisms->result),
-			     );
-			$this->load->view('templates/template', $data);
-		}
-	}
+		
+                $organisms = $this->generic->get_organisms();
+                $data = array(
+                        'title'=>"$this->header_name: Create annotation ",
+                        'contents' => 'upload/update_annotation',
+                        'footer_title' => $this->footer_title,
+                        'success' => 'success',
+                        'upload_error' => $upload_error,
+                        'organisms' => json_encode($organisms->result),
+                     );
+                $this->load->view('templates/template', $data);
+	     }
+	} // End if(isset($_POST)
     }
     
-    
-    
-    
+        
     /**
     * function upload_phytozom
     * import annotation from Phytozom Db
@@ -979,7 +1045,7 @@ class Create_table extends MY_Controller
     public function upload_phytozom()
     {        
         $this->session->unset_userdata('updated_table_phyto');
-        $GetWS=$this->expression_lib->working_space('Upload');
+        $GetWS=$this->expression_lib->working_space('','Upload');
         if(isset($GetWS->Path))
         {
             $Path= $GetWS->Path;
@@ -997,6 +1063,7 @@ class Create_table extends MY_Controller
         $data = array(
            'title'=>"$this->header_name: Upload Phytozome annotation",
            'contents' => 'upload/upload_phytozom',
+           'footer_title' => $this->footer_title,
            'pid' =>$pid,
            'organism' => $OrgaOpt
           );
@@ -1012,9 +1079,9 @@ class Create_table extends MY_Controller
         if ($this->form_validation->run() == TRUE )
         {
             ############## get transmitted POST values
-            $pid = set_value('pid');
-            $id_organism = set_value('organism');
-            $Force_Update = set_value('Force_Update');
+            $pid = $this->input->post('pid');
+            $id_organism = $this->input->post('organism');
+            $Force_Update = $this->input->post('Force_Update');
             ######################################################
             $GetWS=$this->expression_lib->working_space($pid,'Upload');
             $debug ='';
@@ -1052,6 +1119,7 @@ class Create_table extends MY_Controller
                     $data = array(
                        'title'=>"$this->header_name: Convert Phytozome Annotation",
                        'contents' => 'upload/upload_phytozom',
+                       'footer_title' => $this->footer_title,
                        'pid' =>$pid,
                        'error' =>'',
                        'organism' => $OrgaOpt,
@@ -1072,15 +1140,17 @@ class Create_table extends MY_Controller
                     if($Force_Update ==1) 
                     {
                         $Table_already_set="";
-                        $this->db->query("TRUNCATE $table_name");   
+                        $truncate = $this->db->query("TRUNCATE $table_name");   
+                        $debug .= "erase previous table $table_name. return : <pre>".print_r($truncate,1)."</pre><br />";
+                        
                     }
+                    
                     if($Table_already_set !==FALSE && $Table_already_set!= $table_name)
                     {
                         $organisms = $this->generic->get_organisms($id_organism); 
                         $max_size = $organisms->result->Max_transcript_size;
                         
-                        ####################  CREATE TABLE ####################################
-                       
+                        ####################  CREATE TABLE ####################################                       
                        #  print "create_annot_table($table_name,$id_organism,$max_size,$File2Upload)"; exit;
                         $sql_data_CT = $this->generic->create_annot_table($table_name,$id_organism,$max_size,$File2Upload);
                         if($sql_data_CT->error ==1)
@@ -1117,9 +1187,7 @@ class Create_table extends MY_Controller
                             $Data->info = "";
                             $Data->header = "";
                             return $Data;
-                        }
-                        ############ remove header #################
-                        array_shift($UploadedFile);
+                        }                        
                         
                         ############ Store file in Array ######################
                          ################# convert file #######################
@@ -1131,18 +1199,20 @@ class Create_table extends MY_Controller
                         #19652974	AT1G01050	AT1G01050.1	AT1G01050.1	PF00719	PTHR10286,PTHR10286:SF10	KOG1626	3.6.1.1	K01507	GO:GO:0006796,GO:GO:0005737,GO:GO:0004427,GO:GO:0000287	LOC_Os05g36260.1		soluble inorganic pyrophosphatase, putative, expressed
     
                         /**
-                        * Id PhytozomField     Data                            AnnotationField             
-                        * 1 locusName         AT1G01050                       Ref_Gene
-                        * 2 transcriptName    AT1G01050.1
-                        * 3 peptideName       AT1G01050.1                     Analyse   Signature       Desc  Misc
-                        * 4 Pfam              PF00719                         Pfam      PF00719
-                        * 5 Panther           PTHR10286,PTHR10286:SF10        PANTHER   PTHR10286
-                        * 6 KOG               KOG1626                         KOG       KOG1626
-                        * 7 KEGG/ec	          3.6.1.1	                  KEGG      3.6.1.1
-                        * 8 KO                K01507                          KO                K01507
-                        * 9 GO                GO:GO:0006796,GO:GO:0005737     GO        GO:0006796
-                        * 11 symbol    WAK3	                                                           wall associated kinase 3
-                        * 12 defline   wall associated kinase 3                                                WAK3
+                        * Id PhytozomField     Data                            AnnotationField
+                        * 1 #pacid
+                        * 2 locusName         AT1G01050                       Gene_Name
+                        * 3 transcriptName    AT1G01050.1
+                        * 4 peptideName       AT1G01050.1                     Analyse   Signature       Desc  Misc
+                        * 5 Pfam              PF00719                         Pfam      PF00719
+                        * 6 Panther           PTHR10286,PTHR10286:SF10        PANTHER   PTHR10286
+                        * 7 KOG               KOG1626                         KOG       KOG1626
+                        * 8 KEGG/ec	          3.6.1.1	                  KEGG      3.6.1.1
+                        * 9 KO                K01507                          KO                K01507
+                        * 10 GO                GO:GO:0006796,GO:GO:0005737     GO        GO:0006796
+                        * 11 Best-hit-arabi-name    LOC_Os05g36260.1	       description   wall associated kinase 3
+                        * 12 arabi-symbol       WAK3
+                        * 13 defline            wall associated kinase 3
                         */
                         $separator="\t";
                         $insert_size = 0;
@@ -1151,17 +1221,56 @@ class Create_table extends MY_Controller
                         $insertData ="";
                         
                         $prev_lines =0;
-                        $ColNames = "`Ref_Gene`,`Analyse`,`Signature`,`Description`,`misc`";
+                        $ColNames = "`Gene_Name`,`Analyse`,`Signature`,`Description`,`misc`";
+                        
                         foreach($UploadedFile as $lines)
                         {
                            # $debug .=  "lines $lines <br>";
-                            list($pacid,$locusName,$transcript,$peptide,$Pfam,$Panther,$KOG,$KEGG,$KO,$GO,$Best,$symbol,$defline) = explode($separator,$lines);
+                           ####  count fields !! . If count <12 exit . not a Phytozome file
+                           
+                            $lines= trim($lines);
+                            $count_fields =count( explode($separator,$lines));
+                            if($ll==0 && $count_fields<13)
+                            {
+                                   $message = "<b> File submitted contains less than 13 fields ($count_fields) . Please submit only annotation file from Phytozom !<br />$lines</b>";
+                                    $this->session->set_flashdata('message', $message);
+                                    redirect("create_table/upload_phytozom");
+                            }
+                            if($ll==0) 
+                            {
+                                $ll++;
+                                continue;
+                            }
+                            ###############################################################
+                            ### set list() values to 0 to avoid undeclared index
+                            $pacid = $locusName = $transcript = $peptide = $Pfam = $Panther = $KOG = $KEGG = $KO = $GO = $Best = $symbol = $defline = "";
+                           # log_message('debug', "convert_phytozome_annot line: $lines"); 
+                            
+                            #log_message('debug', "convert_phytozome_annot extract line: ".print_r($Content,1).""); 
+                            if($count_fields<6)
+                            {
+                                log_message('debug', "convert_phytozome_annot $count_fields  : $lines");
+                                continue;
+                            }
+                            $Content =explode($separator,$lines);
+                            #list($pacid,$locusName,$transcript,$peptide,$Pfam,$Panther,$KOG,$KEGG,$KO,$GO,$Best) = explode($separator,$lines);
+                             $pacid = $Content[0];
+                             $locusName = $Content[1];
+                             $transcript = $Content[2];
+                             $peptide = $Content[3];
+                             $Pfam = (isset($Content[4]))? $Pfam = $Content[4]:$Pfam ="";
+                             $Panther = (isset($Content[5]))? $Panther = $Content[5]:$Panther ="";
+                             $KOG = (isset($Content[6]))? $KOG = $Content[6]:$KOG ="";
+                             $KEGG = (isset($Content[7]))? $KEGG = $Content[7]:$KEGG ="";
+                             $KO = (isset($Content[8]))? $KO = $Content[8]:$KO ="";
+                             $GO = (isset($Content[9]))? $GO = $Content[9]:$GO ="";
+                            
                             $line=explode($separator,$lines);
                             $data_columns =  array();
                             $clnb=0;
                             $pass=false;
                             
-                            $Ref_Gene=trim($transcript);
+                            $Gene_Name=trim($transcript);
                             $Sql_value =" ";
                             if($insert_size==0)
                             {
@@ -1170,7 +1279,7 @@ class Create_table extends MY_Controller
                             }
                             
                             ########## PFAM ###############
-                            if(strlen($Pfam)>0)
+                            if(strlen($Pfam)>=7)
                             {
                                 if(strlen($Pfam)>7)
                                 {
@@ -1179,54 +1288,61 @@ class Create_table extends MY_Controller
                                     {
                                         $annot=$this->generic->get_PFAM_Ref($value);
                                         $annot= addslashes($annot);  
-                                        $Sql_value .= "('$Ref_Gene','Pfam','$value','$annot',''),";   
+                                        $Sql_value .= "('$Gene_Name','Pfam','$value','$annot',''),";   
                                     }
                                 }
-                                else
+                                elseif(strlen($Pfam)==7)
                                 {
                                     $annot=$this->generic->get_PFAM_Ref($Pfam);
                                     $annot= addslashes($annot);  
-                                    $Sql_value .= "('$Ref_Gene','Pfam','$Pfam','$annot',''),"; 
+                                    $Sql_value .= "('$Gene_Name','Pfam','$Pfam','$annot',''),"; 
                                 }
+                                $key = $value ="";
                             }
                             ########## PANTHER ###############
-                            if(strlen($Panther)>0)
+                            if(strlen($Panther)>=9)
                             {
                                 if(strlen($Panther)>9)
                                 {
                                     $Panthers=preg_split('/,/',$Panther);
                                     foreach($Panthers as $key=>$value)
                                     {
-                                        $Sql_value .= "('$Ref_Gene','PANTHER','$value','',''),";   
+                                        $annot=$this->generic->get_PANTHER_Ref($value);
+                                        $annot= addslashes($annot);  
+                                        $Sql_value .= "('$Gene_Name','PANTHER','$value','$annot',''),";   
                                     }
                                 }
-                                else
+                                elseif(strlen($Panther)==9)
                                 {
-                                    $Sql_value .= "('$Ref_Gene','PANTHER','$Panther','',''),"; 
+                                    $annot=$this->generic->get_PANTHER_Ref($Panther);
+                                    $annot= addslashes($annot);  
+                                    $Sql_value .= "('$Gene_Name','PANTHER','$Panther','$annot',''),"; 
                                 }
+                                $key = $value ="";
                             }
                             ########## KOG ###############
-                            if(strlen($KOG)>0)
+                            if(strlen($KOG)==7)
                             {
                                     $annot=$this->generic->get_KOG_Ref($KOG);
                                     $annot= addslashes($annot);  
-                                    $Sql_value .= "('$Ref_Gene','KOG','$KOG','$annot',''),"; 
+                                    $Sql_value .= "('$Gene_Name','KOG','$KOG','$annot',''),"; 
                             }
                             ########## KEGG ###############
-                            if(strlen($KEGG)>0)
+                            if(strlen($KEGG)>=7 && strlen($KEGG)<=11)
                             {
                                     $annot=$this->generic->get_KEGG_Ref($KEGG);
                                     $annot= addslashes($annot);  
-                                    $Sql_value .= "('$Ref_Gene','KEGG','$KEGG','$annot',''),"; 
+                                    $Sql_value .= "('$Gene_Name','KEGG','$KEGG','$annot',''),"; 
                             }
                             ########## KO ###############
-                            if(strlen($KO)>0)
+                            if(strlen($KO)==6 )
                             {       
-                                   
-                                    $Sql_value .= "('$Ref_Gene','KO','$KO','',''),"; 
+                                   $annot=$this->generic->get_KO_Ref($KO);
+                                   $annot= addslashes($annot);  
+                                   $Sql_value .= "('$Gene_Name','KO','$KO','$annot',''),"; 
                             }
                             ########## GO ###############
-                            if(strlen($GO)>0)
+                            if(strlen($GO)>=10)
                             {
                                 if(strlen($GO)>13)
                                 {
@@ -1234,18 +1350,20 @@ class Create_table extends MY_Controller
                                   #  print "GOS : ".print_r($GOS,1)."<br />";
                                     foreach($GOS as $key=>$value)
                                     {
-                                        $value = substr($value,3);
+                                        #$value = substr($value,3);
+                                        #log_message('debug', "convert_phytozome_annot M GO: $value"); 
                                         $res=$this->generic->get_GO_Ref($value);
                                         $annot= addslashes($res->annot);
-                                        $Sql_value .= "('$Ref_Gene','GO','$value','$annot','$res->type'),";   
+                                        $Sql_value .= "('$Gene_Name','GO','$value','$annot','$res->type'),";   
                                     }
                                 }
-                                else
-                                {
-                                    $value = substr($GO,3);
+                                elseif(strlen($GO)==10)
+                                { 
+                                    #log_message('debug', "convert_phytozome_annot GO: $GO"); 
+                                    $value = trim($GO);
                                     $res=$this->generic->get_GO_Ref($value);
                                     $annot= addslashes($res->annot);                                
-                                    $Sql_value .= "('$Ref_Gene','GO','$value','$annot','$res->type'),";
+                                    $Sql_value .= "('$Gene_Name','GO','$value','$annot','$res->type'),";
                                 }
                             }
                             
@@ -1256,6 +1374,7 @@ class Create_table extends MY_Controller
                             if($insert_size >100000)
                             {
                                 #$debug .= "create_table  insert_size: $insert_size <br />";
+                                log_message('debug', "convert_phytozome_annot insert_size >10K insert data");
                                 $insertData = trim($insertData,','); 
                                 $insertData .= ";";
                                 $lines= $ll - $prev_lines;
@@ -1263,12 +1382,9 @@ class Create_table extends MY_Controller
                                 #$debug .= "Ins:". $insertData." <br />";
                                 $insert_size =0;
                                 $prev_lines = $ll;
-                                #$ll=0;
-                                
                             }
                             
-                           # if($ll==10) break;
-                        }
+                        } // end foreach(uploadFile)
                         
                          $insertData = trim($insertData,','); 
                         $DbInfo = array('table_name' => "$table_name",'line' => "$lines");
@@ -1278,6 +1394,7 @@ class Create_table extends MY_Controller
                         $data = array(
                            'title'=>"$this->header_name: Upload file $import_file",
                            'contents' => 'upload/process_phytozom',
+                           'footer_title' => $this->footer_title,
                            'debug' => $debug,
                            'file_name' =>$File2Upload,
                            'Path' => $Path,
@@ -1294,6 +1411,7 @@ class Create_table extends MY_Controller
                         $data = array(
                            'title'=>"$this->header_name: Upload file $import_file",
                            'contents' => 'upload/process_phytozom',
+                           'footer_title' => $this->footer_title,
                            'debug' => "Data have already been inserted Table_already_set: |$Table_already_set|",
                            'file_name' =>$File2Upload,
                            'Path' => $Path,
@@ -1305,263 +1423,16 @@ class Create_table extends MY_Controller
                           );
                         $this->load->view("templates/template", $data);
                     }
+                 }
+            }
+             else
+             {
+                $message =validation_errors();
+                $this->session->set_flashdata('message', $message);
+                redirect("create_table/upload_phytozom");
              }
         }
-         else
-         {
-            $message =validation_errors();
-            $this->session->set_flashdata('message', $message);
-            redirect("create_table/upload_phytozom");
-         }
-    }
-    }
+    }// End Fct convert_phytozome
     
-    /**
-    * function  upload_tair
-    * 
-    * @param string $param2 
-    * @return integer 
-    */  
-    public function upload_tair()
-    {
-        $GetWS=$this->expression_lib->working_space('Upload');
-        if(isset($GetWS->Path))
-        {
-            $Path= $GetWS->Path;
-            $pid = $GetWS->pid;
-        }
-         # Get list of Organism
-        $organisms = $this->generic->get_annotation_list();
-        
-        $data = array(
-           'title'=>"$this->header_name: Upload TAIR annotation",
-           'contents' => 'upload/upload_tair',
-           'pid' =>$pid,
-           'organism' => $organisms->Data,
-           'error' =>''
-          );
-        $this->load->view('templates/template', $data);
-    }
-    
-    /**
-    * Upload in existing annotation file TAIR po_anatomy_gene_orga.assoc file 
-    * 
-    * @param string $param2 
-    * @return integer 
-    */  
-    public function process_tair()
-    {
-        $this->load->library('form_validation');
-        $this->load->helper('file');
-       # $this->form_validation->set_rules('import_file','File to import', 'required');
-        $this->form_validation->set_rules('organism','Organism', 'is_natural_no_zero');
-        $this->form_validation->set_rules('type_data','Type of Data', 'required');
-        if ($this->form_validation->run() == TRUE )
-        {
-            ############## get transmitted POST values
-            $pid = set_value('pid');
-            $id_organism = set_value('organism');
-            $type_data = set_value('type_data');
-            ######################################################
-            $GetWS=$this->expression_lib->working_space($pid,'Upload');
-            $debug ='';
-            if(isset($GetWS->Path))
-            {
-                $Path= $GetWS->Path;
-            }           
-            $File2Upload='';
-            $error='';
-            $import_file="";
-            ######################  Check if file submited ###########################
-            if(isset($_FILES) && ($_FILES["import_file"] ["name"]!='' ) )
-            {
-                ############# prep upload ##############
-                $config['upload_path'] = $Path;
-                $config["overwrite"] = TRUE;
-               # $config['allowed_types'] = 'text|txt|tab|csv';
-                $config['allowed_types'] = '*';
-                $this->load->library('upload', $config);
-                ############## ERROR #######################
-                if ( ! $this->upload->do_upload('import_file'))
-                {
-                    $error = array('error' => $this->upload->display_errors(),'filename' =>$File2Upload,'path' =>$Path );
-                    
-                    $organisms = $this->generic->get_annotation_list();
-                    
-                    $data = array(
-                       'title'=>"$this->header_name: Convert TAIR PO Annotation",
-                       'contents' => 'upload/upload_tair',
-                       'pid' =>$pid,
-                       'organism' => $organisms->Data,
-                       'error' => "error upload file :".print_r($error,1)."".print_r($config,1)
-                    );
-                    $this->load->view("templates/template", $data);
-                }
-                else
-                {
-                    $File2Upload= $_FILES["import_file"]["name"];
-                    $File_Size = $_FILES["import_file"]["size"];
-                   # $debug .=  "76 File2Upload: $File2Upload  Path $Path header $header<br />";
-                   # $debug .=  "Path: $Path <br />";
-                    $mem_use= memory_get_usage() ;
-                    $debug .=  "Memory usage: $mem_use<br />";
-                    $existing_tables = $this->generic->get_tables_organism($id_organism);
-                   
-                    ####################  DEFINE TABLE ####################################
-                     $table_name = "Annotation_$id_organism";
-                     
-                     
-                    ######################  INSERT DATA ###############################
-                    /**
-                    * Initialise variables
-                    */
-                    $Data = new stdclass;
-                    $debug="";
-                    $nbr_col = $nbr_header_col = $max_col = 0;
-                    $type_col=array();
-                    $max_value_col=array();
-                    $header_columns = array();
-                    $Datas_columns = array(); 
-                    $header_col="";
-                    $Filename = "$Path$File2Upload";
-                    ############# Check $Filename  #####################
-                    if(file_exists($Filename))
-                    {
-                        $UploadedFile= file($Filename);
-                        $LenFile = get_file_info($Filename);
-                        $countFile =count( $UploadedFile);
-                        #$debug .=  " L113 check_csvfile $Filename exist  with length :$countFile  and FileSize ".$LenFile['size']."!<br />";
-                    }
-                    else
-                    {
-                        $Data->debug =  "file $Filename doesn't exist !";
-                        $Data->info = "";
-                        $Data->header = "";
-                        return $Data;
-                    }
-                    ############ remove header #################
-                    array_shift($UploadedFile);
-                    
-                    ############ Store file in Array ######################
-                    switch ($type_data)
-                    {
-                    case '':
-                        
-                        break;
-                    }
-                     ################# convert file #######################
-                    #!gaf-version: 2.0
-                    #TAIR	locus:2194060	ATARCA		PO:0000003	TAIR:Publication:501710912	IEP		S	AT1G18080	AT1G18080|ATARCA|RACK1A_AT|RACK1A|RECEPTOR FOR ACTIVATED C KINASE 1 A|T10F20.9|WD-40 REPEAT PROTEIN ATARCA	protein	taxon:3702	20050706	TAIR		TAIR:locus:2194060
-                    # Ref: http://www.arabidopsis.org/download_files/GO_and_PO_Annotations/Plant_Ontology_Annotations/README-format.txt
-                    /**
-                        1. DB Name:  "TAIR"
-                        2. Object Id:       "locus:56789"
-                        3. Object Symbol:       ACT1
-                        4. Not For:     NULL
-                        5. PO Id:       PO:0020132
-                        6. Reference:   PMID:16510871    
-                        7. Evidence:    IDA
-                        8. Evidence With:     NULL
-                        9. Aspect:      S for plant structure, G for plant growth and dev. stage
-                        10. Object Name:        AT1G01050
-                        11. Synonyms: 
-                        12. Object Type:        gene or locus
-                        13. Taxon:      taxon:3702
-                        14. Date:       20060510
-                        15. Annotation Origin:  TAIR
-
-                    * Id TAIRField        Data                  AnnotationField             
-                    * 9 Object Name       AT1G18080             Ref_Gene
-                    *                                           Analyse   Signature       Desc  Misc
-                    * 4 PO Id:            PO:0020132             PO   PO:0020132
-                    * 2 Object Symbol:    ACT1                                                   ACT1
-                    */
-                    $separator="\t";
-                    $insert_size = 0;
-                    $ll=0;
-                    $insertData_deb ="";
-                    $insertData ="";
-                    
-                    $prev_lines =0;
-                    $ColNames = "`Annot_${id_organism}_ID`,`Ref_Gene`,`Analyse`,`Signature`,`Description`,`misc`";
-                    foreach($UploadedFile as $lines)
-                    {
-                       # $debug .=  "lines $lines <br>";
-                        #list($pacid,$locusName,$transcript,$peptide,$Pfam,$Panther,$KOG,$KEGG,$KO,$GO,$Best,$symbol,$defline) = explode($separator,$lines);
-                        $line=explode($separator,$lines);
-                        $data_columns =  array();
-                        $clnb=0;
-                        $pass=false;
-                        switch ($id_organism)
-                        {
-                            case '2':
-                                //Arabidopsis convert Gene to transcript
-                                if(!preg_match("/^AT\d/",$line[9])) continue;
-                                $Ref_Gene = trim($line[9]).".1";
-                                break;
-                            default:
-                                $Ref_Gene = trim($line[9]);
-                                break;
-                        }
-                        $Signature = addslashes($line[4]);
-                        $Description = addslashes(trim($line[2]));
-                        $Sql_value =" ";
-                        if($insert_size==0)
-                        {
-                             $insertData ="REPLACE INTO `$table_name` ($ColNames) ";
-                             $insertData .=" VALUES  ";
-                        }
-                        
-                        ########## PFAM ###############
-                            $Sql_value .= "('$Ref_Gene','PO','$Signature','$Description',''),";   
-                        
-                        
-                        $ll++;
-                        $insertData .= $Sql_value;
-                        $insert_size = strlen($insertData);
-                
-                        if($insert_size >100000)
-                        {
-                            #$debug .= "create_table  insert_size: $insert_size <br />";
-                            $insertData = trim($insertData,','); 
-                            $insertData .= ";";
-                            $lines= $ll - $prev_lines;
-                            $insert_in_db = $this->db->query($insertData);
-                            #$debug .= "Ins:". $insertData." <br />";
-                            $insert_size =0;
-                            $prev_lines = $ll;
-                            #$ll=0;
-                            
-                        }
-                        
-                        # if($ll==50) break;
-                    }
-                    
-                     $insertData = trim($insertData,','); 
-                    $DbInfo = array('table_name' => "$table_name",'line' => "$lines");
-                    $insert_in_db = $this->db->query($insertData);
-                   # $debug .= "Ins:". $insertData." <br />";
-                    $data = array(
-                       'title'=>"$this->header_name: Upload file $import_file",
-                       'contents' => 'upload/process_tair',
-                       'debug' => $debug,
-                       'file_name' =>$File2Upload,
-                       'Path' => $Path,
-                       'file_size' =>$File_Size,
-                       'info' => "$ll lines in file",                      
-                       'organism' => $id_organism,
-                      // 'required_tag' => $this->required_tag
-                      );
-                    $this->load->view("templates/template", $data);
-                    }
-             }
-        }
-         else
-         {
-            $message =validation_errors();
-            $this->session->set_flashdata('message', $message);
-            redirect("create_table/upload_tair");
-         }
-    }
-    
+  
 }

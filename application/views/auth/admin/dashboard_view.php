@@ -1,10 +1,27 @@
 <?php
+/**
+* The Expression Database.
+*       view auth/admin/dashboard_view.php
+*       Admin dashboard
+*
+* Parts From codeigniter-auth
+* [Ben Edmunds](http://benedmunds.com)
+*
+* This version drops any backwards compatibility and makes things even more
+* awesome then you could expect.
+*
+* Documentation is located at http://benedmunds.com/ion_auth/
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
 $base_url= base_url();
 ?>
-
-<!-- Intro Content -->
+<!-- //////////////    auth/admin/dashboard_view      //////////////  -->
 <div class="row">
-        <div  id="param" class="col-md-10 center-block"> 
+        <div  id="param" class="page-header col-md-10 center-block"> 
                 <h2>Admin: Dashboard</h2>
 	
 <!-- Main Content -->
@@ -18,14 +35,16 @@ $base_url= base_url();
                 <li role="presentation" class="active"><a href="#tabs-1" role="tab" data-toggle="tab" aria-controls="tabs-1" >User Activity</a></li>
                 <li role="presentation"><a href="#tabs-2" role="tab" data-toggle="tab" aria-controls="tabs-2" >User Accounts</a></li>
                 <li role="presentation"><a href="#tabs-3" role="tab" data-toggle="tab" aria-controls="tabs-3" >User Groups</a></li>
-                <li role="presentation"><a href="#tabs-4" role="tab" data-toggle="tab" aria-controls="tabs-4" >User Privileges</a></li>
+               <!-- <li role="presentation"><a href="#tabs-4" role="tab" data-toggle="tab" aria-controls="tabs-4" >User Privileges</a></li>-->
             </ul>
 					
 					
             <div  class="tab-content ">
             
-                <div class="tab-pane active" id="tabs-1">
-                    <?php print "<pre>".print_r($whoOnline->Data,1)."  ".print_r($ActiveProcess->apache,1)." </pre>"; ?>
+                <div class="tab-pane active" id="tabs-1">                        
+                    <?php 
+                        if(isset($whoOnline->Data)) print "<pre> ".print_r($whoOnline->Data,1)."</pre>";
+                        if( $ActiveProcess->apache!="") print "<pre>".print_r($ActiveProcess->apache,1)." </pre>"; ?>
                 </div>
                 
 	        <div class="tab-pane  " id="tabs-2">
@@ -39,28 +58,31 @@ $base_url= base_url();
 					
                 <div class="tab-pane" id="tabs-3">
                     <p>Manage the user groups that users can be assigned to.</p>
-                    <p>User groups are intended to be used to categorise the primary access rights of a user, if required, more specific privileges can then be assigned to a user using the 'User Privileges' below. User groups are completely customised.</p>
+                    <p>User groups are intended to be used to categorise the primary access rights of a user. User groups are completely customised.</p>
                     <ul>
                       <li>
                         <a href="<?php echo $base_url."auth/manage_groups"; ?>">Manage User Groups</a>			
                       </li>	
                     </ul>
                 </div>
-					
+
+                <!--
                 <div class="tab-pane" id="tabs-4">
                     <p>Manage the specific user privileges that can be assigned to users.</p>
                     <p>User privileges are intended to verify whether a user has privileges to perfrom specific actions within the site. The specific action of each privilege is completely customised.</p>
                     <ul>
                       <li>
-                        <a href="<?php echo $base_url."/auth/manage_privileges"; ?>">Manage User Privileges</a>			
+                        <a href="<?php // echo $base_url."/auth/manage_privileges"; 
+                        ?>">Manage User Privileges</a>			
                       </li>	
                     </ul>
                 </div>
-					
+                -->
               
-      </div>
-   </div>
-</div>
+     </div> <!--  End Div tab-content -->
+    </div><!--  End Div param -->
+</div><!--  End Div row  -->
+
 <script type="text/javascript">
 //function kill_process()
 $(".Kill").click(function()
@@ -105,3 +127,5 @@ $(".Qdel").click(function()
         });
     });
 </script>
+
+<!-- //////////////    End auth/admin/dashboard_view      //////////////  -->

@@ -1,5 +1,19 @@
+<?php
+/**
+* The Expression Database.
+*       view auth/admin/manage_group.php
+*       manage groups
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
+<!-- //////////////    auth/admin/manage_group      //////////////  -->
 <div class="row">
-    <div  id="param" class="col-md-4 center-block form-horizontal"> 
+    <div  id="param" class="page-header col-md-4 center-block "> 
        <a href="../dashboard">Back to Users Account management</a><br /><br />
        <div class="form-group">
                 <h1><?php echo lang('list_group_heading');?></h1>
@@ -23,6 +37,7 @@
                 </table>
                 
                 <p><?php echo anchor(base_url()."auth/create_group", lang('index_create_group_link'))?></p>
-            </div>
-    </div>
-</div>
+       </div> <!--  End Div form -->
+    </div><!--  End Div param -->
+</div><!--  End Div row  -->
+<!-- //////////////    End auth/admin/manage_group      //////////////  -->

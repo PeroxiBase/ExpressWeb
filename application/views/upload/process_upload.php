@@ -1,15 +1,16 @@
 <?php
 /**
 * The Expression Database.
-*
+*       view upload/process_upload.php
 *@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
 *@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
 *@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
 *@version 1.0
-*@package expressionWeb
+*@package ExpressWeb
+*@subpackage view
 */
 ?>
-
+<!-- //////////////    upload/process_upload  //////////////  -->
     
     <?php echo anchor(base_url()."create_table/upload_csv","back to upload form");?>    
 
@@ -26,12 +27,6 @@
     print "Header: $has_header<br />";
     print "PostProcessing: $type_data <hr />";
      print $this->session->flashdata('message');
-   /* print "Deb: $debug1 <hr>$debug <br />limit $limit<br />";
-    print "Lignes dans le fichier: $info <br />";
-    print "header: <pre>".print_r($_POST,1)."</pre> <br />";
-    #  print "max_value_col <pre>".print_r($max_value_col,1)."</pre><br />";
-    # print  "<pre>".print_r($data_columns,1)."</pre> <br />";
-    */
     $i=1;
     $table_list="";
     foreach($existing_tables->result as $row)
@@ -201,22 +196,13 @@
     } 
     print "</tbody>\n";
     print "</table>\n";
-  #  print "<b>Executer la requete SQL </b>: <input name=\"Do_Sql\" value='1' type=\"checkbox\" /> Non par defaut<hr />";
-  print "<input name=\"Do_Sql\" value='1' type=\"hidden\" />";
+    print "<input name=\"Do_Sql\" value='1' type=\"hidden\" />";
     print form_submit( 'submit', 'Submit','id=submit'); 
     print form_reset( 'reset', 'Reset');
     
     print form_close();
     
-    
-  /*  $mem_use= memory_get_usage() ;
-    print  "<hr />104 back parse Memory usage: $mem_use<hr />";
-    
-    $max_mem= memory_get_peak_usage();
-    print "<hr />back parse Max Memory usage: $max_mem<hr />";
-    
-    $max_mem= memory_get_usage();
-    print "<hr />back parse memory_get_usage: $max_mem<<hr />"; */
+  
     $max_mem= memory_get_usage(TRUE);
     print  "<hr />back parse memory_get_usage TRUE: $max_mem<hr />";
 ?>
@@ -319,3 +305,4 @@ $(document).ready(function() {
     */
 });
 </script>
+<!-- //////////////    upload/process_upload  //////////////  -->

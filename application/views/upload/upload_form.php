@@ -1,15 +1,17 @@
 <?php
 /**
 * The Expression Database.
+*       view upload/upload_form.php
 *
 *@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
 *@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
 *@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
 *@version 1.0
 *@package expressionWeb
+*@subpackage view
 */
 ?>
-
+<!-- //////////////    upload/upload_form  //////////////  -->
 <div id="form-group">
     <h2>Convert file to Table</h2>
     <h3>Enter your file</h3>
@@ -90,5 +92,5 @@
 </form>
 <!-- END FORM  -->
 
-</div>
-<!--END DIV RIGHT -->
+</div><!--END DIV RIGHT -->
+<!-- //////////////    upload/upload_form  //////////////  -->

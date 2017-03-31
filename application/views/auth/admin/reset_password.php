@@ -1,7 +1,18 @@
-<h1><?php echo lang('reset_password_heading');
-$this->view_path = "sylvain";
-$base_url= base_url().$this->view_path;
-?></h1>
+<?php
+/**
+* The Expression Database.
+*       view auth/admin/reset_password.php
+*       reset_password form
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
+<!-- //////////////    auth/admin/reset_password      //////////////  -->
+<h1><?php echo lang('reset_password_heading');?></h1>
 
 <div id="infoMessage"><?php echo $message;?></div>
 
@@ -23,3 +34,4 @@ $base_url= base_url().$this->view_path;
 	<p><?php echo form_submit('submit', lang('reset_password_submit_btn'));?></p>
 
 <?php echo form_close();?>
+<!-- //////////////    End auth/admin/reset_password      //////////////  -->

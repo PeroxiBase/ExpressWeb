@@ -1,7 +1,21 @@
- <div class="row">
-    <div  id="param" class="col-md-4 center-block form-horizontal"> 
+<?php
+/**
+* The Expression Database.
+*       view auth/admin/create_group.php
+*       create groups
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
+<!-- //////////////    auth/admin/create_group      //////////////  --> 
+<div class="row">
+    <div  id="param" class="page-header col-md-4 center-block"> 
         <a href="manage_groups">Back to Groups management</a><br /><br />
-       <div class="form-group">
+        <div class="form-group">
                 <h1><?php echo lang('create_group_heading');?></h1>
                 <p><?php echo lang('create_group_subheading');?></p>
                 
@@ -22,6 +36,7 @@
                       <p><?php echo form_submit('submit', lang('create_group_submit_btn'));?></p>
                 
                 <?php echo form_close();?>
-            </div>
-    </div>
-</div>
+       </div> <!--  End Div form -->
+    </div><!--  End Div param -->
+</div><!--  End Div row  -->
+<!-- //////////////    End auth/admin/create_group      //////////////  --> 

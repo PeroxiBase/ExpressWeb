@@ -22,6 +22,7 @@ p{
  	color:#114B5F;
 	background-color:#1A936F;
 }
+
 .navbar {
 	background-color:#011627;
 	border-radius:0;
@@ -30,9 +31,46 @@ p{
 	height:5%;
 }
 .navbar-inverse .navbar-nav > li > a{
-	color:#F2F2F2 !important;
-	font-size:17px;
+	/*color:#F2F2F2 !important;*/
+	font-weight :bold;
+	font-size:14px;
 }
+/**********************/
+.navbar-collapse .navbar-inverse > li > a:hover,
+.navbar-collapse .navbar-inverse > li > a:focus {
+  color: #fff;
+  background-color: rgb(211, 211, 211,0.8);
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+  color: #fff;
+  background-color: rgb(211, 211, 211,0.2);
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+  color: #fff;
+  background-color: #F7B809;
+}
+.navbar-inverse .navbar-nav > .disabled > a,
+.navbar-inverse .navbar-nav > .disabled > a:hover,
+.navbar-inverse .navbar-nav > .disabled > a:focus {
+  color: #444;
+  background-color: #F14F47;
+}
+
+/**********************/
+/* right icon toggle */
+.navbar .navbar-toggle {
+  border-color: #333;
+}
+.navbar-inverse .navbar-toggle .icon-bar {
+  background-color: white;
+  border-color: transparent;
+}
+/******************/
 
 .navbar-inverse .navbar-nav > li > a:before {
   content: "";
@@ -53,7 +91,7 @@ p{
   visibility: visible;
   -webkit-transform: scaleX(1);
   transform: scaleX(1);
-}
+}/*
 .navbar-inverse .navbar-nav > .active > a{
 	background-color:#F7B809;
 	color:#011627 !important;
@@ -62,6 +100,7 @@ p{
 	background-color:#F7B809;
 	color:#011627 !important;
 }
+*/
 .navbar-brand{
 	color:#FDFFFC !important;
 }
@@ -158,7 +197,8 @@ output{
 }
 /* Pills*/
 #pillsDiv{
-	margin-left:40%; ;
+	margin-left:30% ;
+	margin-top: 40px;
 }
 /* results */
 #htest{
@@ -175,7 +215,10 @@ output{
 #sideBar{
 	padding:10px;
 	background-color:#FF9F1C;
-	min-height:700px;
+	height:auto;
+	min-height:30%;
+	width : 250px;
+	max-width: 300px;
 }
 #displayDiv{
 	height:auto;
@@ -346,7 +389,7 @@ output{
 	font-size:75px;
 	position:relative;
 	top:50vh;
-	right:65vh;
+	right:37%;
 	color:#011627;	
 }
 #scrollArrow:hover{
@@ -358,8 +401,8 @@ output{
 	font-size:50px;
 	position:relative;
 	color:#FF9F1C;
-	right:48vh;
-	top:5vh;
+	left:15%;
+	top:25vh;
 }
 #scrollArrow2:hover{
 	color:#FDFFFC;
@@ -430,4 +473,45 @@ ol li:before {
 
 .custom-menu li:hover {
     background-color: #DEF;
+}
+
+#treeImg,#logoLRSV{
+	margin-left:33%;
+	width: 33%;
+	margin-bottom:2vh;
+}
+
+.box{
+    color: #fff;
+    padding: 20px;
+    display: none;
+    margin-top: 20px;
+}
+.bg{ color:black;}
+
+#GraphResults{
+	background-color: #202020;
+	width: 100%;
+	color:aliceblue;
+	text-align: center;
+	height: 800px;
+}
+
+  th.rotate {
+  /* Something you can count on */
+  height: 200px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform: 
+    /* Magic Numbers 
+    translate(5px, 1px)*/
+    /* 45 is really 360 - 45 */
+    rotate(315deg);
+  width: 50px;
+}
+th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
 }

@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['domain'] = '';
+$config['domain'] = 'polebio.lrsv.ups-tlse.fr/ExpressWeb';
 $domain=$config['domain'];
 if ( ! empty($_SERVER['HTTPS']))
 {
@@ -33,7 +33,7 @@ if ( ! empty($_SERVER['HTTPS']))
 else
 {
     $config['base_url'] = 'http://'.$domain;
-    $config['base_urlNS'] = 'http://'.$domain;
+    $config['base_urlNS'] = 'https://'.$domain;
 }
 
 /*
@@ -46,7 +46,7 @@ else
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -325,7 +325,7 @@ $config['cache_query_string'] = FALSE;
 | http://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = ' ';
+$config['encryption_key'] = 'LaJmdAbS6bl7UdckcG6yn64KWRXVY73h';
 
 /*
 |--------------------------------------------------------------------------
@@ -378,10 +378,10 @@ $config['encryption_key'] = ' ';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
+$config['sess_driver'] = 'database';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = '/var/tmp';
+$config['sess_save_path'] = 'ci_sessions';
 $config['sess_match_ip'] = TRUE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;

@@ -21,6 +21,8 @@ class MY_Controller extends CI_Controller
     // html page tab title
     $this->header_name = $this->config->item('header_name');
     $this->footer_title = $this->config->item('header_name');
+    $this->caller= $this->router->class;
+    $this->method = $this->router->method;
  }
  
  
@@ -30,3 +32,4 @@ class MY_Controller extends CI_Controller
  }
  
 }
+

@@ -1,3 +1,15 @@
+<?php
+/**
+* The Expression Database.
+* view header
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,10 +23,6 @@
 
 <script type="text/javascript" src="<?php echo base_url().'assets/js/jquery-2.1.4.min.js'; ?>"></script>
 <script type="text/javascript" src="<?php print base_url('');?>assets/js/jquery/ui/jquery-ui.min.js"></script> 
-<script type="text/javascript" src="<?php echo base_url()?>assets/js/fancytree/lib/jquery-ui.custom.js" type="text/javascript"></script>
-
-<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>assets/js/fancytree/dist/skin-bootstrap/ui.fancytree.css"  class="skinswitcher">
-<script type="text/javascript" src="<?php echo base_url()?>assets/js/fancytree/dist/jquery.fancytree-all.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -52,3 +60,4 @@ $('#myTabs a').click(function (e) {
 </script> 
 </head>
 <body>
+<!-- //////////////    End templates/header      //////////////  -->

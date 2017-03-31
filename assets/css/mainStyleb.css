@@ -1,0 +1,470 @@
+/*COLOR PALETTE
+ * #011627 - dark blue
+ * #FDFFFC - cool white
+ * #FF9F1C - nice orange
+ * */
+html,body{
+	width:100%;
+	margin:0;
+	padding:0;
+	position: relative;
+	background-color:#FDFFFC;
+}
+h1,h2,h3{
+	font-family:Arial;
+}
+p{
+	font-family:Georgia;
+}
+/* Header And Navbar*/
+.mainTitle{
+	height:150px;
+ 	color:#114B5F;
+	background-color:#1A936F;
+}
+.navbar {
+	background-color:#011627;
+	border-radius:0;
+	border-color:#011627;
+	margin:0;
+	height:5%;
+}
+.navbar-inverse .navbar-nav > li > a{
+	color:#F2F2F2 !important;
+	font-size:17px;
+}
+
+.navbar-inverse .navbar-nav > li > a:before {
+  content: "";
+  position: absolute;
+  width: 80%;
+  height: 3px;
+  bottom: 0;
+  left: 10%;
+  background-color:#FDFFFC;
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover:before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+.navbar-inverse .navbar-nav > .active > a{
+	background-color:#F7B809;
+	color:#011627 !important;
+}
+.navbar-inverse .navbar-nav > .active > a:hover{
+	background-color:#F7B809;
+	color:#011627 !important;
+}
+.navbar-brand{
+	color:#FDFFFC !important;
+}
+.navbar-brand:hover {
+	color:#FF9F1C !important; 
+}
+/* Blocks*/
+#block1{
+	margin-top:5%;
+	padding-top:5px;
+	padding-bottom:5px;
+	min-height:72vh;
+}
+#block2{
+	display:none;
+	background-color:#c0dfd9;
+	padding:30px;
+	min-height:90%;
+}
+#footer{
+	height:5%;
+}
+/* Forms*/
+/*Table selection*/
+#formTitle{
+	margin-top:10vh;
+	text-align:center;
+}
+.launch{
+	vertical-align:middle;
+}
+.launch > *{
+	margin:1vh;
+}
+#run{
+	margin:auto;
+	margin-left:40%;
+	width:10%;
+}
+#param{
+	padding-left:10vh;
+}
+#cluS{
+	width:20vh !important;
+}
+.form-control{
+	width:170px;
+	display:inline;
+}
+input[type="range"]{
+	vertical-align:middle;
+	display:inline;
+}
+output{
+	color:white;
+	vertical-align:middle;
+	display:inline;
+	background-color:#5bc0de;
+	padding:7px;
+	border-radius:5px;
+}
+#corTh{
+	width:60px;
+}
+#geneIn{
+	width:150px;
+}
+#geneS{
+	display:none;
+}
+/*Tables*/
+/*Condition table*/
+#conditionsTable{
+	margin-top:20px;
+	margin-bottom:20px;
+	background-color:#f5f5f5;
+	width:50%;
+}
+.center-table
+{
+  margin: 0 auto !important;
+  float: none !important;
+}
+#all{
+}
+#closeView,#saveView{
+	margin:2px;
+	float:right;
+	top:0;
+}
+.condCheck{
+	float:right;
+	margin-right:10px;
+}
+/* Pills*/
+#pillsDiv{
+	margin-left:40%; ;
+}
+/* results */
+#htest{
+	margin:0;
+	text-align:center;
+	background-color:#c0dfd9;
+	padding:5px;
+}
+#resContent{
+	margin-top:70px;
+	height:auto;
+	min-height:80%;
+}
+#sideBar{
+	padding:10px;
+	background-color:#FF9F1C;
+	min-height:700px;
+}
+#displayDiv{
+	height:auto;
+}
+.panel-title{
+	width:50%;
+	display:inline;
+}
+.cluster-cb,#checkAll{
+	display:inline;
+	float:right;
+}
+#accordion{
+	overflow:auto;
+	height:700px;
+}
+.Container,.netContainer{
+	height:700px;
+}
+.noneSel{
+	
+}
+.ui-menu{
+	max-height:400px;
+	overflow:auto;
+}
+.tab-pane {
+   	border-left: 1px solid #ddd;
+    	border-right: 1px solid #ddd;
+    	border-bottom: 1px solid #ddd;
+    	border-radius: 0px 0px 5px 5px;
+    	padding: 10px;
+}
+
+.nav-tabs {
+    	margin-bottom: 0;
+}
+.loader{
+	position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-image: url(../img/loading.gif);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #fff;
+        opacity: 0.45;
+}
+.geneSearch{
+	float:right;
+}
+.openLink,.closeLink{
+	text-decoration:none !important;
+	color:#011627;
+}
+.openLink:hover,.closeLink:hover{
+	color:#FF9F1C;
+}
+
+.input-group{
+	margin-bottom:5px;
+}
+.geneSearch,.input-group-addon{
+	cursor:pointer;
+}
+.Container > p{
+	margin-top:5%;
+	margin-left:35%;
+}
+.activeGene{
+	background:#D9853B !important;
+}
+.activePanel{
+	border-color: #D9853B;
+}
+.activePanel > .panel-heading{
+	background: #D9853B; 
+	color: #ffffff;
+        border-color: #D9853B;
+}
+#genesTable{
+	margin-top:10px;
+	background-color:white;
+}
+#geneNamesBox{
+	max-height:300px;
+	overflow:auto;
+}
+#showRange{
+	margin-right:10px;
+	margin-left:10px;
+}
+#geneDiv{
+	max-height:700px;
+	overflow:auto;
+}
+#edit_form_div{
+	margin:15px;
+}
+.edit-group{
+	margin:10px;
+}
+.row-centered {
+    text-align:center;
+}
+.searcher{
+	margin-top:20px;
+	width:100%;
+}
+.switch-div{
+	margin-left:17%;
+}
+.downloader{
+	margin-top:2%;
+	padding-left:5%;
+}
+#dlLink{
+	display:none;
+	margin-left:5vh;
+}
+
+.section{
+	margin:0;
+	min-height:100vh;
+}
+#section1{
+	margin-top:3%;
+	background-color:#FDFFFC;
+	position:fixed;
+	left:0;
+    	right:0;
+    	top:0;
+	text-align:center;
+}
+#section2{
+	background-color:#011627;
+	position:relative; 
+    	left:0;
+    	right:0;
+    	top:100vh;
+    	z-index:2;
+}
+#section3{
+	background-color:#FF9F1C;
+	position:relative; 
+    	left:0;
+    	right:0;
+    	top:100vh;
+    	z-index:2;
+	padding-top:5vh;
+	text-align:center;
+	height:auto;
+}
+.thumbDiv{
+	margin:7vh;
+	margin-top:10vh;
+	min-height:70vh;
+	text-align:center;
+}
+.thumbnail{
+	min-height:50vh;
+	height:auto;
+	overflow-y:auto;
+}
+#scrollArrow{
+	font-size:75px;
+	position:relative;
+	top:50vh;
+	right:65vh;
+	color:#011627;	
+}
+#scrollArrow:hover{
+	color:#FF9F1C;
+	cursor:pointer;
+}
+
+#scrollArrow2{
+	font-size:50px;
+	position:relative;
+	color:#FF9F1C;
+	right:48vh;
+	top:5vh;
+}
+#scrollArrow2:hover{
+	color:#FDFFFC;
+	cursor:pointer;
+}
+
+#arrowLabel{
+	position:relative;
+	top:50vh;
+	right:65vh;	
+
+}
+#heatModal .modal-dialog  {
+	min-width:75%;
+	max-height:75%;
+}
+
+#profModal .modal-dialog  {
+	top:10vh;
+	min-width:75%;
+	max-height:75%;
+}
+
+#netModal .modal-dialog  {
+	top:10vh;
+	min-width:75%;
+	max-height:75%;
+}
+.jumbotron{
+	background:url('../img/geometry2.png');
+}
+ol{ 
+	counter-reset: item; 
+}
+ol li { 
+	display: block; 
+}
+ol li:before {
+            content: counter(item) ". ";
+            counter-increment: item;
+            color:#FF9F1C;
+
+}
+.textareaPerso{
+	width:100% !important;
+	height:auto;
+}
+.btn{
+	cursor:pointer;
+}
+.custom-menu {
+    display: none;
+    z-index: 1000;
+    position: absolute;
+    height:108px;
+    width:220px;
+    overflow: hidden;
+    border: 1px solid #CCC;
+    white-space: nowrap;
+    font-family: sans-serif;
+    background: #FFF;
+    color: #333;
+    border-radius: 5px;
+}
+
+.custom-menu li {
+    padding: 8px 12px;
+    cursor: pointer !important;
+}
+
+.custom-menu li:hover {
+    background-color: #DEF;
+}
+
+.box{
+    color: #fff;
+    padding: 20px;
+    display: none;
+    margin-top: 20px;
+}
+.bg{ color:black;}
+
+#GraphResults{
+	background-color: #202020;
+	width: 100%;
+	color:aliceblue;
+	text-align: center;
+	height: 800px;
+}
+
+  th.rotate {
+  /* Something you can count on */
+  height: 200px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform: 
+    /* Magic Numbers 
+    translate(5px, 1px)*/
+    /* 45 is really 360 - 45 */
+    rotate(315deg);
+  width: 50px;
+}
+th.rotate > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}

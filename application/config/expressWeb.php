@@ -24,6 +24,8 @@
 *
 *       ['web_path']            Full path of web Site directory. Applications (controller, model, view) and storage folders will be created under it.
 *
+*       ['admin_name']          Name of administrator in Db. Default administrator
+*
 *       ['apache_user']         the user who run Apache . usually 'apache'
 *
 *	['network']             The full path of directory used for storing computed networks
@@ -49,28 +51,28 @@
 *       ['check_cluster']       command used to check job launched by 'apache_user' on the cluster
 *                               default command for cluster using SGE instructions.
 */
-$config['header_name'] = ' ';
-$config['web_path'] = ' ';
-$config['apache_user'] = ' ';
+$config['header_name'] = 'The Expression Db';
+$config['web_path'] = '/extra_space/web/html/ExpressWeb';
+$config['admin_name'] = 'administrator';
+$config['apache_user'] = 'polebio_user';
 $web_path = $config['web_path'];
 $config['network'] = $web_path.'/assets/network/';
 $config['similarity'] = $web_path.'/assets/similarity/';
-
 
 $config['cluster_env'] = '/SGE/ogs';
 $config['cluster_app'] = '/SGE/ogs/bin/linux-x64';
 $cluster_env = $config['cluster_env'];
 $cluster_app = $config['cluster_app'];
 $apache_user = $config['apache_user'];
-$config['check_cluster'] = "export SGE_ROOT= $cluster_env && ${cluster_app}/qstat -u $apache_user ";
+$config['check_cluster'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat -u $apache_user ";
 
 $config['launch_cluster'] = $web_path.'/assets/scripts/launch_cluster.sh';
-$config['work_cluster'] = '/work/perox_user/clusterII';
+$config['work_cluster'] = '/work/polebio_user/cluster';
 $config['work_files'] = $config['work_cluster'].'/files/';
 $config['work_scripts'] = $config['work_cluster'].'/scripts/';
 
 $config['MaxGeneNameSize'] = '15';
 $config['maxError'] = '50';
-
+$config['qdelay'] = '30';
 
 ?>

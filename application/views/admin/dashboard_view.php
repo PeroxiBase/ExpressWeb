@@ -1,8 +1,22 @@
+<?php
+/**
+* The Expression Database.
+*       view admin/dashboard_view.php
+*       admin dashboard to manage everything
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
+<!-- //////////////    admin/dashboard_view  //////////////  -->
 <div class="row">
-	<!-- Intro Content  -->
-	<div  id="param" class="col-md-8 center-block"> 	
-            <h2><?php echo $this->session->username;?> dashboard</h2>
-            <p>Manage your account . Create project, download, upload files</p>
+    <!-- Intro Content  -->
+    <div  id="param" class="col-md-8 center-block"> 	
+        <h2><?php echo $this->session->username;?> dashboard</h2>
+        <p>Manage your account . Create project, download, upload files</p>
 	 
 <?php if (! empty($message)) { ?>
         <div id="message">
@@ -10,23 +24,21 @@
         </div>
 <?php } ?>
          
-            <ul  class="nav nav-tabs" role="tablist">
-                <li role="presentation"  class="active"><a href="#account" role="tab" data-toggle="tab" aria-controls="account" >Account Details</a></li>
-                <li role="presentation" ><a href="#email" role="tab" data-toggle="tab" aria-controls="email">Email Address</a></li>
-                <li role="presentation" ><a href="#project" role="tab" data-toggle="tab" aria-controls="project" >Project</a></li>
-                <li role="presentation" ><a href="#files" role="tab" data-toggle="tab" aria-controls="files" >File Managment</a></li>
-            </ul>
-            
-            <div class="tab-content">
+        <ul  class="nav nav-tabs" role="tablist">
+            <li role="presentation"  class="active"><a href="#account" role="tab" data-toggle="tab" aria-controls="account" >Account Details</a></li>
+            <li role="presentation" ><a href="#email" role="tab" data-toggle="tab" aria-controls="email">Email Address</a></li>
+            <li role="presentation" ><a href="#project" role="tab" data-toggle="tab" aria-controls="project" >Project</a></li>
+            <li role="presentation" ><a href="#files" role="tab" data-toggle="tab" aria-controls="files" >File Managment</a></li>
+        </ul>
+        
+        <div class="tab-content">
                 <div class="tab-pane active" id="account">
-              <!-- <div role="tabpanel" class="tab-pane active"  id="account">-->
                     <p>Update your account details</p>
                     <ul>
                       <li>
                         <a href="<?php echo base_url();?>auth_public/update_account">Update Account Details</a>
                       </li>	
-                    </ul>
-                   
+                    </ul>                   
                 </div>
                 
                 <div class="tab-pane"  id="email">
@@ -56,6 +68,8 @@
                       </li>	
                     </ul>
                 </div>
-          </div>
-            </div> 
-              </div> 
+                
+          </div><!-- End DIV tab-content -->
+    </div> <!-- End DIV param -->
+</div> <!-- End DIV rows -->
+<!-- //////////////    End admin/dashboard_view  //////////////  -->

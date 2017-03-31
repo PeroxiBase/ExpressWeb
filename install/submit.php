@@ -43,6 +43,7 @@ if(isset($_SESSION['post']) )
     $inputEncryption_key =  $_POST['inputEncryption_key'] ;
     $input_apache_user =  $_POST['input_apache_user'] ;
     $input_admin_email = $_POST['input_admin_email'] ;
+    $input_admin_name = $_POST['input_admin_name'] ;
     $input_header_name =  $_POST['input_header_name'] ;
     $input_web_path =  $_POST['input_web_path'] ;
     $input_network =  $_POST['input_network'] ;
@@ -55,7 +56,7 @@ if(isset($_SESSION['post']) )
     $input_bash_app =  $_POST['input_bash_app'] ;
     $input_MaxGeneNameSize = $_POST['input_MaxGeneNameSize'];
     $input_maxError = $_POST['input_maxError'];
-    
+    $input_qdelay = $_POST['input_qdelay'];
 }
 else
 {
@@ -63,11 +64,12 @@ else
     $inputDNS_DBhost = '';
     $inputDBname = '' ;
     $inputDBusername = '' ;
-    $inputDBpassword = '4OSurcXJhjQCROVC' ;
+    $inputDBpassword = '' ;
     $inputSiteurl = '' ;
     $inputEncryption_key = generate_token();
     $input_apache_user = '' ;
     $input_admin_email = '' ;
+    $input_admin_name = 'administrator'; 
     $input_header_name = '' ;
     $input_web_path = '' ;
     $input_network = 'assets/network/';
@@ -80,6 +82,7 @@ else
     $input_bash_app = '' ;
     $input_MaxGeneNameSize = 15;
     $input_maxError = 50;
+    $input_qdelay = 30;
 }
 
 ?>
@@ -189,7 +192,7 @@ If 'DB Hostname' use DNS name, 'DB Hostname for cluster' will used same value
         <div class="control-group">
             <label class="control-label">User running apache / job launcher</label>
             <div class="controls">
-                <input type="text" name="input_apache_user" value="<?php print $input_apache_user; ?>" placeholder="apache" />
+                <input type="text" name="input_apache_user" value="<?php print $input_apache_user; ?>" placeholder="apache" required />
             </div>
             <pre><b>Important</b>: name of user who run apache. By default, user is 'apache' .  
             Check with your cluster administrator if user apache is allowed to write to the cluster !!. 
@@ -234,6 +237,14 @@ If 'DB Hostname' use DNS name, 'DB Hostname for cluster' will used same value
              </div>
             <pre>Admin email. Use for account validation</pre>
         </div>
+        
+        <div class="control-group">
+            <label class="control-label">Admin login</label>
+            <div class="controls">
+                <input type="email" name="input_admin_name"  value="<?php print $input_admin_name; ?>" placeholder="email@website.org" size="35" required/><br />
+             </div>
+            <pre>Admin email. Use for account validation</pre>
+        </div>
         <!-- ////////////////////////////////////////////////////////////////// -->
         <hr />
         <legend>Cluster Settings</legend>
@@ -259,9 +270,16 @@ If 'DB Hostname' use DNS name, 'DB Hostname for cluster' will used same value
             <pre>The full path to writing directory on cluster. Your cluster job should be able to write in this directory !!</pre>
         </div>
         <div class="control-group">
+            <label class="control-label">Qdelay</label>
+            <div class="controls">
+                <input type="text" name="input_qdelay"  value="<?php print $input_qdelay; ?>"  placeholder="30" size="5" />
+            </div>
+            <pre>Waiting time in second before new qsub status check. On overloaded cluster script increase this value</pre>
+        </div>
+        <div class="control-group">
             <label class="control-label">maxError try</label>
             <div class="controls">
-                <input type="text" name="input_maxError"  value="<?php print $input_maxError; ?>"  placeholder="/work/user_name/cluster/" size="5" />
+                <input type="text" name="input_maxError"  value="<?php print $input_maxError; ?>"  placeholder="50" size="5" />
             </div>
             <pre>While submitting job to the cluster, script test connectivity. On overloaded cluster script will exit after maxError try</pre>
         </div>

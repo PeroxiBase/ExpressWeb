@@ -173,7 +173,7 @@ When you launch job on the cluster, *'localhost'* will be interpreted as local f
 3.1. edit express_web.sql (in install/sql/) and change 'express_web' by your database name
     ```
       --
-      -- Base de données: `express_web`
+      -- DataBase: `express_web`
       --
       CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
       USE `express_web`;

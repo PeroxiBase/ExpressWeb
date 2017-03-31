@@ -1,0 +1,659 @@
+ mkdir -m 777 /work/polebio_user/cluster/files/administrator
+Launch cluster job : sh /work/polebio_user/cluster/scripts/execute_bash.sh 12345678 Myco_AnnotTest 0.8 administrator 0 
+PID du processus courant : 6562
+launch execute.sh 
+
+------- execute.bash 16:38:52 ---------
+
+pid 12345678
+path_cluster /work/polebio_user/cluster
+qsub /SGE/ogs/bin/linux-x64/qsub
+SGE_Root /SGE/ogs
+qstat /SGE/ogs/bin/linux-x64/qstat
+maxError 50
+debug 1
+Qdelay  
+PID du processus launcher : 6562
+PID du processus courant : 6568
+
+//////////  Create Similarity Data 16:38:52 /////////////////
+qsub /work/polebio_user/cluster/scripts/DBClustering.R administrator Myco_AnnotTest 0.8 >/work/polebio_user/cluster/jobid_12345678
+
+waitForEndQsub polebio_user 7573507   /work/polebio_user/cluster/jobid_12345678 DBClustering 1
+7573507 0.00000 DBClusteri polebio_user qw    02/23/2017 16:38:52                                    1        
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 3  wait for /work/polebio_user/cluster/jobid_12345678 
+         job runnings: 0  wait for /work/polebio_user/cluster/jobid_12345678 
+ wait for /work/polebio_user/cluster/files/administrator/Myco_AnnotTest_Ended  //
+i: 1 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 2 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 3 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 4 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 5 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 6 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 7 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 8 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 9 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 10 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 11 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 12 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 13 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 14 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 15 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 16 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 17 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 18 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 19 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 20 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 21 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 22 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 23 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 24 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 25 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 26 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 27 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 28 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 29 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 30 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 31 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 32 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 33 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 34 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 35 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 36 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 37 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 38 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 39 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 40 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 41 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 42 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 43 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 44 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 45 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 46 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 47 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 48 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 49 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 50 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+i: 51 step: 1 Qdelay /work/polebio_user/cluster/jobid_12345678
+1
+
+Job ended with code 0

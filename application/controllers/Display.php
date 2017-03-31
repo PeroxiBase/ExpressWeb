@@ -42,10 +42,13 @@ class Display extends MY_Controller {
 	**/
 	public function showTable()
 	{
+	    $this->load->library("expression_lib");
             $username=$this->session->userdata['username'];
             $pid=$this->session->userdata['pid'];
             $Path =$this->session->userdata('Path');
             $file = array();
+            ### check if current user belong to group Demo only
+            $userDemo = $this->expression_lib->in_Demo_grp();
             // Add session variables , file and thrshold(seuil) used //     
             $filename=$_POST['file'];
             $seuil=1-$_POST['seuil'];
@@ -53,8 +56,10 @@ class Display extends MY_Controller {
             $this->session->set_userdata('seuilName',$seuilName);
             $this->session->set_userdata('fileName',$filename);
             $this->session->set_userdata('seuil',$seuil);
+            $data['title'] = "$this->header_name: Show table";
             $data['comment']=$table=$this->visualizer->get_Table_Comment($filename);
             $data['column']=$table=$this->visualizer->get_Column_Names($filename);
+            $data['userDemo'] = $userDemo;
             $this->load->view('tableView',$data);
 	}
 
@@ -68,22 +73,27 @@ class Display extends MY_Controller {
 	**/
 	public function saveTable()
 	{
-		$conditions=$_POST['conditions'];
-		$filename=$_POST['filename'];
-		$orga=$this->visualizer->get_Organism($filename);
-		$organism=$orga[0]['Organism'];
-		$submitter=$this->session->userdata('username');
-		$group=$this->session->userdata('groups');
-		$name=$this->visualizer->save_Modif_Table($filename,$conditions,$organism,$submitter,$group);
-		$originalAnnot="Annotation_$organism";
-		if($this->db->table_exists($originalAnnot))
-		{
-			if($this->db->table_exists($name))
-			{
-				$this->generic->extract_annot($originalAnnot,$name);
-			}
-		}
-		print_r($name);
+            $conditions=$_POST['conditions'];
+            $filename=$_POST['filename'];
+            $orga=$this->visualizer->get_Organism($filename);
+            $organism=$orga->Organism;
+            $submitter=$this->session->userdata('username');
+            if($submitter != "demo")
+            {
+                $group=$this->session->userdata('groups');
+                $create_sub_table=$this->visualizer->save_Modif_Table($filename,$conditions,$organism,$submitter,$group);
+                $name = $create_sub_table->name;
+                $child = $create_sub_table->Child;
+                $originalAnnot="Annotation_$organism";
+                if($this->db->table_exists($originalAnnot))
+                {
+                    if($this->db->table_exists($name))
+                    {
+                        $status = $this->generic->extract_annot($originalAnnot,$name,$child );
+                    }
+                }
+                return $status;
+            }
 	}
 	
 	/**
@@ -191,6 +201,7 @@ class Display extends MY_Controller {
             $data = array(
                 'title'=>"$this->header_name:  $table_name detail",
                 'contents' => 'detail',
+                'footer_title' => $this->footer_title,        
                 'table_name' => $table_name,
                 'detail' => $detail,
                 'size' => $size,

@@ -14,20 +14,20 @@
 * 
 *@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
 *@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
-*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
 *@version 1.0
 *@package        ExpressWeb
 *@subpackage     Controller
 */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Auth extends MY_Controller {
+class Auth extends MY_Controller 
+{
 
 	public function __construct()
 	{
             parent::__construct();
             $this->output->enable_profiler(false);
-            $this->load->library(array('ion_auth','form_validation'));
+             $this->load->library(array('form_validation'));
             $this->load->helper(array('url','language'));
             $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
             $this->lang->load('auth');
@@ -39,6 +39,7 @@ class Auth extends MY_Controller {
             if (!$this->ion_auth->logged_in())
             {
                     // redirect them to the login page
+                    $this->config->set_item('base_url',$this->config->config['base_urlNS']);
                     redirect("auth/login", 'refresh');
             }
              elseif (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
@@ -65,7 +66,8 @@ class Auth extends MY_Controller {
 	// log the user in
 	public function login()
 	{
-            $this->data['title'] = "$this->header_name: Login";
+            $this->data['title'] = "$this->header_name: Login";            
+            $Msg= urldecode($this->uri->segment(3));
             $this->data['contents'] = "auth/login";
             //validate form input
             $this->form_validation->set_rules('identity', 'Identity', 'trim|required');
@@ -85,13 +87,21 @@ class Auth extends MY_Controller {
                         /*if ($this->ion_auth->is_admin())
                             redirect("admin/dashboard", 'refresh');
                         else*/
-                        $this->config->set_item('base_url',$this->config->config['base_urlNS']);
-                                redirect("welcome", 'refresh');
+                        if($Msg == "Admin") 
+                        {
+                            redirect("auth_public/edit_user/fl", 'refresh');
+                        }
+                        else
+                        {
+                            $this->config->set_item('base_url',$this->config->config['base_urlNS']);
+                            redirect("welcome", 'refresh');
+                        }
                 }
                 else
                 {
                         // if the login was un-successful
                         // redirect them back to the login page
+                        $this->config->set_item('base_url',$this->config->config['base_urlNS']);
                         $this->session->set_flashdata('message', $this->ion_auth->errors());
                         redirect("auth/login", 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
                 }
@@ -100,20 +110,55 @@ class Auth extends MY_Controller {
             {
                 // the user is not logging in so display the login page
                 // set the flash data error message if there is one
-                $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-
-                $this->data['identity'] = array('name' => 'identity',
+                if( ! empty($_SERVER['HTTPS']) )
+                {
+                     $path= $this->config->config['base_urlNS']."/";
+                     $SSL='on';
+                }
+                else 
+                {
+                        $path= $this->config->config['base_url']."/";  $SSL='off';
+                }
+                $this->data['path'] = $path;
+                if($Msg == "Admin") 
+                {
+                    $administrator = $this->config->item('admin_name');
+                    $this->data['message'] = "<span style=\"color:red;\"><b>This is your first login. </b></span><br />
+                    <ul><li> Log in and go to <b>Users account</b> menu.<ul> <li>Go to 'User accounts' tab </li>
+                    <li>Click on 'Manage User Accounts' </li><li>Edit <b>$administrator</b> and change <b>$administrator</b> password (default paswword is 'password') !!</li></ul></li></ul>\n";
+                    $this->data['identity'] = array('name' => 'identity',
+                        'id'    => 'identity',
+                        'type'  => 'text',
+                        'value' => $administrator,
+                        'size'  => 40
+                        );
+                     $this->data['password'] = array('name' => 'password',
+                        'id'   => 'password',
+                        'type' => 'password',
+                        'value' => 'password'
+                        );
+                     $this->data['first_login'] = 1;
+                }
+                else
+                {
+                    $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+                    $this->data['identity'] = array('name' => 'identity',
                         'id'    => 'identity',
                         'type'  => 'text',
                         'value' => $this->form_validation->set_value('identity'),
                         'size'  => 40
-                );
-                $this->data['password'] = array('name' => 'password',
+                        );
+                     $this->data['password'] = array('name' => 'password',
                         'id'   => 'password',
                         'type' => 'password',
-                );
+                        );
+                     $this->data['first_login'] = 0;
+                }
+                
+               
                 
                 #$this->_render_page("auth/login", $this->data);
+                $this->data['footer_title'] = $this->footer_title;
                  $this->load->view("templates/template", $this->data);
             }
 	}
@@ -125,10 +170,18 @@ class Auth extends MY_Controller {
 
 		// log the user out
 		$logout = $this->ion_auth->logout();
-
+		if( ! empty($_SERVER['HTTPS']) )
+                {
+                     $path= $this->config->config['base_urlNS']."/";
+                     $SSL='on';
+                }
+                else 
+                {
+                        $path= $this->config->config['base_url']."/";  $SSL='off';
+                }
 		// redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		redirect("auth/login", 'refresh');
+		redirect("welcome", 'refresh');
 	}
 
 	// change password
@@ -362,7 +415,6 @@ class Auth extends MY_Controller {
                     redirect("auth/admin/forgot_password", 'refresh');
             }
 	}
-
 
 	// activate the user
 	public function activate($id, $code=false)
@@ -890,15 +942,17 @@ class Auth extends MY_Controller {
 			return FALSE;
 		}
 	}
-
+	
+	// render page
 	public function _render_page($view, $data=null, $returnhtml=false)//I think this makes more sense
 	{
 		$this->viewdata = (empty($data)) ? $this->data: $data;
 		
-                            $this->load->view("templates/header",$this->viewdata);
-                            $this->load->view("templates/menu");                           
+                $this->load->view("templates/header",$this->viewdata);
+                $this->load->view("templates/menu");                           
 		$view_html = $this->load->view($view, $this->viewdata, $returnhtml);
-		 $this->load->view("templates/footer");
+		$data['footer_title'] = $this->footer_title;
+		$this->load->view("templates/footer",$data);
 
 		if ($returnhtml) return $view_html;//This will return html on 3rd argument being true
 	}

@@ -10,7 +10,7 @@
 */
 
 ?>
-
+<!-- //////////////    upload/process_phytozom  //////////////  -->
 <div class="row col-md-8 center-block">
     <div class="form-group">
         <h2>Process Phytozom</h2>
@@ -19,6 +19,7 @@
         $this->session->set_userdata('updated_table_phyto', $table_name);
         ?>;
    </div>
+   
    <div class="form-group">
 
 <?php 
@@ -37,4 +38,5 @@ else
 }
 ?>
         </div>
-  </div>
+</div>
+<!-- //////////////    End upload/process_phytozom  //////////////  -->

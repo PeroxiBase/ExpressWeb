@@ -44,10 +44,7 @@ class Toolbox extends MY_Controller
                 // redirect them to the login page
                 redirect(base_url()."auth/login", 'refresh');
         }
-        if(!$this->ion_auth->is_admin())
-        {
-            redirect(base_url()."welcome/restricted", 'refresh');
-        }
+        
         $this->load->model("visualizer");
         $this->load->library("expression_lib"); 
         
@@ -61,10 +58,15 @@ class Toolbox extends MY_Controller
     */  
     public function index()
     {
+        if(!$this->ion_auth->is_admin())
+        {
+            redirect(base_url()."welcome/restricted", 'refresh');
+        }
         $organisms = $this->generic->get_organisms();
         $data = array(
            'title'=>"The Expression Database: Import Toolbox ",
            'contents' => 'upload/import_toolbox',
+           'footer_title' => $this->footer_title,
            'success' => 'none',
            'organisms' => json_encode($organisms->result),
           );
@@ -79,60 +81,131 @@ class Toolbox extends MY_Controller
     */  
     public function load_toolbox()
     {
+        if(!$this->ion_auth->is_admin())
+        {
+            redirect(base_url()."welcome/restricted", 'refresh');
+        }
 	$this->load->dbforge();
+	$this->load->library('form_validation');
+	$info ="";
 	if(isset($_POST['selectID']) && isset($_FILES['upload_file'] ) )
 	{
-            $id=$_POST['selectID'];
+            $id= $this->input->post('selectID');
             $toolbox="Toolbox_$id";
             $annotFile=$_FILES['upload_file']['tmp_name'];
-            $tables=$this->generic->get_Subtables($id);
+            $filename=$_FILES['upload_file']['name'];            
+            $Force_Update = $this->input->post('Force_Update');
+            $header = $this->input->post('header');
 
-            // READ TOOLBOX FILE //
+            ############### READ TOOLBOX FILE //
             $csv = array();
             $lines = file($annotFile, FILE_IGNORE_NEW_LINES);
             $error=FALSE;
-            foreach ($lines as $key => $value)
+            $upload_error = "";
+            
+            #############  find seprator used and check field's number
+            $del=$this->expression_lib->readCSV($lines[0]);
+            $good_del=$del->delimeter;
+            $csv_count = count(str_getcsv($lines[0],"$good_del"));
+            
+            if($csv_count >6 ) 
             {
-                $del=$this->expression_lib->readCSV($value);
-                $good_del=$del->delimeter;
-                $csv[$key] = str_getcsv($value,$good_del);
+                $data = array(
+                        'title'=>"$this->header_name: Error in file",
+                        'contents' => 'upload/error',
+                        'footer_title' => $this->footer_title,
+                        'success' => 'success',
+                        'error' => "File $file_name contains $csv_count fields !!. Upload aborted",                         
+                     );
+                
+                $this->load->view('templates/template', $data);                 
             }
-
-            array_shift($csv);
-
-            // ADD INTO TOOLBOX TABLE //
-            foreach($csv as $line)
+            else
             {
-                if( strlen($line[0])<=40 && strlen($line[1])<=15 && strlen($line[3])<=255 )
+                foreach ($lines as $key => $value)
                 {
-                    $data=array(
-                            'toolbox_name' => $line[0],
-                            'gene_name' => strtoupper($line[1]),
-                            'annotation' => $line[2],
-                            'functional_class' => $line[3],
-                            'biological_activity' => $line[4],
-                            'WB_Db' => strtoupper($line[5])
-                            );
-                    $query = $this->db->select('*')->where($data)->get($toolbox);
-                    if(count($query->result_array()) ==0 )
+                    $csv[$key] =str_getcsv($value,$good_del);
+                }
+                
+                ### remove first line if header
+		if(isset($header) && $header ==1) array_shift($csv);
+		
+                ## check if table exist. If not create it
+                if (!$this->db->table_exists($toolbox))
+                {
+                    ### recover masterGroups
+                    $user_id  =$this->session->userdata['user_id'];
+                    $get_MasterGrp = $this->generic->get_users_group($user_id);
+                    $MasterGrp = array('0' => '1');
+                    foreach($get_MasterGrp->result as $row)
                     {
-                            $this->db->insert($toolbox, $data);
+                        $grp_name = $row['name'];
+                        $group_id = $row['group_id'];
+                        if($grp_name != "demo" OR $grp_name != "members")
+                        {
+                            array_push($MasterGrp,$group_id);
+                        }
+                    }
+                    $create_toolbox = $this->generic->create_toolbox_table($toolbox,$id,$filename,$MasterGrp);
+                   # print "try to create table $toolbox <br />".print_r($create_toolbox,1)."<hr />";
+                   $info .= $create_toolbox->info;
+                }
+                
+                ##### if force update truncate table
+		if($Force_Update ==1) 
+                {
+                    $Table_already_set="";
+                    $truncate = $this->db->query("TRUNCATE $annoTable");   
+                    #$upload_error .= "Erase previous table $annoTable. return : <pre>".print_r($truncate,1)."</pre><br />";
+                }
+                
+                // ADD INTO TOOLBOX TABLE //
+                $nl=1;
+                foreach($csv as $line)
+                {
+                    if(count($line) <5 ) 
+		     {
+		         $info .= "error on line $i . nbr fields ".count($line)."<br />";
+		         $i++;
+		         continue;
+		     }
+                    $size0 = strlen($line[0]);$size1 = strlen($line[1]);$size3 = strlen($line[3]);
+                    if( strlen($line[0])<=40 && strlen($line[1])<=15 && strlen($line[3])<=255 )
+                    {
+                        $info .= "$nl GL: ".implode($line,"\t")." <br />";
+                        $data=array(
+                                'toolbox_name' => $line[0],
+                                'gene_name' => strtoupper($line[1]),
+                                'annotation' => $line[2],
+                                'functional_class' => $line[3],
+                                'biological_activity' => $line[4],
+                                'WB_Db' => strtoupper($line[5])
+                                );
+                        ### check if exist in table
+                        $query = $this->db->select('*')->where($data)->get($toolbox);
+                        ## data not present in toolbox
+                        if(count($query->result_array()) ==0 )
+                        {
+                                $this->db->insert($toolbox, $data);
+                        }
                     }
                     else
-                    {
-                            $match=$query->result_array();
+                    {   
+                        $info .= "$nl WL: ".implode($line,"\t")."<br />";
+                        $info .= "  size0 ".$line[0]." $size0  size1 ".$line[1]." $size1  size3 ".$line[3]." $size3<br />\n";
                     }
+                    $nl++;
                 }
-            }
-            
-            // LOAD RESULTS VIEW //
-            if($error == FALSE)
-            { 
+                
+                // LOAD RESULTS VIEW //
+                
                 $organisms = $this->generic->get_organisms();
                 $data = array(
                         'title'=>"The Expression Database: Import Toolbox ",
                         'contents' => 'upload/import_toolbox',
+                        'footer_title' => $this->footer_title,
                         'success' => 'success',
+                        'info' => $info, 
                         'organisms' => json_encode($organisms->result),
                      );
                 $this->load->view('templates/template', $data);
@@ -148,11 +221,14 @@ class Toolbox extends MY_Controller
     */  
     public function getToolboxes()
     {
-	$file=$this->session->fileName;
-	$orgaRes=$this->visualizer->get_Organism($file);
-	$organism=$orgaRes[0]['Organism'];
-	$toolboxes=$this->generic->get_Toolbox_Names($organism);
-	print_r(json_encode($toolboxes));
+        if($this->ion_auth->in_group('members'))
+        {
+            $file=$this->session->fileName;
+            $orgaRes=$this->visualizer->get_Organism($file);
+            $organism=$orgaRes->Organism;
+            $toolboxes=$this->generic->get_Toolbox_Names($organism);
+            print_r(json_encode($toolboxes));
+	}
     }
 
     /**
@@ -165,7 +241,7 @@ class Toolbox extends MY_Controller
    {
 	$file=$this->session->fileName;
 	$orgaRes=$this->visualizer->get_Organism($file);
-	$organism=$orgaRes[0]['Organism'];
+	$organism=$orgaRes->Organism;
 	$toolboxName=$_POST['toolbox'];
 	$fClass=$this->generic->get_fClass_from_Toolbox($toolboxName,$organism);
 	print_r(json_encode($fClass));
@@ -181,7 +257,7 @@ class Toolbox extends MY_Controller
    {
 	$file=$this->session->fileName;
 	$orgaRes=$this->visualizer->get_Organism($file);
-	$organism=$orgaRes[0]['Organism'];
+	$organism=$orgaRes->Organism;
 	$tbName=$_POST['tbName'];
 	$fClass=$_POST['fClass'];
 	$wpDB=$_POST['wpDB'];

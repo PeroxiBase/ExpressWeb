@@ -1,10 +1,16 @@
-<script type="text/javascript" src="<?php echo base_url().'assets/js/highcharts.src.js'; ?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/highcharts_heatmap.js'; ?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/exporting.js'; ?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/results.js'; ?>"></script> 
-<link type="text/css" rel='stylesheet' href="<?php echo base_url('/assets/css/graph.css'); ?>"/>
-<link type="text/css" rel='stylesheet' href="<?php echo base_url('assets/js/node_modules/vis/dist/vis.css'); ?>"/>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/node_modules/vis/dist/vis.js'; ?>"></script>
+<?php
+/**
+* The Expression Database.
+*       view corrPage.php
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage view
+*/
+?>
+<!-- //////////////    corrPage  //////////////  -->
 <?php
 $this->load->view("templates/pillsCorr");
 echo '<div class="row" id="resContent">';
@@ -49,7 +55,24 @@ echo '<div class="loader"></div>';
 echo '</div>';
 echo '</div>';
 ?>
-<script>
+<script type="text/javascript">
+document.onkeydown = function() 
+{
+    switch (event.keyCode) 
+    {
+        case 116 : //F5 button
+            event.returnValue = false;
+            event.keyCode = 0;
+            return false;
+        case 82 : //R button
+            if (event.ctrlKey) 
+            {
+                event.returnValue = false;
+                event.keyCode = 0;
+                return false;
+            }
+    }
+}
 function outputUpdate(vol) {
      	document.querySelector('#showRange').value = vol;
 }
@@ -158,7 +181,9 @@ $(function(){
 			$('#annotSel').fadeOut()
 	                $('.Container').remove()
                   	$('#displayDiv').append('<div class="Container" id="container"></div>');	
-			drawHeatmap(geneID,filename,seuilClus)
+			console.log('161 corrPage drawHeatmap(geneID %s ,filename %s,seuilClus %s )',geneID,filename,seuilClus)
+			
+                  	drawHeatmap(geneID,filename,seuilClus)
 	                $('.nav-pills li').removeClass('active')
 	                $(this).parent('li').addClass('active')
 
@@ -256,4 +281,4 @@ $(function(){
 	})
 })
 </script>
-
+<!-- //////////////    EndcorrPage  //////////////  -->

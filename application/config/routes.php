@@ -55,25 +55,26 @@ $route['404_override'] = '';
 $route['admin/'] = "admin/admin";
 $route['admin/(:any)'] = "admin/admin/$1";
 $route['admin/(:any)/(:any)'] = "admin/admin/$1/$2";
+$route['admin/(:any)/(:any)/(:any)'] = "admin/admin/$1/$2/$3";
 
 $route['create_table'] = "admin/create_table";
-$route['create_table/(:any)/(:any)'] = "admin/create_table/$1/$2";
 $route['create_table/(:any)'] = "admin/create_table/$1";
+$route['create_table/(:any)/(:any)'] = "admin/create_table/$1/$2";
 
 $route['toolbox'] = "admin/toolbox";
-$route['toolbox/(:any)/(:any)'] = "admin/toolbox/$1/$2";
 $route['toolbox/(:any)'] = "admin/toolbox/$1";
+$route['toolbox/(:any)/(:any)'] = "admin/toolbox/$1/$2";
 
 $route['dashboard'] = "admin/dashboard";
-$route['dashboard/(:any)/(:any)'] = "admin/dashboard/$1/$2";
 $route['dashboard/(:any)'] = "admin/dashboard/$1";
+$route['dashboard/(:any)/(:any)'] = "admin/dashboard/$1/$2";
 // http://yourdomain.com/admin/user/5 will map to 'user' function in 'home' controller with '5' as parameter 
  
 $route['admin/(:any)'] = "admin/admin/$1";
 
 /*$route['auth'] = "auth";*/
 
-$route['auth/(:any)/(:any)/(:any)'] = "auth/$1/$2/$3";
-$route['auth/(:any)/(:any)'] = "auth/$1/$2";
 $route['auth/(:any)'] = "auth/$1";
+$route['auth/(:any)/(:any)'] = "auth/$1/$2";
+$route['auth/(:any)/(:any)/(:any)'] = "auth/$1/$2/$3";
 $route['translate_uri_dashes'] = FALSE;

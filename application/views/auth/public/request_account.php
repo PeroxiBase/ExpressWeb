@@ -1,3 +1,17 @@
+<?php
+/**
+* The Expression Database.
+*       view auth/public/request_account.php
+*       request_account form
+*@copyright Laboratoire de Recherche en Sciences Vegetales 2016-2020
+*@author Bruno SAVELLI<savelli@lrsv.ups-tlse.fr>
+*@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
+*@version 1.0
+*@package ExpressWeb
+*@subpackage views
+*/
+?>
+<!-- //////////////    auth/public/request_account      //////////////  -->
 <div  id="param" class="col-md-8 center-block">
 <?php 
 #print "<div class=\"row\">\n";
@@ -6,10 +20,9 @@ echo "<h1>".lang('request_account')."</h1><p>";
 echo lang('create_user_subheading')."</p>";
 ?>
 
-<div id="infoMessage"><?php echo $this->session->flashdata('message'); ?></div>
+        <div id="infoMessage"><?php echo $this->session->flashdata('message'); ?></div>
 
 </div>
-<!----> 
 
 <?php echo form_open(uri_string());?>
 
@@ -54,16 +67,13 @@ echo lang('create_user_subheading')."</p>";
             <?php echo form_input($password_confirm); ?>
       </div>
 
-     
-
       <div class="form-group">
           <?php
               echo form_submit('submit', lang('request_account'));
-              echo form_close();
           ?>
       </div>
+        <?php echo form_close();  ?>      
       <b>Note</b>: Password : min_lenght : <?php print $config['min_password_length']; ?>
       max_lenght <?php print $config['max_password_length']; ?><br />
-</div>
-<div class="row">
-</div>
+</div> <!--  End Div param -->
+<!-- //////////////    End auth/public/request_account      //////////////  -->
