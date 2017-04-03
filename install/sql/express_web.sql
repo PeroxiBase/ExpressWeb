@@ -7,10 +7,10 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- DataBase: `express_db` 
+-- DataBase: `express_web` 
 --
-CREATE DATABASE IF NOT EXISTS `express_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `express_db`;
+CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `express_web`;
 
 
 DROP TABLE IF EXISTS `ci_sessions`;
