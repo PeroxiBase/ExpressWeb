@@ -47,8 +47,9 @@ if (isset($_POST['btn-install']))
     // modify .htaccess !!
     copy("config/.htaccess","../.htaccess");
     $get_path = pathinfo($inputSiteurl);
-    $Base = $path_parts['filename'];
+    $Base = $get_path['filename'];
     $ChBase =exec("sed -i 's/RewriteBase \/ExpressWeb\//RewriteBase \/$Base\//' ../.htaccess ",$ShebR);
+    print "<pre>Write .htaccess  New path Base: $Base</pre><br />\n";
     // setting database
     ######  copy original file  ##############
     copy("config/database.php","../application/config/database.php");
@@ -218,8 +219,12 @@ if (isset($_POST['btn-install']))
         if($input_admin_email != "administrator")
         {
             
-            $query = "UPDATE users SET username = '$input_admin_email' WHERE id =1; ";
-            do_sql($username,$password,$localhost,$database,$query);
+            $query = "UPDATE users SET username = '$input_admin_name' WHERE id =1; ";
+            do_sql($username,$password,$hostname,$database,$query);
+            
+            ##############  rename previous reference to administrator ##########
+            $query = "UPDATE tables SET Submitter='$input_admin_name' WHERE Submitter ='administrator' ";
+            do_sql($username,$password,$hostname,$database,$query);
         }
         
         ////////////////////////////////////////
@@ -359,8 +364,7 @@ echo '************* end script *************'
     copy("scripts/config.R","../assets/scripts/config.R");
     ################################################################
     $Script_Rscript = "../assets/scripts/config.R";
-    $Content_RExpress = file_get_contents($Script_Rscript);
-    $hostname='peroxibase.toulouse.inra.fr';
+    $Content_RExpress = file_get_contents($Script_Rscript);    
     $content_RExpress = preg_replace("/output_files <- '.*'/","output_files <- '$work_cluster/files/'", $Content_RExpress);
     $content_RExpress = preg_replace("/host <- '.*'/","host <- '$DNS_hostname'", $content_RExpress);
     $content_RExpress = preg_replace("/user <- '.*'/","user <- '$username'", $content_RExpress);
@@ -430,7 +434,11 @@ echo '************* end script *************'
                         <input type=\"hidden\" name=\"work_cluster\" value=\"$work_cluster\" />
                         <input type=\"hidden\" name=\"apache_user\" value=\"$input_apache_user\" />
                         <input type=\"hidden\" name=\"admin_name\" value=\"$input_admin_name\" />
-                        <input type=\"hidden\" name=\"check_cluster\" value=\"$check_cluster\" /> 
+                        <input type=\"hidden\" name=\"check_cluster\" value=\"$check_cluster\" />
+                        <input type=\"hidden\" name=\"hostname\" value=\"$hostname\" /> 
+                        <input type=\"hidden\" name=\"username\" value=\"$username\" /> 
+                        <input type=\"hidden\" name=\"password\" value=\"$password\" /> 
+                        <input type=\"hidden\" name=\"database\" value=\"$database\" /> 
                         <input type=\"submit\" class=\"btn btn-primary\" name=\"btn-check\" value=\"Check cluster\"/>
                     </div>
                 </div>
@@ -457,12 +465,11 @@ function show_error($message,$post)
 }
 function check_connect($username,$password,$localhost,$database)
 {  
-    #$dsn = mysql_connect($localhost,$username,$password) ;#or die("error connect mysql".mysqli_errno());
-    #$check_db = mysql_select_db("$database",$dsn) ;
-    $dsn = new mysqli($username,$password,$localhost,$database);    
+     $dsn = mysqli_connect($localhost,$username,$password,$database)  or die("error connect mysql".mysqli_errno());
+     $check_db = mysqli_select_db($dsn,$database) ;
     // check connection details
      print "<h4>Try to connect to database $database ...</h4>\n";
-    if($dsn->connect_errno)
+    if(!$check_db)
     {
         // if connection details incorrect show error
          print "<pre>Oops ! Unable to connect to Database $database.<br />Please check your credentail :<br />\n";
@@ -472,7 +479,6 @@ function check_connect($username,$password,$localhost,$database)
         <li>database: $database</li></ul>\n";
         print " and database exist !!<br />\n";
         $data=0;
-        
     }
     else
     {
@@ -485,16 +491,14 @@ function check_connect($username,$password,$localhost,$database)
 
 function do_sql($username,$password,$localhost,$database,$query)
 {  
-    #$dsn = mysql_connect($localhost,$username,$password) ;#or die("error connect mysql".mysqli_errno());
-    #$check_db = mysql_select_db("$database",$dsn) ;
-    $dsn = new mysqli($username,$password,$localhost,$database);    
+     $dsn = mysqli_connect($localhost,$username,$password,$database)  or die("error connect mysql $localhost,$username,$password,$database ".mysqli_errno());
+     $check_db = mysqli_select_db($dsn,$database) ;
  
     // check connection details
-     print "<h4>Try to connect to database $database ...</h4>\n";
-    if($dsn->connect_errno)
+    if(!$check_db)
     {
         // if connection details incorrect show error        
-        print "<pre>Oops ! Unable to connect to Database $database.<br />Please check your credentail :<br />\n";
+        print "<pre>Oops ! Unable to connect to Database $database.<br />Please check your credentail '$check_db':<br />\n";
         print "<ul><li>username: $username</li>
         <li>password: $password</li>
         <li>localhost: $localhost</li>
@@ -504,8 +508,8 @@ function do_sql($username,$password,$localhost,$database,$query)
     }
     else
     {
-         print "<pre>Correct ! database information provided are valid.</pre><br />" ;
-       if (!$mysqli->query($query) )
+      #   print "<pre>Correct ! database information provided are valid.'$query'</pre><br />" ;
+       if (!mysqli_query($dsn,$query) )
        {
            print  "Error on query: $query <br /> : (" . $mysqli->errno . ") " . $mysqli->error;
 

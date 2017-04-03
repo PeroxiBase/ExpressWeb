@@ -51,13 +51,17 @@ assets/
 └── __users/__  
 **fig3**
  
-install/  
+install/   
+├── annotTester.csv  
 ├── __apache_conf/__  
 ├── bootstrap.css  
+├── check_app.sh  
+├── check_cluster.php   
+├── __config/__   
 ├── form.php  
-├── index.php  
+├── index.php    
+├── __scripts/__  
 ├── __sql/__  
-├── submit_ori.php  
 └── submit.php  
 **fig4**
 
@@ -180,10 +184,14 @@ When you launch job on the cluster, *'localhost'* will be interpreted as local f
     ```
 4. import express_web.sql (in install/sql/) . Database will be created with table and user accounts   
         from command prompt:
-        $ mysql -u username -p
-        mysql > source install/sql/express_web.sql  
-
-
+        ```
+        $ mysql -u username -p < install/sql/express_web.sql  
+        ```
+5. optionnal : import reference_data.sql(in install/sql/) . Add data to References tables (Enzymes, PFAm, GO..) (~ 12Mo)
+        from command prompt:
+        ``` 
+        $ mysql -u username -p -b express_web < install/sql/reference_data.sql
+        ```
 
 ### Web, directories, third party software and cluster settings
 

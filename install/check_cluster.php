@@ -8,6 +8,10 @@ if(!isset($_SESSION['running_job']))
     $admin_name = $_POST['admin_name'];
     $web_path = $_POST['web_path'];
     $work_cluster = $_POST['work_cluster'];
+    $hostname  = $_POST['hostname'];
+    $username   = $_POST['username'];
+    $password   = $_POST['password'];
+    $database  = $_POST['database'];
     $_SESSION['work_cluster'] = $work_cluster;
     $_SESSION['web_path'] = $web_path; 
     #print "⊤op sessions: ".print_r($_SESSION,1)."<br />\n";
@@ -29,7 +33,17 @@ if(!isset($_SESSION['running_job']))
         print "<div id=\"right\">Please wait.. Launch cluster command... \n";
         print "     <img src=\"wait28.gif\" width=\"28\" heigth=\"28\" alt=\"process\" /></div>";            
         print "<hr /><b>Launch script : $launch_cluster </b><hr /><pre>\n";
-        
+        ### add ref in SQL Db
+        $query = "INSERT INTO tables (TableName,MasterGroup,Organism,Submitter,version,comment,Root,Child) ";
+        $query .= "VALUES('Myco_AnnotTest_0_9_Cluster','1','3','$admin_name','1','Running test','0','1'), ";
+        $query .= "('Myco_AnnotTest_0_9_Order','1','3','$admin_name','1','Running test','0','1'); ";
+        $dsn = mysqli_connect($hostname,$username,$password,$database) ;
+        if (!mysqli_query($dsn,$query) )
+       {
+           print  "Error on query: $query <br /> : (" . $mysqli->errno . ") " . $mysqli->error;
+
+       }
+       ######## start job
         $do_launch_cluster = system("$launch_cluster",$Res);
         $_SESSION['running_job'] = "1";
         
@@ -60,13 +74,14 @@ else
   $End_file = "$work_cluster/scripts/EndJob_12345678.txt" ;
   if(file_exists($End_file))
   {
+      error_reporting(1);
     ?>
         <!DOCTYPE html>
         <html>
         <head>
             <link rel="stylesheet" href="bootstrap.css"/>
             
-        <script type="text/javascript" src="../assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../assets/js//jquery-2.1.4.min.js"></script>
             <title>Expression Database App : Check cluster command result</title>
         </head>
         <body>
@@ -91,14 +106,14 @@ else
                         $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
                         $next = 0;
-                        $this->session->set_userdata('processed_'.$pid,'2');
+                        $_SESSION['processed_'.$pid] ='2';
                         break;
                     case "Job ended with code 9":
                         ##### missing argument provide to launch_cluster.sh 
                         $status = "Problem occurs while launching qsub process<br />";
                         $status .= "Please look log file $ReportFile content for debugging (9) purpose<br />";
                         $next = 0;
-                        $this->session->set_userdata('processed_'.$pid,'2');
+                        $_SESSION['processed_'.$pid] ='2';
                         break;
                     case "Job ended with code 1":
                         $status = "Problem occurs while processing similarity step<br />";
@@ -106,7 +121,7 @@ else
                         $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
                         $next = 0;
-                        $this->session->set_userdata('processed_'.$pid,'2');
+                        $_SESSION['processed_'.$pid] ='2';
                         break;
                     case "Job ended with code 2":
                         $status = "Problem occurs while processing networking step<br />";
@@ -115,7 +130,7 @@ else
                         $status .= " EndJob_$pid.txt have been moved to ${network}$ReportFile <br />";
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
                         $next = 0;
-                        $this->session->set_userdata('processed_'.$pid,'2');
+                        $_SESSION['processed_'.$pid] ='2';
                         break;
                     case "Job ended with code 4":
                         $status = "Missing parameters !! Job can not be launched<br />";
@@ -124,7 +139,7 @@ else
                         $status .= " EndJob_$pid.txt have been moved to ${network}$ReportFile <br />";
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
                         $next = 0;
-                        $this->session->set_userdata('processed_'.$pid,'2');
+                        $_SESSION['processed_'.$pid] ='2';
                         break;
                         
                     case "Job ended with code 0":
@@ -133,7 +148,7 @@ else
                         $delEndJob = exec("rm $EndFile");                       
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
                         $next = 1;
-                        $this->session->set_userdata('processed_'.$pid,'1');
+                        $_SESSION['processed_'.$pid] ='1';
                         break;    
 
                 }

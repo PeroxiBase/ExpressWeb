@@ -241,9 +241,9 @@ If 'DB Hostname' use DNS name, 'DB Hostname for cluster' will used same value
         <div class="control-group">
             <label class="control-label">Admin login</label>
             <div class="controls">
-                <input type="email" name="input_admin_name"  value="<?php print $input_admin_name; ?>" placeholder="email@website.org" size="35" required/><br />
+                <input type="text" name="input_admin_name"  value="<?php print $input_admin_name; ?>" placeholder="administrator" size="35" required/><br />
              </div>
-            <pre>Admin email. Use for account validation</pre>
+            <pre>SuperAdmin account name. Use for database managment</pre>
         </div>
         <!-- ////////////////////////////////////////////////////////////////// -->
         <hr />

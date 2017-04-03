@@ -69,10 +69,13 @@ assets/
 install/
 ├── <b>apache_conf/</b>
 ├── bootstrap.css
-├── form.php
-├── index.php
+├── check_app.sh  
+├── check_cluster.php   
+├── <b>config/</b>  
+├── form.php  
+├── index.php    
+├── <b>scripts/</b>  
 ├── <b>sql/</b>
-├── submit_ori.php
 └── submit.php
 
            </pre>fig4
@@ -168,16 +171,20 @@ GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORA
                 <ol><li> edit express_web.sql (in install/sql/) and change 'express_web' by your database name</li>
                     <pre>
 --
--- Base de données: `express_web`
+-- DataBase: `express_web`
 --
 CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `express_web`;</pre>
                     </ol>
                 <li>import express_web.sql (in install/sql/) . Database will be created with table and user accounts<br />
                         from command prompt:<br />
-                        <code>$ mysql -u username -p<br />
-                        mysql > source install/sql/express_web.sql
-                        </code>
+                        <code>$ mysql -u username -p < install/sql/express_web.sql</code>
+                </li>
+                <li>optionnal : import reference_data.sql(in install/sql/) . Add data to References tables (Enzymes, PFAm, GO..) (~ 12Mo)<br />
+                    from command prompt:<br />
+                    <code> 
+                    $ mysql -u username -p -b express_web < install/sql/reference_data.sql
+                    </code>
                 </li>
             </ol>
         <br />
