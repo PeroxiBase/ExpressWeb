@@ -145,6 +145,9 @@ if (isset($_POST['btn-install']))
     if (filter_var($input_admin_email, FILTER_VALIDATE_EMAIL)) 
     {
         print "<pre>Email $input_admin_email is a valid email address</pre><br />";
+        ##############  rename previous reference to administrator ##########
+        $query = "UPDATE users SET email='$input_admin_email' WHERE id ='1' ";
+        do_sql($username,$password,$hostname,$database,$query);
     }
     else
     {
@@ -216,7 +219,7 @@ if (isset($_POST['btn-install']))
     if($wrong_dir == TRUE)
     {
         #############  check admin name  ####################
-        if($input_admin_email != "administrator")
+        if($input_admin_name != "administrator")
         {
             
             $query = "UPDATE users SET username = '$input_admin_name' WHERE id =1; ";

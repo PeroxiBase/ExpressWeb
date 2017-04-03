@@ -42,7 +42,6 @@ if( ncol(data) <= 4){
 data2=t(data)
 
 ##################################
-
 ## Compute Clustering ##
 
 #dist : pearson ; hoeffding ; spearman
