@@ -51,10 +51,10 @@
 *       ['check_cluster']       command used to check job launched by 'apache_user' on the cluster
 *                               default command for cluster using SGE instructions.
 */
-$config['header_name'] = 'The Expression Db';
-$config['web_path'] = '/extra_space/web/html/ExpressWeb';
+$config['header_name'] = ' ';
+$config['web_path'] = ' ';
 $config['admin_name'] = 'administrator';
-$config['apache_user'] = 'polebio_user';
+$config['apache_user'] = 'apache';
 $web_path = $config['web_path'];
 $config['network'] = $web_path.'/assets/network/';
 $config['similarity'] = $web_path.'/assets/similarity/';
@@ -67,7 +67,7 @@ $apache_user = $config['apache_user'];
 $config['check_cluster'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat -u $apache_user ";
 
 $config['launch_cluster'] = $web_path.'/assets/scripts/launch_cluster.sh';
-$config['work_cluster'] = '/work/polebio_user/cluster';
+$config['work_cluster'] = ' ';
 $config['work_files'] = $config['work_cluster'].'/files/';
 $config['work_scripts'] = $config['work_cluster'].'/scripts/';
 
