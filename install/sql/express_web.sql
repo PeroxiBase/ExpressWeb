@@ -7,10 +7,10 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- DataBase: `express_web` 
+-- DataBase: `express_db` 
 --
-CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `express_web`;
+CREATE DATABASE IF NOT EXISTS `express_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `express_db`;
 
 
 DROP TABLE IF EXISTS `ci_sessions`;
@@ -90,23 +90,6 @@ CREATE TABLE IF NOT EXISTS `users_tables` (
   KEY `fk_users_groups_users1_idx` (`user_id`),
   KEY `fk_users_groups_groups1_idx` (`table_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
- 
--- -----------------------------------------------------------------------
-
--- 
--- Update tables and tables_groups with Id of new tables Myco_AnnotTest and Annotation_Myco_AnnotTest
---
-INSERT INTO `tables` (`IdTables`, `TableName`, `MasterGroup`, `Organism`, `Submitter`, `version`, `comment`, `original_file`, `Root`, `Child`) VALUES
-(1, 'Myco_AnnotTest', 5, 3, 'administrator', '1', 'Test data with Rhysophagus expression set', 'annotTester.csv', 1, 0),
-(2, 'Annotation_3', 1, 3, 'administrator', '1', 'Annotation file for table Myco_AnnotTest', 'Myco_AnnotTest', 1, 0),
-(3, 'Annotation_Myco_AnnotTest', 1, 3, 'member', '1', 'Annotation file for table Myco_AnnotTest', 'Myco_AnnotTest', 1, 0);
-
-
-INSERT INTO `tables_groups` (`id`, `table_id`, `group_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 3);
 
 -- --------------------------------------------------------
 --  tables below from #Ion Auth 2
@@ -304,7 +287,8 @@ CREATE TABLE IF NOT EXISTS `Annotation_3` (
   `Gene_Name` varchar(15) NOT NULL,
   `Analyse` varchar(21) NOT NULL,
   `Signature` varchar(18) NOT NULL,
-  `Description` varchar(255) NOT NULL,
+  `Description` varchar(255) NOT NULL,  
+  `misc` char(15) DEFAULT NULL,
   PRIMARY KEY (`annot_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -358,6 +342,25 @@ INSERT INTO `Annotation_3` (`annot_id`, `Gene_Name`, `Analyse`, `Signature`, `De
 (46, '1145986', 'IPRSCAN', 'IPR027417', 'P-loop containing nucleoside triphosphate hydrolase', ''),
 (47, '1154641', 'GO', 'GO:0005634', 'nucleus', ''),
 (48, '1154641', 'IPRSCAN', 'IPR001214', 'SET domain', '');
+
+
+
+-- -----------------------------------------------------------------------
+
+-- 
+-- Update tables and tables_groups with Id of new tables Myco_AnnotTest and Annotation_Myco_AnnotTest
+-- 
+
+INSERT INTO `tables` (`IdTables`, `TableName`, `MasterGroup`, `Organism`, `Submitter`, `version`, `comment`, `original_file`, `Root`,`Child`) VALUES
+(1, 'Myco_AnnotTest', 1, 3, 'administrator', '1', 'Test data with Rhysophagus expression set', 'annotTester.csv', 1,0),
+(2, 'Annotation_3', 1, 3, 'administrator', '1', 'Annotation file for Rhizophagus irregularis', 'Rhizophagus irregularis_annot.txt', 1,0),
+(3, 'Annotation_Myco_AnnotTest', 1, 3, 'administrator', '1', 'Annotation file for table Myco_AnnotTest', 'Myco_AnnotTest', 0,0);
+
+INSERT INTO `tables_groups` (`id`, `table_id`, `group_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3);
+
 
 -- -------------------------------------------------------------------
 
@@ -420,25 +423,7 @@ CREATE TABLE IF NOT EXISTS `Ref_PFAM` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='PFAM Id and annotation PFAM30' ;
 
-
  
--- -----------------------------------------------------------------------
-
--- 
--- Update tables and tables_groups with Id of new tables Myco_AnnotTest and Annotation_Myco_AnnotTest
--- 
-
-INSERT INTO `tables` (`IdTables`, `TableName`, `MasterGroup`, `Organism`, `Submitter`, `version`, `comment`, `original_file`, `Root`,`Child`) VALUES
-(1, 'Myco_AnnotTest', 1, 3, 'administrator', '1', 'Test data with Rhysophagus expression set', 'annotTester.csv', 1,0),
-(2, 'Annotation_3', 1, 3, 'administrator', '1', 'Annotation file for Rhizophagus irregularis', 'Rhizophagus irregularis_annot.txt', 1,0),
-(3, 'Annotation_Myco_AnnotTest', 1, 3, 'administrator', '1', 'Annotation file for table Myco_AnnotTest', 'Myco_AnnotTest', 0,0),
-;
-
-INSERT INTO `tables_groups` (`id`, `table_id`, `group_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 3);
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
