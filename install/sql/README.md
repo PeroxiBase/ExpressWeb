@@ -13,7 +13,7 @@ You need grants privileges on database to create new user and database.
 When you launch job on the cluster, *'localhost'* will be interpreted as local from cluster !! 
 
 **Note III:**
-For genes annotation we use internal tables (Annotation and Toolbox) and external references datas.
+>For genes annotation we use internal tables (Annotation and Toolbox) and external references datas.
 We use PFAM (PFAM V30), GO, KO, KOG, KEGG (From KEGG Database Feb 2017) and PANTHER(V11) description references.
 This tables are created and we provide sql data in separate files.
 ```
@@ -71,6 +71,7 @@ Ref_PFAM.sql                SQl Data. 0.9Mb PFAM only
         $ mysql -u username -p < install/sql/express_web.sql  
         ```
 5. optionnal : import reference_data.sql(in install/sql/) . Add data to References tables (Enzymes, PFAm, GO..) (~ 12Mo)
+
         from command prompt:
         ``` 
         $ mysql -u username -p -b express_web < install/sql/reference_data.sql
