@@ -86,7 +86,7 @@ class Expression_lib
             # Check user dir exist
             if(is_dir("./assets/users/$username")==false)
             {
-                mkdir("./assets/users/$username",0775);
+                mkdir("./assets/users/$username",0775,true);
                 chmod("./assets/users/$username",0775);
                 chown("./assets/users/$username",$this->apache_user);
             }
@@ -96,7 +96,7 @@ class Expression_lib
             {
                 if(is_dir("./assets/users/$Path/$Prg")==false)
                 {
-                    mkdir("./assets/users/$Path/$Prg",0775);
+                    mkdir("./assets/users/$Path/$Prg",0775,true);
                     chmod("./assets/users/$Path/$Prg",0775);
                     chown("./assets/users/$Path/$Prg",$this->apache_user);
                 }
@@ -113,7 +113,7 @@ class Expression_lib
             {
                 if(is_dir("./assets/temp/$Prg")==false)
                 {
-                    mkdir("./assets/temp/$Prg",0775);
+                    mkdir("./assets/temp/$Prg",0775,true);
                     chown("./assets/temp/$Prg",$this->apache_user);
                 }
                 $WS->Path = "./assets/temp/$Prg/";     
