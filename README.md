@@ -87,6 +87,23 @@ Python: Python 2.7.2                R: version 3.1.2
             math
 ``` 
 
+### Third party Data
+```    
+Data    Description             Source
+PFAM    Protein families        ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam31.0/database_files/pfamA.txt.gz
+        
+GO      Gene Ontology           http://geneontology.org/page/downloads
+
+KEGG    Kyoto Encyclopedia of Genes and Genomes    http://www.kegg.jp/
+
+Enzymes KEGG Enzymes            http://rest.kegg.jp/list/enzyme
+KO      KEGG Orthology          http://rest.kegg.jp/list/ko
+KOG     Eukaryotes Ortholog     ftp://ftp.ncbi.nih.gov/pub/COG/KOG/kog (old !!)
+
+PANTHER Protein ANalysis THrough Evolutionary Relationships     http://www.pantherdb.org/
+
+```    
+
 ## Installation
 
 All source code (for web interface) are located under **application** directory (fig2)
