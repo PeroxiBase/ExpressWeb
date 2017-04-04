@@ -355,8 +355,10 @@ $('#downloadLink').click(function()
 
     $('#dlForm').append('<div id="moreDiv" style="display:none"></div>')
     $('#moreDiv').append('<div id="addAnnot" class="col-md-5 col-lg-5 col-md-offset-1 col-lg-offset-1" style="margin-top:5vh"></div>')
+    <?php if($this->ion_auth->in_group('members'))
+        { ?>
     $('#moreDiv').append('<div id="addToolbox" class="col-md-5 col-lg-5" style="margin-top:5vh"></div>')
-    
+    <?php } ?>
     $('#addAnnot').append('<select class="form-control searcher" id="selAnalyse2"><option id="default" value="none" selected>Choose an Analysis</option></select>')
     $('#addAnnot').append('<textarea id="annotArea" class="form-control textareaPerso" rows="5" style="margin-top:2vh;"></textarea>')
     $('#addAnnot').append('<button type="button" id="resetAnnot" class="btn btn-danger btn-sm">RESET</button>')
@@ -390,43 +392,53 @@ $('#downloadLink').click(function()
     });
     
     if(debug) { console.log('396 #downloadLink analyse ' + analyse); }
-    $('#addToolbox').append('<select class="form-control searcher" id="selToolbox2"><option id="default" value="all" selected>Choose a Toolbox</option></select>')
-    $('#addToolbox').append('<textarea id="toolboxArea" class="form-control textareaPerso" rows="5" style="margin-top:2vh;"></textarea>')
-    $('#addToolbox').append('<button type="button" id="resetToolbox" class="btn btn-danger btn-sm">RESET</button>')
-    $('#toolboxArea').prop('disabled',true)
-    
-    $.ajax({
-            url:'<?php echo base_url('toolbox/getToolboxes'); ?>',
-            type:'POST',
-            success:function(data){
-                    if(data)
-                        if(debug) { console.log('407 #downloadLink toolbox/getToolboxes data %s' + data); }
-                        data=JSON.parse(data)
-                        for(var i in data)
-                        {
-                                toolbox=data[i]['toolbox_name']
-                                $('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
-                        }
-            }
-    });
-    
-    $('#selToolbox2').change(function()
-    {
-        var analyse=$(this).val()
-        var areaVal=$('#toolboxArea').val()
-        if(analyse != 'all' && areaVal.indexOf(analyse)==-1)
+    <?php if($this->ion_auth->in_group('members'))
+        { ?>
+        $('#addToolbox').append('<select class="form-control searcher" id="selToolbox2"><option id="default" value="all" selected>Choose a Toolbox</option></select>')
+        $('#addToolbox').append('<textarea id="toolboxArea" class="form-control textareaPerso" rows="5" style="margin-top:2vh;"></textarea>')
+        $('#addToolbox').append('<button type="button" id="resetToolbox" class="btn btn-danger btn-sm">RESET</button>')
+        $('#toolboxArea').prop('disabled',true)
+        
+        $.ajax({
+                url:'<?php echo base_url('toolbox/getToolboxes'); ?>',
+                type:'POST',
+                success:function(data){
+                        if(data)
+                            if(debug) { console.log('407 #downloadLink toolbox/getToolboxes data %s' + data); }
+                            data=JSON.parse(data)
+                            for(var i in data)
+                            {
+                                    toolbox=data[i]['toolbox_name']
+                                    $('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
+                            }
+                }
+        });
+        
+        $('#selToolbox2').change(function()
         {
-                $('#toolboxArea').append(analyse+'\n')
-        }
-    });
-    
-    $('#resetToolbox').click(function()
+            var analyse=$(this).val()
+            var areaVal=$('#toolboxArea').val()
+            if(analyse != 'all' && areaVal.indexOf(analyse)==-1)
+            {
+                    $('#toolboxArea').append(analyse+'\n')
+            }
+        });
+        
+        $('#resetToolbox').click(function()
+        {
+            $('selToolbox2').val('all')
+            $('#toolboxArea').empty()
+            $('#dlLink').fadeOut()	
+        });
+    <?php }
+    else
     {
-        $('selToolbox2').val('all')
-        $('#toolboxArea').empty()
-        $('#dlLink').fadeOut()	
-    });
-
+    ?>
+        var toolbox = ''
+         $('#toolboxArea').empty()
+    <?php 
+    } 
+    ?>
     $('#dlForm').append('<div id="noname" class="alert alert-danger" role="alert" style="margin-top:5px;display:none" >Please give a name for your File</div>')
     
     //add annotation
@@ -446,7 +458,13 @@ $('#downloadLink').click(function()
                     annot=$('#annotArea').val()
                     toolbox=$('#toolboxArea').val()
                     annot=annot.split('\n')
+                    <?php if($this->ion_auth->in_group('members'))
+                    { ?>
                     toolbox=toolbox.split('\n')
+                    <?php } else {  ?> 
+                        var toolbox = ''
+                        $('#toolboxArea').empty()
+                    <?php } ?>
                     if(debug) {
                         console.log('455  #downloadLink annot.length ' + annot.length);
                         console.log('456  #downloadLink annot  ' + annot );
