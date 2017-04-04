@@ -774,7 +774,7 @@ class Visual extends MY_Controller
             #### if clustering results only
             else
             {
-                 $this->session->set_userdata('dwnd',"ELSE annot >0 toll>0  annot $annot ");
+                 $this->session->set_userdata('dwnd',"ELSE annot >0 toll>0  annot  ");
                     $sign="";
                     $annot="";
                     $b_a="";
