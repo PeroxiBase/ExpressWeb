@@ -155,7 +155,7 @@ or <code>http://website.domain.org/ExpressWeb/install</code>
 ### Database settings
         
 Before proceeding to configuration of your local copy of ExpressWeb , you need to create the database on your mysql server.  
-See README.md in install/sql directory.
+See **README.md** in install/sql directory.
 
 ### Web, directories, third party software and cluster settings
 
