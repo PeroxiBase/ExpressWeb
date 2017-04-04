@@ -65,14 +65,17 @@ Ref_PFAM.sql                SQl Data. 0.9Mb PFAM only
       CREATE DATABASE IF NOT EXISTS `express_web` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
       USE `express_web`;
     ```
+    
 4. import express_web.sql (in install/sql/) . Database will be created with table and user accounts   
         from command prompt:
+        
         ```
         $ mysql -u username -p < install/sql/express_web.sql  
         ```
+        
 5. optionnal : import reference_data.sql(in install/sql/) . Add data to References tables (Enzymes, PFAm, GO..) (~ 12Mo)
-
         from command prompt:
+        
         ``` 
         $ mysql -u username -p -b express_web < install/sql/reference_data.sql
         ```
