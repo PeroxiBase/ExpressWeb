@@ -100,7 +100,7 @@ Enzymes KEGG Enzymes            http://rest.kegg.jp/list/enzyme
 KO      KEGG Orthology          http://rest.kegg.jp/list/ko
 KOG     Eukaryotes Ortholog     ftp://ftp.ncbi.nih.gov/pub/COG/KOG/kog (old !!)
 
-PANTHER Protein ANalysis THrough Evolutionary Relationships     http://www.pantherdb.org/
+PANTHER Protein ANalysis THrough Evolutionary Relationships     ftp://ftp.pantherdb.org/hmm_classifications/
 
 ```    
 
