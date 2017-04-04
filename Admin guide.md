@@ -28,14 +28,22 @@ Three Master Group (demo,members,admin) are defined and gives the following righ
 
 ## Users and Groups management
 
-**Menu 'Users account'**  
+### Users account Menu  
 Admin can create users and group via this menu.  
+External users may ask for an account. They use 'Sign Up' menu. Request will be send to SuperAdmin who can activate or not the account. See below.  
+
 1. Select 'Users accounts' tab and click on 'Manage User Accounts'  
   1.1 Edit 
        - click on edit link.  
        - **Note** Login Name is used to create users directories and store uploaded and saved files. 
-       If you change it , you may create several directories ... and user 
-     
+       If you change it , you may create several directories ... but user access only directory matching is login.  
+  1.2 Activate  
+      -  click on 'Status' link. Active or Inactive current login  
+      -  user will receive an email to renew is password.  
+      -  easy way to activate user or deny login  
+  1.3  Create user  
+      -  Fill all applicable fields and submit form.  
+      -  Active user . An email will be send to user.  
 
 ## Database management
 
