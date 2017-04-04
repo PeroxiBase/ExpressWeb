@@ -13,9 +13,9 @@ You need grants privileges on database to create new user and database.
 When you launch job on the cluster, *'localhost'* will be interpreted as local from cluster !! 
 
 **Note III:**
->For genes annotation we use internal tables (Annotation and Toolbox) and external references datas.
-We use PFAM (PFAM V30), GO, KO, KOG, KEGG (From KEGG Database Feb 2017) and PANTHER(V11) description references.
-This tables are created and we provide sql data in separate files.
+>For genes annotation we use internal tables (Annotation and Toolbox) and external references datas. 
+We use PFAM (PFAM V30), GO, KO, KOG, KEGG (From KEGG Database Feb 2017) and PANTHER(V11) description references. 
+This tables are created and we provide sql data in separate files. 
 ```
 express_web.sql             Application file. Contains all the tables and data used by our software
 reference_data.sql          SQL  data. 12Mb . Contains all external data (Kegg, Go, PFAM, PANTHER)
