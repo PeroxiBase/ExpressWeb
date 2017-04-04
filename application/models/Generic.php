@@ -761,9 +761,13 @@ class Generic extends CI_Model
         **/
          public function hasTranscriptsAnnot($annot)
          {
+            $result =new stdClass();
             $sql_query="SELECT count(*) as len FROM $annot WHERE Gene_Name REGEXP '[.period.][1-9]' ";
             $query=$this->db->query($sql_query);
-            return $query->row();
+            $result->sql = $sql_query;
+            $result->nbr = $query->num_rows();
+            $result->result = $query->row('len');
+            return $result;
          }
     
         /**
@@ -775,10 +779,14 @@ class Generic extends CI_Model
         **/
          public function hasTranscriptsValues($values)
          {
+              $result =new stdClass();
              //  SELECT count(*) as len FROM Paroi_Euca_Fluidigm WHERE Gene_Name LIKE '%.%'  
             $sql_query="SELECT count(*) as len FROM $values WHERE Gene_Name REGEXP '[.period.][1-9]' ";
             $query=$this->db->query($sql_query);
-            return $query->row();
+            $result->sql = $sql_query;
+            $result->nbr = $query->num_rows();
+            $result->result = $query->row('len');
+            return $result;
          }
     
     
@@ -828,8 +836,8 @@ class Generic extends CI_Model
             // TEST TRANSCRITS //
              $testTransAnnot = $this->hasTranscriptsAnnot($annot_table);	
              $testTransData = $this->hasTranscriptsValues($data_table);
-             $testTransAnnotLen=$testTransAnnot->len;
-             $testTransDataLen=$testTransData->len;
+             $testTransAnnotLen=$testTransAnnot->result;
+             $testTransDataLen=$testTransData->result;
     
             // Si les annotations et les data ne sont pas des transcrits //
              if($testTransAnnotLen == 0 && $testTransDataLen == 0)
@@ -837,6 +845,7 @@ class Generic extends CI_Model
                  $sql_query="SELECT A1.Gene_Name, Analyse, Signature,Description,misc
                          FROM $annot_table A1 
                          INNER JOIN $data_table A2 on A2.Gene_Name=A1.Gene_Name";
+                         $test =1;
              }
             // Si les annotations et les data sont des transcrits //	
              elseif($testTransAnnotLen != 0 && $testTransDataLen != 0)
@@ -844,6 +853,7 @@ class Generic extends CI_Model
                 $sql_query="SELECT A1.Gene_Name, Analyse, Signature,Description ,misc
                         FROM $annot_table A1 
                         INNER JOIN $data_table A2 on A2.Gene_Name=A1.Gene_Name";
+                        $test =2;
             }
             // Si les annotations sont des transcrits mais pas les valeurs //
              elseif($testTransAnnotLen != 0 && $testTransDataLen == 0)
@@ -851,20 +861,25 @@ class Generic extends CI_Model
                  $sql_query= "SELECT A1.Gene_Name, Analyse, Signature,Description,misc 
                          FROM $annot_table A1
                          INNER JOIN $data_table A2 on concat(A2.Gene_Name,'.1')=A1.Gene_Name";
+                         $test =3;
              }
             // Si les annotations ne sont pas des transcripts mais les valeurs oui //
             elseif($testTransAnnotLen == 0 && $testTransDataLen != 0)
             {
                 // delete two last character from transcript //
-                $sql_query="SELECT SUBSTR(A1.Gene_Name, 1, CHAR_LENGTH(A1.Gene_Name) - 2) AS Gene_Name, Analyse, Signature,Description,misc 
-                                FROM $annot_table A1
-                                INNER JOIN $data_table A2 on SUBSTR(A2.Gene_Name, 1, CHAR_LENGTH(A2.Gene_Name) - 2)=A1.Gene_Name";
+                  $sql_query="SELECT concat(A1.Gene_Name,'.',right(A2.Gene_Name,((CHAR_LENGTH(A2.Gene_Name))-(InStr(A2.Gene_Name,'.'))))) as Gene_Name, 
+                         Analyse, Signature,Description,misc 
+                         FROM $annot_table A1
+                         INNER JOIN $data_table A2 on 
+                         concat(A1.Gene_Name,'.',right(A2.Gene_Name,((CHAR_LENGTH(A2.Gene_Name))-(InStr(A2.Gene_Name,'.')))))=A2.Gene_Name";
+                                $test =4;
             }
              $query= $this->db->query($sql_query);
              $result->sql = $sql_query;
              $result->nbr = $query->num_rows();
-    
-             
+             $result->testTransAnnot =  $testTransAnnot;
+             $result->testTransData =  $testTransData;
+             $result->test =  $test;
              
             // Inserts. Use unbuffered_row . With big tables avoid memory overload //
             while ($res = $query->unbuffered_row())
@@ -883,7 +898,7 @@ class Generic extends CI_Model
             //$this->db->insert('tables', $data);
             $updTable= $this->update_table_info($UpdateData);
             $result->updTable =  $updTable;
-            $result->testTransAnnotLen =  $testTransAnnotLen;
+            $result->UpdateData =  $UpdateData;
             return $result;
          }
         
@@ -1204,7 +1219,9 @@ class Generic extends CI_Model
                 $toolboxTable="Toolbox_$organism";
                 if(count($annot)==0 && count($toolbox)==0)
                 {
-                    $queryText="SELECT a.Gene_Name,b.cluster, b.group FROM $table AS a , $clusterTable AS b WHERE a.Gene_ID=b.Gene_ID";
+                    $queryText="SELECT a.Gene_Name,b.cluster, b.group 
+                    FROM $table AS a , $clusterTable AS b 
+                    WHERE a.Gene_ID=b.Gene_ID";
                     $query=$this->db->query($queryText);
                     $result->sql = "1:".$queryText;
                 }
@@ -1234,7 +1251,7 @@ class Generic extends CI_Model
                                         FROM  $table t1
                                         INNER JOIN  $clusterTable t2 ON t1.Gene_ID = t2.Gene_ID 
                                         INNER JOIN  $toolboxTable t3 ON t1.Gene_Name LIKE CONCAT( t3.gene_name ,  '%' ) 
-                                        WHERE( ");
+                                        WHERE ( ");
                         $copy=$toolbox;
                         foreach($toolbox as $tool)
                         {
@@ -1248,6 +1265,7 @@ class Generic extends CI_Model
                         //echo $queryText;
                         $result->sql = "3:".$queryText;
                         $query=$this->db->query($queryText);
+                        
                 }
                 else if (count($annot)!=0 && count($toolbox)!=0)
                 {
