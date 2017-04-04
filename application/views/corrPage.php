@@ -13,48 +13,46 @@
 <!-- //////////////    corrPage  //////////////  -->
 <?php
 $this->load->view("templates/pillsCorr");
-echo '<div class="row" id="resContent">';
-echo '<div id="sideBar" class="col-md-2">';
-echo '<p id="fileP">File : <b>'.$filename.'</b></p>';
-echo '<p id="geneP">Gene : <b>'.$geneName.'</b></p>';
-echo '<p>---------------------------------------</p>';
-echo '<div id="seuilChooser" class=input-group>';
-echo '<label for="corS"> Change Correlation Threshold : </label>';
-echo '<input type="range" name="corrSeuil" id="corS" value="0.8" min="0" max="1" step="0.02" oninput="outputUpdate(value)" style="width:100px">';
-echo '<output for="corrSeuil" id="showRange" >0.8</output>';
-echo '<button type="button" class="btn btn-success btn-md" id="corrRun">Filter</button>';
-echo '</div>';
-echo '</br>';
-
-echo '<div id="searcher" class="input-group">';
-echo '<span id="geneSearchLink" class="input-group-addon">';
-echo '<i class="glyphicon glyphicon-search"></i>';
-echo '</span>';
-echo '<input type="text" id="search" class="typeahead form-control" placeholder="Search Gene by Name"/>';
-echo '</div>';
-echo '</br>';
-
-echo '<div id="annotSel" class="form-group">';
-echo '<label for="selAnalyse">Select Analysis to test :</label>';
-echo '<select class="form-control" id="selAnalyse">';
-echo '<option id="default" value="none" selected>Choose an Analysis</option>';
-echo '</select>';
-echo '</div>';
-
-echo '<div id="annotDiv" class="input-group" style="Display:none">';
-echo '<span id="annotSearchLink" class="input-group-addon">';
-echo '<i class="glyphicon glyphicon-search"></i>';
-echo '</span>';
-echo '<input type="text" id="annotSearch" class="typeahead form-control" placeholder="Search Gene by Annotation"/>';
-echo '</div>';
-
-echo '<input type="hidden" id="netstock"/>';
-echo '</div>';
-echo '<div id="displayDiv" class="container-fluid col-md-10">';
-echo '<div class="loader"></div>';
-echo '</div>';
-echo '</div>';
 ?>
+<div class="row" id="resContent">
+    <div id="sideBar" class="col-md-2">
+        <p id="fileP">File : <b>'<?php print $filename; ?>'</b></p>
+        <p id="geneP">Gene : <b>'<?php print $geneName; ?>'</b></p>
+        <p>---------------------------------------</p>
+        <h4>Tools</h4>
+        
+        <div id="seuilChooser" class=input-group>
+            <label for="corS"> Change Correlation Threshold : </label>
+            <input type="range" name="corrSeuil" id="corS" value="0.8" min="0" max="1" step="0.02" oninput="outputUpdate(value)" style="width:100px">
+            <output for="corrSeuil" id="showRange" >0.8</output>
+            <button type="button" class="btn btn-success btn-md" id="corrRun">Filter</button>
+        </div>
+        
+        <div id="searcher" class="input-group">
+            <span id="geneSearchLink" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            <input type="text" id="search" class="typeahead form-control" placeholder="Search Gene by Name"/>
+        </div> 
+        
+        <!--  Annot Search -->
+        <div id="annotSel" class="form-group">
+            <label for="selAnalyse">Select Analysis to test :</label>
+            <select class="form-control" id="selAnalyse">
+                <option id="default" value="none" selected>Choose an Analysis</option>
+            </select>
+        </div>
+        
+        <div id="annotDiv" class="input-group" style="Display:none">
+            <span id="annotSearchLink" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+            <input type="text" id="annotSearch" class="typeahead form-control" placeholder="Search Gene by Annotation"/>
+        </div>
+                
+    </div><!-- End DIV side-bar -->    
+        
+    <div id="displayDiv" class="container-fluid col-md-8">
+    <div class="loader"></div> 
+    
+</div><!-- End DIV row -->
+
 <script type="text/javascript">
 document.onkeydown = function() 
 {
