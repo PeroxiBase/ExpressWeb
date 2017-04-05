@@ -50,8 +50,8 @@ class Display extends MY_Controller {
             ### check if current user belong to group Demo only
             $userDemo = $this->expression_lib->in_Demo_grp();
             // Add session variables , file and thrshold(seuil) used //     
-            $filename=$_POST['file'];
-            $seuil=1-$_POST['seuil'];
+            $filename=$this->input->post('file');
+            $seuil= (1 - $this->input->post('seuil') );
             $seuilName=str_replace(".","_",$seuil);
             $this->session->set_userdata('seuilName',$seuilName);
             $this->session->set_userdata('fileName',$filename);
@@ -73,8 +73,8 @@ class Display extends MY_Controller {
 	**/
 	public function saveTable()
 	{
-            $conditions=$_POST['conditions'];
-            $filename=$_POST['filename'];
+            $conditions=$this->input->post('conditions');
+            $filename=$this->input->post('filename');
             $orga=$this->visualizer->get_Organism($filename);
             $organism=$orga->Organism;
             $submitter=$this->session->userdata('username');
@@ -105,8 +105,8 @@ class Display extends MY_Controller {
 	**/
 	public function getSignature()
 	{
-		$analyse=$_POST['analyse'];
-		$file=$_POST['file'];
+		$analyse=$this->input->post('analyse');
+		$file=$this->input->post('file');
 		$signRes=$this->visualizer->get_Signatures($file,$analyse);
 		print_r(json_encode($signRes));		
 	}
@@ -119,8 +119,8 @@ class Display extends MY_Controller {
 	**/	
 	public function getGenesAnnot()
 	{
-		$signature=$_POST['signature'];
-		$file=$_POST['file'];
+		$signature=$this->input->post('signature');
+		$file=$this->input->post('file');
 		$geneRes=$this->visualizer->get_Annot_Gene($file,$signature);
 		print_r(json_encode($geneRes));
 	}
@@ -133,8 +133,8 @@ class Display extends MY_Controller {
 	**/
 	public function getClusters()
 	{
-		$filename=$_POST['filename'];
-		$orderTable=$_POST['orderTable'];
+		$filename=$this->input->post('filename');
+		$orderTable=$this->input->post('orderTable');
 		$clusterRes=$this->visualizer->get_Cluster($orderTable,$filename);
 		print_r(json_encode($clusterRes));
 	}
@@ -147,9 +147,9 @@ class Display extends MY_Controller {
 	**/
 	public function getClustersValues()
 	{
-		$filename=$_POST['filename'];
-		$geneDict=$_POST['geneDict'];
-		$seuil=$_POST['seuil'];
+		$filename=$this->input->post('filename');
+		$geneDict=$this->input->post('geneDict');
+		$seuil=$this->input->post('seuil');
 		$valuesRes=$this->visualizer->get_Values_from_GeneDict($filename,$seuil,$geneDict);
 		print_r(json_encode($valuesRes));
 	}
@@ -162,7 +162,7 @@ class Display extends MY_Controller {
 	**/
 	public function getGenes()
 	{
-		$filename=$_POST['filename'];
+		$filename=$this->input->post('filename');
 		$genesRes=$this->visualizer->get_Genes($filename);
 		print_r(json_encode($genesRes));	
 	}
@@ -175,8 +175,8 @@ class Display extends MY_Controller {
 	**/
 	public function getNamefromID()
 	{
-		$filename=$_POST['filename'];
-		$geneID=$_POST['geneID'];
+		$filename=$this->input->post('filename');
+		$geneID=$this->input->post('geneID');
 		$geneNames=array();
 		foreach($geneID as $ID)
 		{
@@ -218,8 +218,8 @@ class Display extends MY_Controller {
 	**/
 	public function CSV_to_JSON()
 	{
-            $file=$_POST['filename'];
-            $geneID=intval($_POST['geneID']);
+            $file=$this->input->post('filename');
+            $geneID=intval($this->input->post('geneID'));
             $csv=array();
             $lines = file($file, FILE_IGNORE_NEW_LINES);
             $good_del=",";
