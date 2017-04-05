@@ -183,7 +183,7 @@ class Visual extends MY_Controller
             #### Gene Specific ####
             if($this->input->post('geneSelect') && $this->input->post('geneSelect') =='geneChecked')
             {
-                    $gene=$_POST['gene'];
+                    $gene=$this->input->post('gene');
                     $data['seuil']= $this->input->post('corTh');
                     $data['gene']=$gene;
                     #### Extract the values and correlation for each gene ####
@@ -291,6 +291,7 @@ class Visual extends MY_Controller
                     $data['message'] = "Preparing data..";
                     $data['loop_time']= $loop_time*1000;
                     $data['EndFile']= $EndFile;
+                    $this->session->set_userdata('processed_'.$pid,'1');
                     $work_scripts = $this->config->item('work_scripts');
                     $EndFile = "$work_scripts/EndJob_$pid.txt";
                     $this->session->set_userdata('processed_'.$pid,'1');
@@ -349,6 +350,7 @@ class Visual extends MY_Controller
         $seuilName=$this->session->userdata['seuilName'];		
         $dir=$this->session->userdata['working_path'];
         $filename=$this->session->fileName;
+        if(!isset($filename)) $this->init_user(); #redirect('init','refresh');
         $errorCpt=$this->session->userdata('errorCpt');        
         $processed= $this->session->userdata('processed_'.$pid);
         #$processed= 1;
@@ -709,7 +711,7 @@ class Visual extends MY_Controller
                 $annotation=array();
         }
         
-        if( isset($_POST['toolbox']) )
+        if( isset($this->input->post('toolbox')) )
         {
                 $toolbox= $this->input->post('toolbox');
         }
@@ -774,7 +776,7 @@ class Visual extends MY_Controller
             #### if clustering results only
             else
             {
-                 $this->session->set_userdata('dwnd',"ELSE annot >0 toll>0  annot  ");
+                    $this->session->set_userdata('dwnd',"ELSE annot >0 toll>0  annot ");
                     $sign="";
                     $annot="";
                     $b_a="";
