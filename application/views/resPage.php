@@ -394,7 +394,7 @@ $('#downloadLink').click(function()
     if(debug) { console.log('396 #downloadLink analyse ' + analyse); }
     <?php if($this->ion_auth->in_group('members'))
         { ?>
-        $('#addToolbox').append('<select class="form-control searcher" id="selToolbox2"><option id="default" value="all" selected>Choose a Toolbox</option></select>')
+        $('#addToolbox').append('<select class="form-control searcher" id="selToolbox2"><option id="default" value="all" selected>Choose a Toolbox !</option></select>')
         $('#addToolbox').append('<textarea id="toolboxArea" class="form-control textareaPerso" rows="5" style="margin-top:2vh;"></textarea>')
         $('#addToolbox').append('<button type="button" id="resetToolbox" class="btn btn-danger btn-sm">RESET</button>')
         $('#toolboxArea').prop('disabled',true)
@@ -408,8 +408,21 @@ $('#downloadLink').click(function()
                             data=JSON.parse(data)
                             for(var i in data)
                             {
-                                    toolbox=data[i]['toolbox_name']
-                                    $('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
+                                if(data[i]['toolbox_name']==undefined || data == "")
+				{
+					$('#selToolbox2').append('<option value="">There is no toolbox for this organism i '+i+'</option>')
+					toolbox='';
+				}
+				else
+				{
+					toolbox=data[i]['toolbox_name']
+					$('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
+					if(debug) { console.log('420 toolbox/getToolboxes toolbox '+toolbox); }
+				}                                    
+                            }
+                            if(toolbox =='')
+                            {
+                                $('#addToolbox').remove()
                             }
                 }
         });
@@ -567,6 +580,7 @@ $('#downloadLink').click(function()
 		data:{ filename:filename },
 		success:function(data){
 			if(data)
+			    if(debug) { console.log('570 display/getGenes data '+data); }
 			data=JSON.parse(data)
 			tags=[]
 			for(var i in data)
@@ -648,14 +662,15 @@ $('#downloadLink').click(function()
 				{
 					toolbox=data[i]['toolbox_name']
 					$('#selToolbox').append('<option value="'+toolbox+'">'+toolbox+'</option>')
-					if(debug) { console.log('637 toolbox/getToolboxes toolbox '+toolbox); }
+					if(debug) { console.log('651 toolbox/getToolboxes toolbox '+toolbox); }
 				}
 			}
-			if(debug) { console.log('640 toolbox/getToolboxes data %s toolbox %s',data,toolbox); }
+			if(debug) { console.log('654 toolbox/getToolboxes data %s toolbox %s',data,toolbox); }
 			// if no toolbox available (demo account) , remove toolbox button
 			if (toolbox =='')
                         {
                             $('#swLabel2').remove()
+                            
                         }
 		}
 	});
