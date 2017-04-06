@@ -130,7 +130,7 @@ $('#listLink').click(function()
     if( $('.switcher').val() == 'annot')
     {
         $('#annotSel').fadeIn()
-        if(debug) { console.log('140 #listLink .switcher val '+ $('.switcher').val()); }
+        if(debug) { console.log('133 #listLink .switcher val '+ $('.switcher').val()); }
     }
     if( $('.switcher').val() == 'toolbox')
     {
@@ -184,13 +184,13 @@ $('#heatLink').click(function()
                             ids.push(id)
                         }
                    })
-                    if(debug) { console.log('193 #heatLink geneDict selected genes ids: '+ ids);}
+                    if(debug) { console.log('187 #heatLink geneDict selected genes ids: '+ ids);}
                     geneDict=ids
             }
             else
             {
                 var geneDict=extractValues(filename,orderName,seuil)
-                if(debug) { console.log('199 #heatLink geneDict whole genes: '+ geneDict); }
+                if(debug) { console.log('193 #heatLink geneDict whole genes: '+ geneDict); }
             }
             drawHeatmap(geneDict,filename,seuil)
         }
@@ -245,12 +245,12 @@ $('#netLink').click(function()
                     }	
             })
             geneDict=ids
-            if(debug) { console.log('256 #netLink geneDict selected genes ids: '+ geneDict); }
+            if(debug) { console.log('248 #netLink geneDict selected genes ids: '+ geneDict); }
     }
     else
     {
             var geneDict=extractValues(filename,orderName,seuil)
-            if(debug) { console.log('261 #netLink geneDict selected genes ids: '+ geneDict); }
+            if(debug) { console.log('253 #netLink geneDict selected genes ids: '+ geneDict); }
     }
     if ( $('#netcontainer').length >0 && geneDict == $('#netstock').val() )
     {
@@ -264,8 +264,8 @@ $('#netLink').click(function()
             $('#displayDiv').append('<div class="netContainer" id="netcontainer"></div>');
             var nodesFile="<?php echo $nodesFile; ?>";
             var edgesFile="<?php echo $edgesFile; ?>";
-            if(debug) { console.log('275 #netLink drawNetwork  edgesFile'+ edgesFile); }
-            console.log('275 #netLink drawNetwork  edgesFile %s filename %s ', edgesFile,filename); 
+            if(debug) { console.log('267 #netLink drawNetwork  edgesFile'+ edgesFile); }
+            if(debug) { console.log('268 #netLink drawNetwork  edgesFile %s filename %s ', edgesFile,filename); }
             drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile)
     }
     $('.nav-pills li').removeClass('active')
@@ -391,7 +391,7 @@ $('#downloadLink').click(function()
             $('#dlLink').fadeOut()
     });
     
-    if(debug) { console.log('396 #downloadLink analyse ' + analyse); }
+    if(debug) { console.log('394 #downloadLink analyse ' + analyse); }
     <?php if($this->ion_auth->in_group('members'))
         { ?>
         $('#addToolbox').append('<select class="form-control searcher" id="selToolbox2"><option id="default" value="all" selected>Choose a Toolbox !</option></select>')
@@ -467,7 +467,7 @@ $('#downloadLink').click(function()
             }
             else
             {
-                    if(debug) { console.log('449 #downloadLink moreDiv len: ' ,$('#moreDiv').length); }
+                    if(debug) { console.log('470 #downloadLink moreDiv len: ' ,$('#moreDiv').length); }
                     annot=$('#annotArea').val()
                     toolbox=$('#toolboxArea').val()
                     annot=annot.split('\n')
@@ -479,9 +479,9 @@ $('#downloadLink').click(function()
                         $('#toolboxArea').empty()
                     <?php } ?>
                     if(debug) {
-                        console.log('455  #downloadLink annot.length ' + annot.length);
-                        console.log('456  #downloadLink annot  ' + annot );
-                        console.log('457  #downloadLink toolbox  ' + toolbox );
+                        console.log('482  #downloadLink annot.length ' + annot.length);
+                        console.log('483  #downloadLink annot  ' + annot );
+                        console.log('484  #downloadLink toolbox  ' + toolbox );
                     }
                     if(annot.length > 1)
                     {
@@ -509,8 +509,8 @@ $('#downloadLink').click(function()
                                     if(data)
                                          if(debug) 
                                          {
-                                             console.log('485 #downloadLink visual/download filename \%s\ annot \%s\ toolbox \%s\ ',filename,annot,toolbox );
-                                             console.log('487 #downloadLink visual/download data %s ', data);
+                                             console.log('512 #downloadLink visual/download filename \%s\ annot \%s\ toolbox \%s\ ',filename,annot,toolbox );
+                                             console.log('513 #downloadLink visual/download data %s ', data);
                                          }
                                     $('#dlLink').attr('href',data);
                                     $('#dlLink').fadeIn();
@@ -580,7 +580,7 @@ $('#downloadLink').click(function()
 		data:{ filename:filename },
 		success:function(data){
 			if(data)
-			    if(debug) { console.log('570 display/getGenes data '+data); }
+			    if(debug) { console.log('583 display/getGenes data '+data); }
 			data=JSON.parse(data)
 			tags=[]
 			for(var i in data)
@@ -662,10 +662,10 @@ $('#downloadLink').click(function()
 				{
 					toolbox=data[i]['toolbox_name']
 					$('#selToolbox').append('<option value="'+toolbox+'">'+toolbox+'</option>')
-					if(debug) { console.log('651 toolbox/getToolboxes toolbox '+toolbox); }
+					if(debug) { console.log('665 toolbox/getToolboxes toolbox '+toolbox); }
 				}
 			}
-			if(debug) { console.log('654 toolbox/getToolboxes data %s toolbox %s',data,toolbox); }
+			if(debug) { console.log('668 toolbox/getToolboxes data %s toolbox %s',data,toolbox); }
 			// if no toolbox available (demo account) , remove toolbox button
 			if (toolbox =='')
                         {
@@ -682,7 +682,7 @@ $('#downloadLink').click(function()
 		success:function(data){
 			if(data)
 			data=JSON.parse(data)
-		            if(debug) { console.log('656 ajax toolbox/get_fClass data %s ',data); }
+		            if(debug) { console.log('685 ajax toolbox/get_fClass data %s ',data); }
 			for(var i in data)
 			{
 				if(data[i]['toolbox_name']==undefined)
@@ -693,7 +693,7 @@ $('#downloadLink').click(function()
 				{
 					fClass=data[i]['functional_class']
 					$('#selfClass').append('<option value="'+fClass+'">'+fClass+'</option>')
-					if(debug) { console.log('667 ajax toolbox/get_fClass fClass %s ',fClass); }
+					if(debug) { console.log('696 ajax toolbox/get_fClass fClass %s ',fClass); }
 				}
 			}
 		}
@@ -711,7 +711,7 @@ $('#downloadLink').click(function()
                     success:function(data){
                             if(data)
                             data=JSON.parse(data)
-                            if(debug) { console.log('685 #selToolbox toolbox/get_fClass data %s toolbox %s ',data,toolbox); }
+                            if(debug) { console.log('714 #selToolbox toolbox/get_fClass data %s toolbox %s ',data,toolbox); }
                             for(var i in data)
                             {
                                     fClass=data[i]['functional_class']
@@ -730,7 +730,7 @@ $('#downloadLink').click(function()
             var tbName=$('#selToolbox').val()
             var fClass=$('#selfClass').val()
             var wpDB=$('#wpCheck').val()
-            if(debug) { console.log("704 Toolbox : "+tbName+" - fClass : "+fClass+" - WB : "+wpDB); }
+            if(debug) { console.log("733 Toolbox : "+tbName+" - fClass : "+fClass+" - WB : "+wpDB); }
             $.ajax({
                     url:'<?php echo base_url('toolbox/get_Genes_Toolbox'); ?>',
                     type:'POST',
@@ -743,7 +743,7 @@ $('#downloadLink').click(function()
                     {
                             if(data)
                             data=JSON.parse(data)
-                            if(debug) { console.log('717 toolbox/get_Genes_Toolbox '+data); }
+                            if(debug) { console.log('746 toolbox/get_Genes_Toolbox '+data); }
                             highlightToolbox(data)
                             $('#geneNamesBox').fadeOut('slow')
                             $('#geneNamesBox').remove()
@@ -863,7 +863,7 @@ $('#downloadLink').click(function()
                         success: function(data) {
                                 if(data)
                                 res=JSON.parse(data)
-                                if(debug) { console.log('837 display/getGenesAnnot '+ res); }
+                                if(debug) { console.log('866 display/getGenesAnnot '+ res); }
                                 $('#geneNamesBox').fadeOut('slow')
                                 $('#geneNamesBox').remove()
                                 $('#sideBar').append('<div id=geneNamesBox></div>')

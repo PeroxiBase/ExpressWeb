@@ -13,7 +13,7 @@
 */
 print "<!-- //////////////    admin/remove_tables  //////////////  -->\n";
 print "<div class=\"row\">\n";
-print "    <div  id=\"param\" class=\"col-md-8 center-block\"> \n";
+print "    <div  id=\"param\" class=\"col-md-12 center-block\"> \n";
 print "         <a href=\"../create_table\">back to Admin Express Db</a><br />\n";
 
 print $this->session->flashdata('message')."<br />\n";
@@ -57,18 +57,18 @@ foreach($tables->result as $row)
             $Table_Name= $row['TableName']; 
             if(preg_match("/$TableName/",$Table) )
             {
-                   if($Table==$Table_Name) 
+                   if($Table==$TableName) 
                    {
-                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' /><b>$Table ($IdTables)</b><br />";
+                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' /> <b>$Table</b><br />";
                        $Dependencies .="<input type=hidden name=\"master_table[$IdTables]\" value='$Table' />";
                    }
-                   if($Table == "Annotation_$Table_Name")
+                   elseif($Table == "Annotation_$TableName")
                    {
-                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' />$Table [A]<br />";
+                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' /> $Table [A]<br />";
                    }
-                   if($Table == $Table_Name."_0" OR preg_match("/Annotation_$Table_Name/",$Table))
+                   elseif(preg_match("/${TableName}_0/",$Table))
                    {
-                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' />$Table($IdTables)<br />";
+                       $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' /> $Table<br />";
                    }
                   $Engine .= $ENGINE."<br />";
                   $Nbrlines .= $TABLE_ROWS."<br />";
@@ -88,7 +88,8 @@ foreach($tables->result as $row)
 }
 print "             </tbody>\n";
 print "         </table>\n";
-
+print "<br />\n";
+print "<div class=\"legend\">[A]: annotation file <br />  <b>Table_Name</b>: DataSet <br /> *_Cluster *_Order: Cluster analysis</div>\n";
 print "    </div><!-- End DIV param -->\n";
 print " </div><!-- End DIV rows -->\n";
 print "<!-- //////////////    End admin/remove_tables  //////////////  -->\n";

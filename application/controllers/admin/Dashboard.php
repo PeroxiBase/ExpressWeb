@@ -139,10 +139,10 @@ class Dashboard extends MY_Controller
                     $nbFields= count($Fields);
                     $slots="";
                     if($nbFields==10)
-                        list($void,$job_ID,$prior,$name,$user,$state,$submit,$queue,$slots,$task_ID) = explode("\t",$val);
+                        list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue,$slots,$task_ID) = explode("\t",$val);
                     else
-                            list($void,$job_ID,$prior,$name,$user,$state,$submit,$queue) = explode("\t",$val);
-                    $kill="<button class=\"Qdel btn btn-primary btn-xs\" value=\"$job_ID\" />$job_ID</button>";
+                            list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue) = explode("\t",$val);
+                    $kill="<button class=\"Qdel btn btn-primary btn-xs\" value=\"$processId\" />$job_ID</button>";
                     
                     $Data .= "<tr><td>$kill</td><td>$job_ID</td><td>$prior</td><td>$name</td><td>$user</td><td>$state</td><td>$submit</td><td>$queue</td><td>$slots</td><td>$task_ID</td></tr>\n";
                }

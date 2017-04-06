@@ -506,7 +506,7 @@ class Expression_lib
         if($Match->match==0) 
         {
             #$html_data = "<tr><th colspan=2>Line $i</th></tr>\n";
-            $html_data= "<tr><td colspan=2 class=\"warn\">GeneName $GeneName ($GGG) does not follow the validation rules:<br /> $rules!! </td></tr>\n";
+            $html_data= "<tr><td colspan=2 class=\"warn\">GeneName $GeneName ($GGG) does not follow the validation rules:<br /> </td></tr>\n";
             $html_data.= "<tr><td colspan=\"2\" class=\"small\">$line</td></tr>\n";
             $Match->html_data.=$html_data;
             return $Match;

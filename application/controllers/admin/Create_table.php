@@ -381,7 +381,7 @@ class Create_table extends MY_Controller
                  }
                  else
                  {
-                     $prev_size= $max_value_col[$clnb]['size'];
+                     $prev_size=  $max_value_col[$clnb]['size'];
                      $prev_type= $max_value_col[$clnb]['type'];
                      $prev_option= $max_value_col[$clnb]['option'];
                      if ($col_size > $prev_size) 
@@ -402,7 +402,7 @@ class Create_table extends MY_Controller
                  $clnb++;
             }
             array_push($Datas_columns,$data_columns);
-           if(isset($limit) && $i> $limit) 
+           if(isset($limit) && $limit!="" && $i> $limit) 
            {
                $debug .=  "limit $limit i $i <br>";
                 break;
@@ -628,7 +628,8 @@ class Create_table extends MY_Controller
                 $DbInfo = array('master_group' => "$master_group",'table_name' => "$table_name",'IdOrganism' => "$IdOrganism",
                                'version' => $version,'comment' => addslashes($comment),'file_name' => $file_name,
                                'force_dump' => "$force_dump");
-                 $insert_in_db = $this->generic->create_Sql_table($DbInfo,"$sql_data_CT");
+                $insert_in_db = $this->generic->create_Sql_table($DbInfo,"$sql_data_CT");
+                $child = $insert_in_db->IdTable;
                 $debug .= "<hr />BAck create_Sql_table:<br />".$insert_in_db->info;
             }
             elseif($Table_already_set == $table_name)
@@ -723,14 +724,13 @@ class Create_table extends MY_Controller
 		$originalAnnot="Annotation_$IdOrganism";
                 if($this->db->table_exists($originalAnnot))
                 {
-                   $rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
-                   $test= $this->generic->extract_annot($originalAnnot,$table_name,$rules);
+                   #$rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
+                   $test= $this->generic->extract_annot($originalAnnot,$table_name,$child);
                 } 
                 else
-                {
-                 
-                   $rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
-                   $test= $this->generic->extract_annot($originalAnnot,$table_name,$rules);
+                {                 
+                   #$rules = $this->expression_lib->verifyGeneNameStruct($GeneName);
+                   $test= $this->generic->extract_annot($originalAnnot,$table_name,$child);
                 }
                 ########################################################################################
              

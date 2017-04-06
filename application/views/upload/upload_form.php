@@ -65,19 +65,19 @@
      <tr>
             <th>Post Processing</th>
             <td>
-                 Define replicates   <input type="radio"  name="post_process" value='replicate' required/>  <br />
-                 Define conditions   <input type="radio"  name="post_process" value='condition' />  <br />
+                 Define replicates   <input type="radio"  name="post_process" value='replicate' />  <br />
+                <!-- Define conditions   <input type="radio"  name="post_process" value='condition' />  <br /> -->
                  None   <input type="radio"  name="post_process" value='none' checked />  <br />
             </td>
      </tr>
      <tr>
             <th>Type of Data</th>
             <td>
-                 RPKM   <input type="radio"  name="type_data" value='RPKM' required/>  <br />
+                <!-- RPKM   <input type="radio"  name="type_data" value='RPKM' required/>  <br />
                  Fold Change   <input type="radio"  name="type_data" value='Fold_Change' />  <br />
                  Log     &nbsp;&nbsp;<input type="radio"  name="type_data" value='LOG' />  <br />
-                 Normal distribution     <input type="radio"  name="type_data" value='STD' />  <br />
-                 Raw data     &nbsp;&nbsp;<input type="radio"  name="type_data" value='RAW' /> 
+                 Normal distribution     <input type="radio"  name="type_data" value='STD' />  <br /> -->
+                 Raw data     &nbsp;&nbsp;<input type="radio"  name="type_data" value='RAW' checked /> 
             </td>
      </tr>
      <tr>

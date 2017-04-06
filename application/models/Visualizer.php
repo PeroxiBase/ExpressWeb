@@ -315,10 +315,11 @@ class Visualizer extends CI_Model {
             ### Name for New Table //
             ## get last sub_table ID !!
             $get_lastId = $this->generic->get_last_sub($filename."_");
-            $last_id = explode("_",$get_lastId->result->TableName);
+            $last_id = explode("_",$get_lastId->result);
             $last_id = end($last_id ) + 1;
             $newName=$filename."_".$last_id;
-
+            #log_message('debug', "visualizer::save_Modif_Table($filename,$conditions,$organism,$submitter,$group):: last_id: $last_id\n newName: $newName\n" );
+            
             // GET VALUES //
             $queryText="SELECT ";
             foreach($conditions as $cond)

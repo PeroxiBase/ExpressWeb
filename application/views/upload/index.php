@@ -59,7 +59,7 @@
                 <p>Convert csv or tabulated file to SQL table</p>
                 <ul>
                   <li>
-                    <a href="create_table/upload_csv" >Conversion Fichier => Table</a>
+                    <a href="create_table/upload_csv" >Generate DataSet</a>
                   </li>	                  
                 </ul>
             </div>

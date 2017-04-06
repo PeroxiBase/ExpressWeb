@@ -78,6 +78,7 @@ class Display extends MY_Controller {
             $orga=$this->visualizer->get_Organism($filename);
             $organism=$orga->Organism;
             $submitter=$this->session->userdata('username');
+            $status = "";
             if($submitter != "demo")
             {
                 $group=$this->session->userdata('groups');
@@ -88,12 +89,15 @@ class Display extends MY_Controller {
                 if($this->db->table_exists($originalAnnot))
                 {
                     if($this->db->table_exists($name))
-                    {
+                    {   
                         $status = $this->generic->extract_annot($originalAnnot,$name,$child );
+                        # log_message('debug', "Display::saveTable:: 96 $name exist raw status  ".print_r($status,1)."\n");
+                        if($status->updTable->info !="") $status=$name;
                     }
                 }
-                return $status;
+                print $status;
             }
+            return;
 	}
 	
 	/**
@@ -121,8 +125,11 @@ class Display extends MY_Controller {
 	{
 		$signature=$this->input->post('signature');
 		$file=$this->input->post('file');
-		$geneRes=$this->visualizer->get_Annot_Gene($file,$signature);
-		print_r(json_encode($geneRes));
+		if($signature !='' && $file !="" )
+		{
+                    $geneRes=$this->visualizer->get_Annot_Gene($file,$signature);
+                    print_r(json_encode($geneRes));
+		}
 	}
 	
 	/**
@@ -150,8 +157,11 @@ class Display extends MY_Controller {
 		$filename=$this->input->post('filename');
 		$geneDict=$this->input->post('geneDict');
 		$seuil=$this->input->post('seuil');
-		$valuesRes=$this->visualizer->get_Values_from_GeneDict($filename,$seuil,$geneDict);
-		print_r(json_encode($valuesRes));
+		if($filename !='' && $geneDict !="" &&  $seuil!="")
+		{
+                    $valuesRes=$this->visualizer->get_Values_from_GeneDict($filename,$seuil,$geneDict);
+                    print_r(json_encode($valuesRes));
+		}
 	}
 	
 	/**
@@ -163,8 +173,11 @@ class Display extends MY_Controller {
 	public function getGenes()
 	{
 		$filename=$this->input->post('filename');
+		if($filename !='' )
 		$genesRes=$this->visualizer->get_Genes($filename);
-		print_r(json_encode($genesRes));	
+		{
+		    print_r(json_encode($genesRes));
+		}
 	}
 	
 	/**

@@ -25,7 +25,8 @@
     print "File name: $file_name <br />";
     print "File size: $file_size octets<br />";
     print "Header: $has_header<br />";
-    print "PostProcessing: $type_data <hr />";
+    print "PostProcessing: $type_data <br />";
+    print "Nbr of lines: $info <hr />";
      print $this->session->flashdata('message');
     $i=1;
     $table_list="";
@@ -132,7 +133,7 @@
     print "             <td> <input name=\"comment_geneName\" type=\"checkbox\" value='1' /> $help_Comment</td>\n";
     print "     </tr>";
     print "</table>\n";
-    
+    print "<br /><br />";
     print "<table class=\"table-collapse\" border=1>\n";
     print "     <thead>\n";
     print "       <tr><th>N.</th><th>Title</th><th>Value</th>\n";
@@ -205,6 +206,7 @@
   
     $max_mem= memory_get_usage(TRUE);
     print  "<hr />back parse memory_get_usage TRUE: $max_mem<hr />";
+    
 ?>
 </div>
 <!--END DIV RIGHT -->

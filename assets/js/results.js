@@ -454,20 +454,28 @@ function drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile){
         				improvedLayout:false,
    			 	},
 				physics:{
-        				solver: 'barnesHut',
+        				        				
+        				barnesHut: {
+          					gravitationalConstant: -20000,//-50000
+          					springConstant: 0.01, //0.01
+          					springLength: 200, //500
+						centralGravity:0.01, //0.01
+						avoidOverlap:0.6 ,//0.6
+						//damping: 0.15
+					},
+					solver: 'barnesHut',
         				stabilization: {
           					enabled:false,
-          				//	iterations:1500,
+          				 	//iterations:1000,
+          				 	//updateInterval: 50,
+          				 	// onlyDynamicEdges: true,
+          				 	//fit: true
         				},
-        				barnesHut: {
-          					gravitationalConstant: -50000,
-          					springConstant: 0.01,
-          					springLength: 500,
-						centralGravity:0.01,
-						avoidOverlap:0.6
-					},
-        				maxVelocity:120,
-        				minVelocity:20,
+        				maxVelocity:100, //120
+        				minVelocity:20, //20
+        				  timestep: 0.5,
+        				 adaptiveTimestep: true
+
      	 			},
       				interaction:{
         				hover:true,
@@ -475,8 +483,9 @@ function drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile){
       				}
 			}
 			var network = new vis.Network(container, data, options);
-			if(debug) { console.log("network ok"); }
-			
+		debug=1;	if(debug) { console.log("network ok options ");
+		        console.info(options);}
+			debug=0;
 			var nodesList=n
 			var clusList=[]
 			for(var x=0;x<nodesList.length;x++){

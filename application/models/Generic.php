@@ -368,7 +368,8 @@ class Generic extends CI_Model
             $query= $this->db->query($sql_query);
             $result->sql = $sql_query;
             $result->nbr = $query->num_rows();
-            $result->result = $query->row();
+            $result->result = $query->row('TableName');
+            #log_message('debug', "generic::get_last_sub($table_name):: sql: $sql_query\n result: $result->result\n" );
             return $result;
         }
 
@@ -561,7 +562,7 @@ class Generic extends CI_Model
            $UpdateData =array('table_name' => "$table_name",'Master_Group' => "$Master_Group",
                               'IdOrganism' => "$IdOrganism",'submitter' => "$submitter",
                               'version' => "$version",'comment' => "$comment",
-                              'file_name'  => "$file_name",'Root' => "1",'Child'=>'0');
+                              'file_name'  => "$file_name",'Root' => '1','Child'=>'0');
            
            $update_tables= $this->update_table_info($UpdateData);
            
@@ -570,12 +571,13 @@ class Generic extends CI_Model
              ####################### Update  table_groups information
               $this->db->query("REPLACE INTO tables_groups (table_id ,group_id) VALUES ( '$IdTable', '$Master_Group')");
               ##############  Allow Admin  if $MasterGroup != 1!! ######################
-              if ($MasterGroup != 1)
+              if ($Master_Group != 1)
               {
                   $this->db->query("REPLACE INTO tables_groups (table_id ,group_id) VALUES ( '$IdTable', '1')");
               }
               
               $Data->info .= "\t\t table Tables tables_groups a jour IdTable $IdTable<hr />";
+              $Data->IdTable = $IdTable;
             return $Data;
         }
         
@@ -739,7 +741,7 @@ class Generic extends CI_Model
             $UpdateData =array('table_name' => "$newName",'Master_Group' => "1",
                           'IdOrganism' => "$id_organism",'submitter' => "$submitter",
                           'version' => "1",'comment' => "Cluster file for table $filename",
-                          'file_name'  => "$filename",
+                          'file_name'  => "$filename",'Root' =>"0",
                           'Child' => "$ChildId");
             $updTable= $this->update_table_info($UpdateData);
             $newName=$filename."_".$seuil."_Order";
@@ -807,7 +809,8 @@ class Generic extends CI_Model
              $result = new stdClass();
              
              // Table Creation //
-            $newName="Annotation_$data_table";	
+            $newName="Annotation_$data_table";
+            log_message('debug', "generic::extract_annot($annot_table,$data_table,$child,$update):: newName $newName \n");
             if(!$this->db->table_exists($newName))
             {
                  
@@ -894,7 +897,7 @@ class Generic extends CI_Model
             $UpdateData =array('table_name' => "$newName",'Master_Group' => "1",
                           'IdOrganism' => "$id_organism",'submitter' => "$submitter",
                           'version' => "1",'comment' => "Annotation file for table $data_table",
-                          'file_name'  => "$data_table",'Root'=> "1",'Child' =>"$child");
+                          'file_name'  => "$data_table",'Root'=> "0",'Child' =>"$child");
             //$this->db->insert('tables', $data);
             $updTable= $this->update_table_info($UpdateData);
             $result->updTable =  $updTable;

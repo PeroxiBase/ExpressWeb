@@ -711,7 +711,7 @@ class Visual extends MY_Controller
                 $annotation=array();
         }
         
-        if( isset($this->input->post('toolbox')) )
+        if( $this->input->post('toolbox') )
         {
                 $toolbox= $this->input->post('toolbox');
         }

@@ -105,14 +105,14 @@ $(function(){
                             data:{ conditions: newColumns, filename:filename },
                             success: function(data) {
                                     if(data){
-                                            console.log('ok')
+                                            console.log('display/saveTable:: ok')
                                             console.log(data)
                                             alert('The table '+data+' has been created !')
                                             location.reload()
                                     }
                                     else
                                     { 
-                                        console.log('pas ok') 
+                                        console.log('display/saveTable::not ok') 
                                         alert('The table '+data+' has not been created !')
                                         location.reload()
                                     }
