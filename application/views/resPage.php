@@ -201,8 +201,7 @@ $('#heatLink').click(function()
             $('.alert-danger').append('<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>') 
         }
         $('.nav-pills li').removeClass('active')
-        $(this).parent('li').addClass('active')
-		
+        $(this).parent('li').addClass('active')		
 });
  
 $('#netLink').click(function()
@@ -218,8 +217,7 @@ $('#netLink').click(function()
     $('#toolboxSel').fadeOut()
     $('.loader').fadeIn('slow')
     $('#accordion').fadeOut()
-    $('.Container').remove()
-    
+    $('.Container').remove()    
     $('#legendDiv').prepend('<div id="dlnDIV" class="form-group downloader"><a id="dlNetwork" download="Network.png" href="" class="btn btn-default btn-info role="button">Download PNG</a></div>')
     if( $('#closeDiv').length>0 )
     {
@@ -234,8 +232,9 @@ $('#netLink').click(function()
     var filename='<?php echo $filename; ?>';
     var orderName='<?php echo $orderName; ?>';
     var seuil='<?php echo $seuil; ?>';
+    if(debug) { console.log('235 #netLink filename %s orderName %s seuil %s: ',filename,orderName,seuil); }
     if($('#genesTable').length>0 )
-    {  
+    {
             ids=[]
             $('#genesTable').find('td').each (function() {
                     gene=$(this).text()
@@ -245,12 +244,12 @@ $('#netLink').click(function()
                     }	
             })
             geneDict=ids
-            if(debug) { console.log('248 #netLink geneDict selected genes ids: '+ geneDict); }
+            if(debug) { console.log('247 #netLink geneDict selected genes ids: '+ geneDict); }
     }
     else
     {
             var geneDict=extractValues(filename,orderName,seuil)
-            if(debug) { console.log('253 #netLink geneDict selected genes ids: '+ geneDict); }
+            if(debug) { console.log('252 #netLink geneDict selected genes ids: '+ geneDict); }
     }
     if ( $('#netcontainer').length >0 && geneDict == $('#netstock').val() )
     {
@@ -264,9 +263,11 @@ $('#netLink').click(function()
             $('#displayDiv').append('<div class="netContainer" id="netcontainer"></div>');
             var nodesFile="<?php echo $nodesFile; ?>";
             var edgesFile="<?php echo $edgesFile; ?>";
+            
             if(debug) { console.log('267 #netLink drawNetwork  edgesFile'+ edgesFile); }
             if(debug) { console.log('268 #netLink drawNetwork  edgesFile %s filename %s ', edgesFile,filename); }
             drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile)
+            
     }
     $('.nav-pills li').removeClass('active')
     $(this).parent('li').addClass('active')

@@ -13,13 +13,13 @@
 ?>
 <!-- //////////////    fatal     //////////////  -->
 <div id="error" class="container-fluid">
-    <div class="row">
-        <div class="col-md-12 col-lg-12"> 
-            <h1><span class="glyphicon glyphicon-exclamation-sign" style="color:red"></span>
-            <?php print $this->session->flashdata('message')."<br />\n"; ?>
-            
+    <div class="row-centered">
+        <div class="col-md-12 "> 
+            <h4><span class="glyphicon glyphicon-exclamation-sign" style="color:red"></span>
+            <?php print $this->session->fatal_message."<br />\n"; ?>
+            </h4>
         </div>
         
-    </div><br /><?php print $back; ?>
+    </div><br />
 </div>
 <!-- //////////////    End fatal     //////////////  -->

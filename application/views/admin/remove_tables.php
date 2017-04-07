@@ -89,6 +89,7 @@ foreach($tables->result as $row)
 print "             </tbody>\n";
 print "         </table>\n";
 print "<br />\n";
+
 print "<div class=\"legend\">[A]: annotation file <br />  <b>Table_Name</b>: DataSet <br /> *_Cluster *_Order: Cluster analysis</div>\n";
 print "    </div><!-- End DIV param -->\n";
 print " </div><!-- End DIV rows -->\n";

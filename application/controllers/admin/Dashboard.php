@@ -142,7 +142,7 @@ class Dashboard extends MY_Controller
                         list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue,$slots,$task_ID) = explode("\t",$val);
                     else
                             list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue) = explode("\t",$val);
-                    $kill="<button class=\"Qdel btn btn-primary btn-xs\" value=\"$processId\" />$job_ID</button>";
+                    $kill="<button class=\"Qdel btn btn-primary btn-xs\" value=\"$processId\" />$processId</button>";
                     
                     $Data .= "<tr><td>$kill</td><td>$job_ID</td><td>$prior</td><td>$name</td><td>$user</td><td>$state</td><td>$submit</td><td>$queue</td><td>$slots</td><td>$task_ID</td></tr>\n";
                }

@@ -13,7 +13,7 @@
 ?>
 <!-- //////////////    admin/update_result  //////////////  -->
 
-<div class="col-md-6 " id="formTitle"> 
+<div class="col-md-6 "> 
          <a href="<?php print base_url(); ?>admin/<?php print $return_action; ?>">back to Admin</a><br /><br />
 
 <!-- ##### avoid resubmit on admin/remove tables !! ############# -->

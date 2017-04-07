@@ -131,7 +131,7 @@ class Admin extends MY_Controller {
 	        $sql_delete ="";
 	        $Do_delete =1;
 	        $is_locked= "";
-	        $debug ="TableName |$TableName| delete_table $delete_table<br />";
+	        $debug ="TableName |$TableName| delete_table ".print_r($delete_table,1)."  master_table ".print_r($master_table,1)."<br />";
 	        $network=$this->config->item('network');
 	        $similarity = $this->config->item('similarity');
 	        // Check  if we delete the master table $TableName.
@@ -140,28 +140,27 @@ class Admin extends MY_Controller {
 				
 	        if(in_array($TableName,$delete_table) )
 	        {
-	            $debug .= "DEB: 127 in_array(delete_table,TableName) $TableName<br />";
+	            $debug .= "DEB: 143 in_array(delete_table,TableName) $TableName<br />";
 	            // delete all tables !!
 	            foreach($master_table as $key => $value)
 	            {
 			$IdTables = $key;
 			$MasterTableName=$value;
-			$debug .="DEB 133master_table $key value $value <br />";
+			$debug .="DEB 149 master_table $key value $value <br />";
                         $delete =$this->generic->get_table_info($MasterTableName);
-                        $debug .= "DEB 135:  $delete->sql  <br />";
+                        $debug .= "DEB 151:  $delete->sql  <br />";
                         
                         foreach($delete->result as $row)
                         {
                             $is_locked= $this->generic->is_table_lock($row->TABLE_NAME,1);
-                            $debug .= "is_table_lock  $is_locked->sql <br />In_use ?: ".print_r($is_locked->result,1)."<br />";
+                            $debug .= "DEB 156 is_table_lock  $is_locked->sql <br />In_use ?: ".print_r($is_locked->result,1)."<br />";
                             if($is_locked->result->In_use == 0)
                             {
                                 $this->db->trans_begin();
                                 $query_drop = "DROP table $row->TABLE_NAME;";
                                 if($Do_delete) 
                                 {
-                                    $drop_db = $this->db->query($query_drop);
-                                    
+                                    $drop_db = $this->db->query($query_drop);                                    
                                 }
                                 if ($this->db->trans_status() === FALSE) 
                                 {
@@ -172,7 +171,7 @@ class Admin extends MY_Controller {
                                 }
                                 else
                                 {
-                                    $sql_delete .="Table $row->TABLE_NAME deleted<br /><ul>";
+                                    $sql_delete .="Table $row->TABLE_NAME deleted<br /><ul>";                                    
                                     $this->db->trans_commit();
                                 }
                                 
@@ -239,17 +238,16 @@ class Admin extends MY_Controller {
 	        } // IF TableName in delete_table
 	        else
 	        {
-	            $debug .= "DEB: 203 Delete other table than $TableName <br />";	             
+	            $debug .= "DEB: 245 Delete other table than $TableName <br />";	             
                     foreach($delete_table as $key=>$value)
                     {
                         $is_locked = $this->generic->is_table_lock($value,1);
-                         $debug .= "is_table_lock  $is_locked->sql <br />In_use ?: ".$is_locked->result->In_use."<br />";
+                        $debug .= "is_table_lock  $is_locked->sql <br />In_use ?: ".$is_locked->result->In_use."<br />";
                            
-                        $debug .= "DEB: 207  sql: $is_locked->sql <br>nb $is_locked->nbr<br />";
                         if($is_locked->result->In_use==0)
                         {
-                             $this->db->trans_begin();
-                            $query_drop = "DROP table $value;";
+                            $this->db->trans_begin();
+                            $query_drop = "DROP table $value;";                            
                             if($Do_delete) 
                             {
                                 $Do_del = $this->db->query($query_drop); 
@@ -263,33 +261,14 @@ class Admin extends MY_Controller {
                             else
                             {
                                 $sql_delete .="Table $value deleted<br /><ul>";
+                               # $this->db->query($query_remove_info); 
                                 $this->db->trans_commit();
                             }
-                             // remove ref in table_groups
-                             $this->db->trans_begin();
-                            $IdTables = array_search($value,$master_table);
-                            $query_delete_grp ="DELETE FROM `tables_groups` WHERE  `table_id`='$IdTables';";
                             
-                            if($Do_delete)
-                            {
-                                $DoDel = $this->db->query($query_delete_grp);
-                            }
-                            
-                            if ($this->db->trans_status() === FALSE)
-                            { 
-                                $this->db->trans_rollback(); 
-                                $sql_delete .=" WARN : |$query_delete_grp| <br />unable to update status for table $value in tables_groups<br />";                                
-                                #break;
-                            }
-                            else
-                            {
-                                $sql_delete .="<li>Table $value removed from tables_groups</li>";
-                                $this->db->trans_commit();
-                            }
                             // remove ref in table
                             $this->db->trans_begin();
-                            $IdTables = array_search($value,$master_table);
-                            $query_delete_table ="DELETE FROM `tables` WHERE  `IdTables`='$IdTables';"; 
+                            $query_delete_table ="DELETE FROM tables WHERE TableName='$value'"; 
+                            $debug .= "DEB: 271 Delete $query_delete_table <br />";	  
                             if($Do_delete)
                             {
                                  $DoDel = $this->db->query($query_delete_table);
@@ -299,13 +278,13 @@ class Admin extends MY_Controller {
                             { 
                                 $this->db->trans_rollback(); 
                                 $sql_delete .=" WARN : |$query_delete_grp| <br />unable to update status for table $value in tables<br />";
-                                
+                                $debug .= "DEB: 245 Delete other table than $TableName <br />";	  
                                 #break;
                             }
                             else
                             {
                                 $sql_delete .=" <li>Table $value removed from tables</li>";
-                                
+                                $debug .= "DEB: 287 Delete ok DoDel: <pre>".print_r($DoDel,1)."</pre>  <br />";
                                 // delete computed files in network and similarity dir
                                 
                                 $jsonName = preg_replace("/_Cluster|_Order/","",$value);
@@ -358,7 +337,9 @@ class Admin extends MY_Controller {
                'footer_title' => $this->footer_title,
                'listeTbls' => $listeTbls->result,
                'tables' => $tables,
-              );
+               'debug' => '',
+               'update_result' => '' 
+            );
             $this->load->view('templates/template', $data);
         }
     }

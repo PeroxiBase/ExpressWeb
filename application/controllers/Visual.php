@@ -37,7 +37,7 @@ class Visual extends MY_Controller
             $this->load->model('visualizer');
             if (!$this->ion_auth->logged_in())
             {
-                redirect("auth/login", 'refresh');
+                redirect("welcome", 'refresh');
             }            
     }
     
@@ -170,7 +170,7 @@ class Visual extends MY_Controller
             if(!isset($filename) OR !isset($seuil) )
             {
                 $message = "A problem occurs. No filename or threshold value available.<br /> Please start again.<br /> Contact Web manager if problem occurs one more time";
-                $this->session->set_flashdata('message', $message);
+                $this->session->set_userdata('fatal_message', $message);
                 redirect('visual/fatal');
             }
             $seuilName=str_replace(".","_",$seuil);
@@ -350,7 +350,7 @@ class Visual extends MY_Controller
         $seuilName=$this->session->userdata['seuilName'];		
         $dir=$this->session->userdata['working_path'];
         $filename=$this->session->fileName;
-        if(!isset($filename)) $this->init_user(); #redirect('init','refresh');
+        if(!isset($filename)) redirect('welcome','refresh');
         $errorCpt=$this->session->userdata('errorCpt');        
         $processed= $this->session->userdata('processed_'.$pid);
         #$processed= 1;
@@ -476,6 +476,7 @@ class Visual extends MY_Controller
                         $status .= "Please look log file $ReportFile content for debugging (10) purpose<br />";
                         $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
                         $delEndJob = exec("mv $jobfile ${network}$ReportFile");
+                        
                         $next = 0;
                         $this->session->set_userdata('processed_'.$pid,'2');
                         break;
@@ -609,16 +610,29 @@ class Visual extends MY_Controller
                     $web_path =strlen($web_path)+1;
                     $Path = "../".substr($network,$web_path);
                     $dir= $Path; 
-                    $data['nodesFile']=$dir."Nodes".$filename."_".$seuilName.".json";
-                    $data['edgesFile']=$dir."Edges".$filename."_".$seuilName.".json";
-                    $data['contents']='resPage';
-                    $t1 =microtime(true);
-                    $time_process = $t1 - $t0;
-                    $data['time_process']= $time_process;
-                    $data['processed']= $processed;
-                    $data['title']= "$this->header_name: Clustering Results";
-                    $data['footer_title']= $this->footer_title;
-                    $this->load->view('templates/template_show',$data);
+                    $nodesFile = "Nodes".$filename."_".$seuilName.".json";
+                    $edgesFile = "Edges".$filename."_".$seuilName.".json";
+                    if(!file_exists("./assets/network/$nodesFile") && !file_exists("./assets/network/$edgesFile")) 
+                    {
+                        $message = "Warning!! edges and nodes files not found !<br />";
+                        $message .= "Check path  ($dir) for Nodes".$filename."_".$seuilName.".json and Edges".$filename."_".$seuilName.".json files<br />";
+                        $message .= "Contact admin to regenerate clustering datas<br />";
+                        $this->session->set_userdata('fatal_message', $message);
+                        redirect('visual/fatal');
+                    }
+                    else
+                    {
+                        $data['nodesFile']= $dir.$nodesFile;
+                        $data['edgesFile']= $dir.$edgesFile;
+                        $data['contents']='resPage';
+                        $t1 =microtime(true);
+                        $time_process = $t1 - $t0;
+                        $data['time_process']= $time_process;
+                        $data['processed']= $processed;
+                        $data['title']= "$this->header_name: Clustering Results";
+                        $data['footer_title']= $this->footer_title;
+                        $this->load->view('templates/template_show',$data);
+                    }
                  }
             }
          }
@@ -846,7 +860,6 @@ class Visual extends MY_Controller
           'title'=> "$this->header_name: Fatal Error",
           'contents' => 'fatal',
           'footer_title' => $this->footer_title,
-          'back' => $this->back(),
           );
        $this->load->view('templates/template_visual',$data);
     }

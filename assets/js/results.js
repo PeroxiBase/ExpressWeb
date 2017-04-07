@@ -441,6 +441,13 @@ function drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile){
       					hoverWidth: function (width) {return width+5;},
 					labelHighlightBold: true,
 				},
+				dashes: true,
+				smooth: {
+                                      enabled: false,
+                                      type: "straightCross",
+                                      roundness: 0.5
+                                    },
+				
 				nodes:{
       					shape:'dot',
       					size:40,
@@ -468,13 +475,13 @@ function drawNetwork(geneDict,filename,seuil,nodesFile,edgesFile){
           					enabled:false,
           				 	//iterations:1000,
           				 	//updateInterval: 50,
-          				 	// onlyDynamicEdges: true,
+          				 	 onlyDynamicEdges: true,
           				 	//fit: true
         				},
         				maxVelocity:100, //120
         				minVelocity:20, //20
-        				  timestep: 0.5,
-        				 adaptiveTimestep: true
+        				//  timestep: 0.5,
+        				// adaptiveTimestep: true
 
      	 			},
       				interaction:{
