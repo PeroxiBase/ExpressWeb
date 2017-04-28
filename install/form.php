@@ -242,6 +242,7 @@ if (isset($_POST['btn-install']))
         $content_Express = preg_replace("/config\['header_name'\] = '.*';/","config['header_name'] = '$input_header_name';", $Content_Express);
         $content_Express = preg_replace("/config\['web_path'\] = '.*';/","config['web_path'] = '$web_path';", $content_Express);
         $content_Express = preg_replace("/config\['admin_name'\] = '.*';/","config['admin_name'] = '$input_admin_name';", $content_Express);
+        $content_Express = preg_replace("/config\['admin_email'\] = '.*';/","config['admin_email'] = '$input_admin_email';", $content_Express);
         $content_Express = preg_replace("/config\['apache_user'\] = '.*';/","config['apache_user'] = '$input_apache_user';", $content_Express);
         $content_Express = preg_replace("/config\['network'\] = .*\.'.*';/","config['network'] = \$web_path.'/$input_network';", $content_Express);
         $content_Express = preg_replace("/config\['similarity'\] = .*\.'.*';/","config['similarity'] = \$web_path.'/$input_similarity';", $content_Express);
