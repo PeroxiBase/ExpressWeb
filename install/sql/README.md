@@ -79,3 +79,14 @@ Ref_PFAM.sql                SQl Data. 0.9Mb PFAM only
         ``` 
         $ mysql -u username -p -b express_web < install/sql/reference_data.sql
         ```
+       
+       You can also import one of the references.  
+       ``` 
+        $ mysql -u username -p -b express_web < install/sql/Ref_Enzymes.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_GO.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_KEGG.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_KO.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_GOG.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_PANTHER.sql  
+        $ mysql -u username -p -b express_web < install/sql/Ref_PFAM.sql  
+       ```
