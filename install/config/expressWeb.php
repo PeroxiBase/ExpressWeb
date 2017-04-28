@@ -26,6 +26,8 @@
 *
 *       ['admin_name']          Name of administrator in Db. Default administrator
 *
+*       ['admin_email']         Email of administrator.
+*
 *       ['apache_user']         the user who run Apache . usually 'apache'
 *
 *	['network']             The full path of directory used for storing computed networks
@@ -54,6 +56,7 @@
 $config['header_name'] = ' ';
 $config['web_path'] = ' ';
 $config['admin_name'] = 'administrator';
+$config['admin_email'] = ' ';
 $config['apache_user'] = 'apache';
 $web_path = $config['web_path'];
 $config['network'] = $web_path.'/assets/network/';
