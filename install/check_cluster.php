@@ -15,7 +15,7 @@ if(!isset($_SESSION['running_job']))
     $_SESSION['web_path'] = $web_path; 
     #print "⊤op sessions: ".print_r($_SESSION,1)."<br />\n";
     #print "⊤op POST: ".print_r($_POST,1)."<br />\n";
-    $launch_cluster = "$web_path/assets/scripts/launch_cluster.sh 12345678 Myco_AnnotTest 0.9 $admin_name 1 >>$work_cluster/scripts/Job_12345678.txt &";
+    $launch_cluster = "$web_path/assets/scripts/launch_cluster.sh 12345678 Demo_Arabido 0.9 $admin_name 1 >>$work_cluster/scripts/Job_12345678.txt &";
     $End_file = "$work_cluster/scripts/EndJob_12345678.txt" ;
     $_SESSION['End_file'] = $End_file; 
     $_SESSION['admin_name'] = $admin_name; 
@@ -37,8 +37,8 @@ if(!isset($_SESSION['running_job']))
         print "<hr /><b>Launch script : $launch_cluster </b><hr /><pre>\n";
         ### add ref in SQL Db ##################
         $query = "INSERT INTO tables (TableName,MasterGroup,Organism,Submitter,version,comment,Root,Child) ";
-        $query .= "VALUES('Myco_AnnotTest_0_9_Cluster','1','3','$admin_name','1','Running test','0','1'), ";
-        $query .= "('Myco_AnnotTest_0_9_Order','1','3','$admin_name','1','Running test','0','1'); ";
+        $query .= "VALUES('Demo_Arabido_0_9_Cluster','1','3','$admin_name','1','Running test','0','1'), ";
+        $query .= "('Demo_Arabido_0_9_Order','1','3','$admin_name','1','Running test','0','1'); ";
         $dsn = mysqli_connect($hostname,$username,$password,$database) ;
         @mysqli_query($dsn,$query) ;
         ######## start job  ######################
@@ -226,8 +226,8 @@ else
         system("ps -ef |grep launch",$r)."<br />\n";
         system("ps -ef |grep execute",$r2)."<br /></pre>";
         
-        if(file_exists("$work_cluster/files/$admin_name/Myco_AnnotTest_Ended")) print "Similarity computing ended<br />\n";
-        if(file_exists("$work_cluster/files/$admin_name/EndJob_Myco_AnnotTest0_8.json")) print "Network computing ended<br />\n";
+        if(file_exists("$work_cluster/files/$admin_name/Demo_Arabido_Ended")) print "Similarity computing ended<br />\n";
+        if(file_exists("$work_cluster/files/$admin_name/EndJob_Demo_Arabido_0_9.json")) print "Network computing ended<br />\n";
     }
 }
   
