@@ -526,8 +526,6 @@ class Admin extends MY_Controller {
         $users = $this->generic->get_users();
         $data = array(
           'title'=>"$this->header_name: Users managment",
-          'description' => 'La description de la page pour les moteurs de recherche',
-          'keywords' => 'les, mots, clés, de, la, page',
           'contents' => 'admin/manage_users',
           'footer_title' => $this->footer_title,
           'message' => '',
@@ -560,12 +558,13 @@ class Admin extends MY_Controller {
                 $first_name  = $this->input->post('first_name');
                 $last_name  = $this->input->post('last_name');
                 $company  = $this->input->post('company');
+                $email  = $this->input->post('email');
                 $groups  = $this->input->post('groups');
                 $currentGroups  = $this->input->post('currentGroups');
                 ######### update table ######################
                 $sql_update_table = "UPDATE users 
                  SET username = '$username',first_name = '$first_name',
-                 last_name = '$last_name',company = '$company'
+                 last_name = '$last_name',company = '$company',email = '$email'
                  WHERE id='$Id' ";
                 
                 $do_update= $this->db->query($sql_update_table);
@@ -748,11 +747,11 @@ class Admin extends MY_Controller {
         {
             $this->load->library('form_validation');
             $this->form_validation->set_rules('Organism','Name of Organism' , 'trim|required');
+            $this->form_validation->set_rules('Max_transcript_Size','GeneName max length' , 'trim|numeric|greater_than[0]|required');
             if ($this->form_validation->run() === TRUE)
 	    {
-	        $idOrganisms  = $this->input->post('idOrganisms');
                 $Organism  = $this->input->post('Organism'); 
-                $Max_transcript_size  = $this->input->post('Max_transcript_size'); 
+                $Max_transcript_Size  = $this->input->post('Max_transcript_Size'); 
                 ###### check #####################
                 $check= $this->db->query("SELECT Organism FROM Organisms WHERE Organism='$Organism' ");
                 if($check->num_rows() >0)
@@ -760,34 +759,30 @@ class Admin extends MY_Controller {
                      $message = " This Organism $Organism is already in Database";
                      $this->session->set_flashdata('message', $message);
                      $data = array(
-                      'title'=>"$this->header_name: Add organism ",
+                      'title'=>"$this->header_name: Add organism  ",
                       'contents' => 'admin/add_organism',    
+                      'footer_title' => $this->footer_title,
                       );
                     $this->load->view("templates/template", $data);
                 }
                 else
                 {
                     ######### update table ######################
-                    $sql_update_table = "INSERT INTO Organisms  (Organism,Max_transcript_size ) VALUES ('$Organism' ,'$Max_transcript_size')";
+                    
+                    $sql_update_table = "INSERT INTO Organisms  (Organism,Max_transcript_size) VALUES ('$Organism' ,'$Max_transcript_Size')";
                     $do_update= $this->db->query($sql_update_table);
-
+                    log_message('debug',"admin::add_organism sql_update_table $sql_update_table\n post ".print_r($_POST,1)."");
                     ## Create Toolbox Table ##
                     $checkID= $this->db->query("SELECT idOrganisms FROM Organisms WHERE Organism='$Organism' ");
                     $orgID=$checkID->result_array();
                     $ID=$orgID[0]['idOrganisms'];
                     $toolboxTable="Toolbox_$ID";
+                    $sql_create_toolbox=$res="";
                     if(! $this->db->table_exists($toolboxTable)){
-                        $sql_create_toolbox="CREATE TABLE $toolboxTable (
-                            toolbox_".$ID."_ID INT(10) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                            toolbox_name VARCHAR(40) NOT NULL,
-                            gene_name VARCHAR(15) NOT NULL ,
-                            annotation VARCHAR(25),
-                            functional_class VARCHAR(255),
-                            biological_activity TEXT,
-                            WB_Db VARCHAR(10) NOT NULL
-                        )";
-                        $this->db->query($sql_create_toolbox);
+                        
+                        $res=$this->generic->create_toolbox_table($toolboxTable,$ID,"");
                     }   
+                    log_message('debug',"admin::add_organism create toolbox ? toolboxTable $toolboxTable \nsql_create_toolbox  $sql_create_toolbox\ res $res");
                     redirect('admin/manage_organism');
 
                 }
@@ -839,6 +834,198 @@ class Admin extends MY_Controller {
           'message' => ''
           );
         $this->load->view("templates/template", $data);
+    }
+    
+    /**
+    * function 
+    * 
+    * @staticvar integer $staticvar 
+    * @param string $param1 
+    * @param string $param2 
+    * @return integer 
+    */  
+    public function reset_db()
+    {
+       if($this->ion_auth->get_user_id('1'))
+       {
+           if (isset($_POST) && !empty($_POST) && !$this->session->has_userdata('update_result') )
+            {
+                if(isset($_POST['reset']))
+                {
+                    redirect("create_table");   
+                }
+                if(isset($_POST['submit']))
+                {
+                    $this->load->library('form_validation');
+                    #$this->form_validation->set_rules('TableName','Name of Table' , 'required');
+                    $this->form_validation->set_rules('delete_table[]','List of tables to delete' , 'required');
+                    if ($this->form_validation->run() == FALSE)
+                    {
+                        $message = " Please select a table to remove ".print_r($_POST,1)."!";
+                        $this->session->set_flashdata('message', $message);
+                        $listeTbls =$this->generic->get_removable_table();
+                        $tables = $this->generic->get_tables();
+                        $data = array(
+                           'title'=>"$this->header_name: Remove Table ",
+                           'contents' => 'admin/reset_db',
+                           'footer_title' => $this->footer_title,
+                           'listeTbls' => $listeTbls->result,
+                           'tables' => $tables,
+                          );
+                        $this->load->view('templates/template', $data);
+                    }
+                    else
+                    {
+                        $TableName  = $this->input->post('TableName'); 
+                        $delete_table  = $this->input->post('delete_table'); 
+                        $master_table  = $this->input->post('master_table'); 
+                        $sql_delete ="";
+                        $Do_delete =1;
+                        $is_locked= "";
+                        $debug ="TableName |$TableName| delete_table ".print_r($delete_table,1)."  master_table ".print_r($master_table,1)."<br />";
+                        $network= $this->config->item('network');
+                        $similarity = $this->config->item('similarity');
+                        $user_path = $this->config->item('web_path');
+                        if($network == "" OR  $similarity == "" OR $user_path == "")
+                        {
+                            $message = "Check configuration files ExpressWeb. No valid path for network, similarity or web_path";
+                            #### set processed status
+                            $admin = $this->config->item("admin_email");
+                            $this->session->set_userdata('processed_'.$pid,'1');
+                            $data = array(
+                                 'contents' => 'error_page',
+                                 'title' => "$this->header_name : No DataSet available",
+                                 'footer_title'=> $this->footer_title,
+                                 'message' => $message,
+                                 'back' => "Contact <a href='mailto:$admin?subject=Check ExpressWeb configuration'>Administrator</a> about this problem"
+                                 );
+                             $this->load->view('templates/template',$data);
+                             exit;
+                        }                    
+                         $user_path .= '/assets/users';
+                        // Check  if we delete the master table $TableName.
+                        // If yes delete all other tables contained in master_table even if user doesn't select it
+                        // for deletion.
+                         if(!preg_match("/Clean/",$delete_table[0]))
+                         {
+                            foreach($delete_table as $key=>$value)
+                            {
+                                
+                                $query_drop = "DROP table $value;";   
+                                $Do_del = $this->db->query($query_drop);
+                                if($Do_del==1) 
+                                {
+                                    
+                                    $sql_delete .="<ul><li>Table $value  deleted  $Do_del</li>";
+                                
+                                
+                                    $jsonName = preg_replace("/_Cluster|_Order/","",$value);
+                                    #$sql_delete .=" <li>Search file ${network}Edges$jsonName.json </li>";
+                                    if(file_exists("${network}Edges$jsonName.json"))
+                                    {
+                                         unlink("${network}Edges$jsonName.json");
+                                        $sql_delete .=" <li>Edges$jsonName.json removed from $network</li>";
+                                          unlink("${network}Nodes$jsonName.json");
+                                        $sql_delete .=" <li>Nodes$jsonName.json removed from $network</li>";
+                                    }
+                                    if(file_exists("${similarity}${value}_Similarity"))
+                                    {
+                                        $sql_delete .=" <li>Similarity file removed from $similarity</li>";
+                                    }
+                                    $sql_delete .=" </ul><hr />";
+                                }
+                                $query_delete_table ="DELETE FROM `tables` WHERE  `TableName`='$value';"; 
+                                $drop_db = $this->db->query($query_delete_table);
+                            }
+                         }
+                        $sql_delete .=" ####### Truncate tables #############<br />";
+                        $tables2remove=array('tables','tables_groups','Organisms');
+                        foreach($tables2remove as $tables)
+                        {
+                            $sql_delete .="Table $tables truncated<br />";
+                            $Do_del = $this->db->query("TRUNCATE TABLE `$tables`");
+                        }
+                        ##########  Clean users directories ##########
+                        if($user_path !="" OR $user_path !="/")
+                        {
+                            $sql_delete .="*** Users directories $user_path *** <br />";
+                            $d = dir("$user_path/");
+                            while (false !== ($entry = $d->read())) 
+                            {
+                                if(!preg_match("/\./",$entry))
+                                {
+                                    if($entry !="" OR $entry !="/")
+                                    {
+                                        if(is_dir("$user_path/$entry/Upload"))
+                                        {
+                                            $clean_users = exec("rm $user_path/$entry/Upload/*",$rn) ;
+                                            $sql_delete .="files in  $user_path/$entry/Upload/ removed<br />";
+                                            $clean_users = exec("rmdir $user_path/$entry/Upload",$rn) ;
+                                            $sql_delete .="Directory $entry/Upload/<br />";
+                                        }
+                                        if(is_dir("$user_path/$entry"))
+                                        {
+                                            $clean_users = exec("rmdir $user_path/$entry",$rn) ;
+                                            $sql_delete .="Directory $entry removed <br />";
+                                            $this->session->unset_userdata("working_path");
+                                        }
+                                    }
+                                }
+                            }
+                            $d->close();/**/
+                        }
+                        ######### Clean network directory ##############
+                        if($network != "/"  && is_dir($network))
+                        {
+                            $clean_networks = exec("rm -rf ${network}*",$rn);
+                            $sql_delete .="$network content removed    <br />";
+                        }
+                        if($similarity != "/"  && is_dir($similarity))
+                        {
+                            $clean_similarity = exec("rm -rf ${similarity}*",$rn);
+                            $sql_delete .="$similarity content removed    <br />";
+                        }
+                        $data = array(
+                              'title'=>"$this->header_name: Remove Dataset,Clustered files and Users Data",
+                              'contents' => 'admin/update_result',
+                              'footer_title' => $this->footer_title,
+                              'POST' => $_POST,
+                              'sql_update_table' => '',
+                              'update_result' => $sql_delete ,
+                              'error' => "Opps master_table $master_table",
+                              'currentGroups' =>  $is_locked,
+                              'debug' => $debug,
+                              'return_action' => "../create_table"
+                              );
+                            $this->load->view("templates/template", $data);
+                    }
+                }
+            }
+            else
+            {
+                $this->session->unset_userdata('update_result');
+                $listeTbls =$this->generic->get_removable_table();
+                $tables = $this->generic->get_tables();
+                $network= $this->config->item('network');
+                $similarity = $this->config->item('similarity');
+                $user_path = $this->config->item('web_path').'/assets/users/';
+                $data = array(
+                   'title'=>"$this->header_name: Remove Table ",
+                   'contents' => 'admin/reset_db',
+                   'footer_title' => $this->footer_title,
+                   'listeTbls' => $listeTbls->result,
+                   'tables' => $tables,
+                   'debug' => '',
+                   'update_result' => '' ,
+                          'user_path' => $user_path
+                );
+               $this->load->view('templates/template', $data);
+            }
+       }
+       else
+       {
+           redirect(base_url()."welcome/restricted", 'refresh');
+       }
     }
     
 }

@@ -13,14 +13,13 @@
 ?>
 <!-- //////////////    upload/index  //////////////  -->
 <div class="container-fluid">
-    <div  id="param" class="col-md-10 center-block"> 
+    <div  id="param" class="col-md-10 left-block"> 
     <br />
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#tabs-1" role="tab" data-toggle="tab" aria-controls="tabs-1" >Manage Table </a></li>
-            <li role="presentation"><a href="#tabs-3" role="tab" data-toggle="tab" aria-controls="tabs-3" >User Access</a></li>
-            <li role="presentation"><a href="#tabs-4" role="tab" data-toggle="tab" aria-controls="tabs-4" >Convert Data</a></li>
-            <li role="presentation"><a href="#tabs-5" role="tab" data-toggle="tab" aria-controls="tabs-5" >Annotations</a></li>
-            <li role="presentation"><a href="#tabs-6" role="tab" data-toggle="tab" aria-controls="tabs-6" >Manage organisms</a></li>
+            <li role="presentation"><a href="#tabs-2" role="tab" data-toggle="tab" aria-controls="tabs-2" >Create DataSet</a></li>
+            <li role="presentation"><a href="#tabs-3" role="tab" data-toggle="tab" aria-controls="tabs-3" >Annotations</a></li>
+            <li role="presentation"><a href="#tabs-4" role="tab" data-toggle="tab" aria-controls="tabs-4" >Manage organisms</a></li>
         </ul>
         
          <div class="tab-content">
@@ -37,25 +36,22 @@
                       </li>
                     </ul>
                 </div>
-                <div class="  col-sm-4">
+                <div class="  col-sm-6">
                     <ul>
                         <li>
                             <a href="create_table/update_tables_annot" >Regenerate tables annotation</a>
                         </li>
+                        <?php 
+                        if($this->ion_auth->get_user_id('1'))
+                        { 
+                            print "<li><a href=\"".base_url('admin/reset_db')."\">Reset Database</a></li>\n";
+                        }
+                        ?>
                      </ul>
                  </div>
             </div>
              
-            <div class="tab-pane" id="tabs-3">
-                <p>Manage users access. Allow user to access to new Tables</p>
-                <ul>
-                  <li>
-                    <a href="<?php echo base_url();?>admin/manage_users">Manage users access</a>
-                  </li>	
-                </ul>
-            </div>
-            
-            <div class="tab-pane" id="tabs-4">
+            <div class="tab-pane" id="tabs-2">                
                 <p>Convert csv or tabulated file to SQL table</p>
                 <ul>
                   <li>
@@ -63,7 +59,8 @@
                   </li>	                  
                 </ul>
             </div>
-            <div class="tab-pane col-sm-12" id="tabs-5">
+            
+            <div class="tab-pane col-sm-12" id="tabs-3">
                 <p>Annotations</p>
                 
                 <div class="  col-sm-6">Import 
@@ -79,18 +76,22 @@
                       </li>	
                     </ul>
                 </div>
-                <div class="  col-sm-4">Edit
+                
+                <div class="  col-sm-6">Edit
                     <ul>
                       <li>
-                        <a href="create_table/upload_phytozom" >Upgrade annotation from Phytozom</a>
+                        <a href="create_table/update_phytozom" >Upgrade annotation from Phytozom</a>
                       </li>
                       <li>
                         <a href="create_table/update_annot_page" >Upgrade annotation</a>
                       </li>
                     </ul>
                 </div>
+                
              </div>   
-            <div class="tab-pane" id="tabs-6">
+            
+             
+            <div class="tab-pane col-sm-12" id="tabs-4">
                 <p>Organisms</p>
                 <ul>
                   <li>

@@ -15,7 +15,7 @@
 <div class="row">
     <!-- Intro Content  -->
     <div  id="param" class="col-md-8 center-block"> 	
-        <h2><?php echo $this->session->username;?> dashboard</h2>
+        <h2><?php echo $this->session->username;?> </h2>
         <p>Manage your account . Create project, download, upload files</p>
 	 
 <?php if (! empty($message)) { ?>

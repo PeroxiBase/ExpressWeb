@@ -179,50 +179,51 @@ $attributes=array('id'=>'formParam','target'=>"_blank",'class'=>"form-horizontal
 print form_open_multipart('visual/load',$attributes);
 
 print "<div id=\"param\" class=\"row\">\n";
-print "     <div class=\"col-md-6 col-lg-6 col-md-offset-3 col-lg-offset-3\" id=\"formTitle\">\n";
-print "          <h2>Clustering Parameters..  </h2>$pid\n";
+print "     <div class=\"col-md-10\" id=\"formTitle\">\n";
+print "          <h2>Clustering Parameters..  </h2>\n";
 print "          <p> Here you can choose the table you want to work with and set the parameters for clustering.</p>\n";
 print "     </div>\n";
-print "     <div class=\"launch form-group col-md-6 col-md-offset-4 col-lg-6 col-lg-offset-4\">\n";
 
-$attLabel=array('title'=>'Choose the table you want to work with');
-print form_label('Choose a table : ','',$attLabel)."\n";
-$options=array();
-foreach ($tables->result as $row)
-{
-        $options[$row['TableName']]=$row['TableName'];
-} 
-$attCtrl=array('class'=>'form-control','id' =>'SelectBase');
-print form_dropdown('file',$options,'large',$attCtrl)."\n";
-    
-   
-$options=array('class'=>'btn btn-info btn-md','id'=>'showT');
-print form_button('showT','Show table',$options)."\n";
-######### display previous calculated threshold #############
-print $option_div;
-print "  </div>\n";
+print "     <div class=\"launch form-group col-md-8 \">\n";
 
-print "  <div class=\"launch form-group col-md-6 col-md-offset-4 col-lg-6 col-lg-offset-4\">\n";
-$options=array('id'=>'clusLabel','title'=>'Set a Threshold in order to build clusters');
-print form_label('Clustering threshold : ','cluS',$options)."\n";
+        $attLabel=array('title'=>'Choose the table you want to work with');
+        print form_label('Choose a table : ','',$attLabel)."\n";
+        $options=array();
+        foreach ($tables->result as $row)
+        {
+                $options[$row['TableName']]=$row['TableName'];
+        } 
+        $attCtrl=array('class'=>'form-control','id' =>'SelectBase');
+                print form_dropdown('file',$options,'large',$attCtrl)."\n";
+            
+           
+        $options=array('class'=>'btn btn-info btn-md','id'=>'showT');
+        print form_button('showT','Show table',$options)."\n";
+        ######### display previous calculated threshold #############
+        print $option_div;
+print "         </div>\n"; # End Div launch
+
+#print "     </div>\n";
+print "         <div class=\"row\">\n";
+print "                 <div class=\"launch form-group col-md-8   \">\n";
+                $options=array('id'=>'clusLabel','title'=>'Set a Threshold in order to build clusters');
+                print form_label('Clustering threshold : ','cluS',$options)."\n";
 ?>
-
-                <input type="range" name="clusterSeuil" id="cluS" value="0.9" min="0" max="1" step="0.02" oninput="outputUpdate1(value)" style="width:100px">
-                <output for="clusterSeuil" id="showRange" >0.9</output>
-         </div>
-         
+                            <input type="range" name="clusterSeuil" id="cluS" value="0.9" min="0" max="1" step="0.05" oninput="outputUpdate1(value)" style="width:80px">
+                            <output for="clusterSeuil" id="showRange" >0.9</output>
+                        </div>
+</div>
          <div class="row">
 <?php
-print "             <div class=\"launch form-group col-md-6 \">\n";
-print "                 <button type=\"button\" class=\"btn btn-success btn-lg\" id=\"run\">Run</button>\n";
+#print "             <div class=\"launch form-group col-md-4 \">\n";
+print "                 <button type=\"button\" class=\"btn btn-success\" id=\"run\">Run</button>\n";
 print "                         ".form_hidden('pid', $pid)."\n";
 print "             </div>\n";
-print "    </div>  <!-- END DIV row -->\n";    
+print "    </div>  <!-- END DIV row -->\n";   
+print form_close(); 
 print "</div> <!-- END DIV id=param -->\n";   
-print form_close();
 ?>	
       
-</div>
 
 <?php
 $path=base_url();

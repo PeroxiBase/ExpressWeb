@@ -36,9 +36,10 @@
                 <input  type="checkbox" name="Force_Update" value="1"/> Replace existing values <strong>(Force update)</strong>  <br />
                 
                 <br /><br />
-                <button id="submitAnnot" type="submit" class="btn btn-info btn-sm">UPLOAD</button>
+                <button id="submitAnnot" type="submit" class="btn btn-info btn-sm">UPLOAD</button> 
+                <br /><br />
             </form>
-            <div class="col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1" id="tableDiv" style="margin-top:10vh">
+            <div class="col-md-10 col-lg-10  " id="tableDiv" >
                 <p><b>Please structure your Toolbox file this way before upload</b></p>Use tabulation as separator's field. <br /><br />
                 <table class="table table-hover" style="text-align:left">
                     <tr>    

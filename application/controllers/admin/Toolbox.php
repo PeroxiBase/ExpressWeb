@@ -155,7 +155,7 @@ class Toolbox extends MY_Controller
 		if($Force_Update ==1) 
                 {
                     $Table_already_set="";
-                    $truncate = $this->db->query("TRUNCATE $annoTable");   
+                    $truncate = $this->db->query("TRUNCATE table $toolbox");   
                     #$upload_error .= "Erase previous table $annoTable. return : <pre>".print_r($truncate,1)."</pre><br />";
                 }
                 
@@ -164,22 +164,24 @@ class Toolbox extends MY_Controller
                 foreach($csv as $line)
                 {
                     if(count($line) <5 ) 
-		     {
+		    {
 		         $info .= "error on line $i . nbr fields ".count($line)."<br />";
 		         $i++;
 		         continue;
-		     }
+		    }
                     $size0 = strlen($line[0]);$size1 = strlen($line[1]);$size3 = strlen($line[3]);
                     if( strlen($line[0])<=40 && strlen($line[1])<=15 && strlen($line[3])<=255 )
                     {
                         $info .= "$nl GL: ".implode($line,"\t")." <br />";
+                        if(!isset($line[5])) $Wb_Db="";
+                        else $Wb_Db=$line[5];
                         $data=array(
                                 'toolbox_name' => $line[0],
                                 'gene_name' => strtoupper($line[1]),
                                 'annotation' => $line[2],
                                 'functional_class' => $line[3],
                                 'biological_activity' => $line[4],
-                                'WB_Db' => strtoupper($line[5])
+                                'WB_Db' => strtoupper($Wb_Db)
                                 );
                         ### check if exist in table
                         $query = $this->db->select('*')->where($data)->get($toolbox);

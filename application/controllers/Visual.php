@@ -101,42 +101,61 @@ class Visual extends MY_Controller
        $option_div ="";
        ###### for each $userTables search for precomputed Cluster
        ###### result will be displayed on select in main view
-       foreach($userTables->result as $row)
+       if($userTables->nbr >0)
        {
-            $IdTables = $row['IdTables'];
-            $tableName = $row['TableName'];
-            $get_child = $this->generic->get_child($IdTables);
-            if($get_child->nbr >0)
-            {
-                $tbl_seuil ="";
-                $option_div .="<div class=\"$tableName box bg\" >pre-calculated threshold: "; 
-                foreach($get_child->result as $row)
+           foreach($userTables->result as $row)
+           {
+                $IdTables = $row['IdTables'];
+                $tableName = $row['TableName'];
+                $get_child = $this->generic->get_child($IdTables);
+                if($get_child->nbr >0)
                 {
-                    $IdTables2 = $row->IdTables;
-                    $tableName2 = $row->TableName;
-                    $tbl_seuil = trim(preg_replace("/$tableName|_Cluster/","",$tableName2),"_");
-                    $tbl_seuil = preg_replace("/_/",".",$tbl_seuil);
-                    $option_div .=" <a class=\"seuil_val\">$tbl_seuil</a> ";
+                    $tbl_seuil ="";
+                    $option_div .="<div class=\"$tableName box bg\" >pre-calculated threshold: "; 
+                    foreach($get_child->result as $row)
+                    {
+                        $IdTables2 = $row->IdTables;
+                        $tableName2 = $row->TableName;
+                        $tbl_seuil = trim(preg_replace("/$tableName|_Cluster/","",$tableName2),"_");
+                        $tbl_seuil = preg_replace("/_/",".",$tbl_seuil);
+                        $option_div .=" <a class=\"seuil_val\">$tbl_seuil</a> ";
+                    }
+                    $option_div .="</div>\n";
                 }
-                $option_div .="</div>\n";
-            }
-            else
-            {
-            $option_div .="<div class=\"$tableName box bg\" >dataset have not been computed</div>"; 
-            }
+                else
+                {
+                $option_div .="<div class=\"$tableName box bg\" >dataset have not been computed</div>"; 
+                }
+           }
+           
+           $data = array(
+              'title'=> "$this->header_name: Visual",
+              'contents' => 'main',
+              'footer_title' => $this->footer_title,
+              'tables' => $userTables,
+              'userTables' => $tables,
+              'pid' => $pid,
+              'option_div' =>$option_div,
+              'userDemo' =>$userDemo
+              );
+           $this->load->view('templates/template_visual',$data);
        }
-       
-       $data = array(
-          'title'=> "$this->header_name: Visual",
-          'contents' => 'main',
-          'footer_title' => $this->footer_title,
-          'tables' => $userTables,
-          'userTables' => $tables,
-          'pid' => $pid,
-          'option_div' =>$option_div,
-          'userDemo' =>$userDemo
-          );
-       $this->load->view('templates/template_visual',$data);
+       else
+       {
+            $message = "No DataSet exist in database or you don't have sufficient privileges";
+            #### set processed status
+            $admin = $this->config->item("admin_email");
+            $this->session->set_userdata('processed_'.$pid,'1');
+            $data = array(
+                 'contents' => 'error_page',
+                 'title' => "$this->header_name : No DataSet available",
+                 'footer_title'=> $this->footer_title,
+                 'message' => $message,
+                 'back' => "Contact <a href='mailto:$admin?subject=No Dataset available for users $username'>Administrator</a> about this problem"
+                 );
+             $this->load->view('templates/template',$data);
+              
+       }
     }
     
     /**
@@ -274,7 +293,7 @@ class Visual extends MY_Controller
                                                         
                     $data['title'] = "$this->header_name: Clustering computing 0";
                     
-                    $data['message'] = "computing ...   ";
+                    $data['message'] = "computing ...   $tableTest";
                     $data['loop_time']= $loop_time*1000;
                     if(file_exists($EndFile))  unlink($EndFile);
                     $this->load->view('templates/header',$data);
@@ -426,6 +445,7 @@ class Visual extends MY_Controller
             
             $message = "job launched with Id $jobId crash!  ";
             ####  remove tables in reference 'tables' and in Db
+            #log_message('debug',$message." L429");
             $message .= $this->remove_ref($tableTest,$tableValues);
             #### set processed status
             $this->session->set_userdata('processed_'.$pid,'1');
@@ -447,36 +467,25 @@ class Visual extends MY_Controller
             $status="";
             if(file_exists($EndFile))
             {
-                #### Cluster job ended. Need to check return status
-                #### check if results files have been transfered !!
-                if(!file_exists($fileTest))
-                {
-                    $message = "Your data have been computed but results files are missing.<br />\n";
-                    ####  remove tables in reference 'tables' and in Db
-                    $message .= $this->remove_ref($tableTest,$tableValues);
-                    $this->session->set_userdata('processed_'.$pid,'3');
-                    $data = array(
-                             'contents' => 'error_page',
-                             'title' => "$this->header_name File transfert problems",
-                             'footer_title'=> $this->footer_title,
-                             'message' => $message,
-                             'back' => anchor("visual","Back to Run processing")
-                             );
-                     $this->load->view('templates/template',$data);
-                     exit;
-                }
-                
+               
                 $Status_Job = exec("tail -1 $jobfile");
                 $ReportFile = "Report_$pid.txt";
                 #$Status_Job ="Job ended with code 1";
                 switch ($Status_Job)
                 {
-                    case "Job ended with code 10":
+                    case "Job ended with code 20":
+                        $status = "Administrator kill your job <br />";
+                        $status .= "Please look log file $ReportFile content for debugging (20) purpose<br />";
+                        $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
+                        $delEndJob = exec("mv $jobfile ${network}$ReportFile");                        
+                        $next = 0;
+                        $this->session->set_userdata('processed_'.$pid,'2');
+                        break;
+                     case "Job ended with code 10":
                         $status = "Problem occurs while launching qsub process<br />";
                         $status .= "Please look log file $ReportFile content for debugging (10) purpose<br />";
                         $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
-                        $delEndJob = exec("mv $jobfile ${network}$ReportFile");
-                        
+                        $delEndJob = exec("mv $jobfile ${network}$ReportFile");                        
                         $next = 0;
                         $this->session->set_userdata('processed_'.$pid,'2');
                         break;
@@ -533,10 +542,12 @@ class Visual extends MY_Controller
             {
                 #################### remove $tableTest && $tableValues reference table
                 ####  remove tables in reference 'tables' and in Db
+                
+                log_message('debug',"remove tables in reference 'tables' and in Db L538");
                 $status .= $this->remove_ref($tableTest,$tableValues);
                 
                 $web_path =strlen($web_path)+1;
-                $Path = "../".substr($network,$web_path);
+                $Path =substr($network,$web_path);
                 $data = array(
                          'contents' => 'error_page',
                          'title' => "$this->header_name: Clustering Error",
@@ -544,7 +555,7 @@ class Visual extends MY_Controller
                          'message' => $status,
                          'ReportFile' => $ReportFile ,
                          'Path' => $Path,
-                         'back' => anchor("../visual","Back to Run processing")
+                         'back' => anchor("visual","Back to Run processing")
                          );
                 
                 $this->session->set_userdata('processed_'.$pid,'3');
@@ -577,6 +588,27 @@ class Visual extends MY_Controller
                      
                     # exit;
                 }
+                elseif(!file_exists($fileTest))
+                {
+                    #### Cluster job ended. Need to check return status
+                    #### check if results files have been transfered !!
+                    $message = "Your data have been computed but results files are missing.<br />\n";
+                    ####  remove tables in reference 'tables' and in Db
+                    log_message('debug',$message." L457");
+                    $message .= $this->remove_ref($tableTest,$tableValues);
+                    $this->session->set_userdata('processed_'.$pid,'3');
+                    $data = array(
+                             'contents' => 'error_page',
+                             'title' => "$this->header_name File transfert problems",
+                             'footer_title'=> $this->footer_title,
+                             'message' => $message,
+                             'Path' => '',
+                             'ReportFile' => '',
+                             'back' => anchor("visual","Back to Run processing")
+                             );
+                     $this->load->view('templates/template',$data);
+                     exit;
+                }                
                 else 
                 {
                     $data['debug']= $groupfile;
@@ -594,14 +626,15 @@ class Visual extends MY_Controller
                             array_push($genes,$gene);                            
                     }	
                     $data['genes']=json_encode($genes);
-                    $analyseRes=$this->visualizer->get_Analyse($organism);
+                    $analyseRes=$this->visualizer->get_Analyse($filename);
                     $analyse=array();
                     if($analyseRes->nbr >0) # != "There is no Annotation Table for this Organism, please provide one.")
                     {
                         foreach($analyseRes->result as $res)
                         {
                             $ana=$res['Analyse'];
-                            array_push($analyse,$ana);	
+                            if($ana != "")
+                                array_push($analyse,$ana);
                         }
                     }
                     $data['analyse']=json_encode($analyse);
@@ -634,6 +667,29 @@ class Visual extends MY_Controller
                         $this->load->view('templates/template_show',$data);
                     }
                  }
+            }
+            else
+            {
+                $message = "Unknow error<br />\n";
+                log_message('debug',$message." L653");
+                $this->session->set_userdata('processed_'.$pid,'3');
+                $message .= $this->remove_ref($tableTest,$tableValues);
+                
+                $delEndJob = exec("mv $EndFile ${network}EndJob_${pid}_Err1.txt");
+                $delEndJob = exec("mv $jobfile ${network}$ReportFile");                        
+                $next = 0;
+                $this->session->set_userdata('processed_'.$pid,'2');
+                        
+                $data = array(
+                         'contents' => 'error_page',
+                         'title' => "$this->header_name Unknow error!!",
+                         'footer_title'=> $this->footer_title,
+                         'message' => $message,
+                         'Path' => '',
+                         'ReportFile' => '',
+                         'back' => anchor("visual","Back to Run processing")
+                         );
+                 $this->load->view('templates/template',$data);   
             }
          }
     } ### End Fct show

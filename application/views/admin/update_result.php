@@ -13,13 +13,15 @@
 ?>
 <!-- //////////////    admin/update_result  //////////////  -->
 
-<div class="col-md-6 "> 
+<div class="col-md-8 "> 
          <a href="<?php print base_url(); ?>admin/<?php print $return_action; ?>">back to Admin</a><br /><br />
 
 <!-- ##### avoid resubmit on admin/remove tables !! ############# -->
 
         <?php $_SESSION['update_result']= '1'; ?>
-        <?php print $update_result; ?>
+        <?php print $update_result; 
+        #print "<pre>".print_r( $POST,1)."</pre>";
+        ?>
 </div><!-- End DIV rows -->
 
 <!-- //////////////    End admin/update_result  //////////////  -->

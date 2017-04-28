@@ -24,7 +24,6 @@
                 <?php echo print_r($email,1);?>
               </p>        
              
-        <?php echo $message;?>
         
     </div><!--  End Div param -->
 </div><!--  End Div row  -->

@@ -70,14 +70,29 @@ class Dashboard extends MY_Controller
        $check_cluster = $this->config->item('check_cluster');
        $process = new stdclass;
        $Data ="";
+       $current_pid = "";
        // command line to check if launcher_cluster.sh and execute_bash.sh are running
-       $returnV =exec("ps -U $apache_user -o pid:1,ppid:1,state,stime,time,command:1|grep 'launch_cluster\|execute_bash\|sleep'",$return);
+       $returnV =exec("ps -U $apache_user -o pid:1,ppid:1,state,stime,time,command:1|grep 'launch_cluster\|execute_bash'",$return);
        if(count($return)>2)
        {
-           $Data = "<legend>Process Activity on cluster for $apache_user  </legend>\n";
+           
+            //sh execute_bash.sh 1492676433 Cell_Myko3 0.35 Rhett 0 31638
+            foreach($return as $key=>$val)
+            {
+                if(!preg_match("/grep/",$val))
+                {
+                    if(preg_match("/execute_bash/",$val))
+                    {
+                        $temp = explode(" ",$val);
+                        $current_pid = $temp[7];
+                    }
+                }
+            }
+           $Data = "<legend>Process Activity on cluster</legend>\n";
            $Data .= "<table class=\"table table-bordered table-condensed\">\n";
            $PrimFGeader=false;
            $x=1;
+           $kill ="";
            foreach($return as $key=>$val)
            {
                if(!preg_match("/grep/",$val))
@@ -98,11 +113,13 @@ class Dashboard extends MY_Controller
                   $START = $list[3];
                   $TIME = $list[4];
                   $COMMAND ="";
+                  $process_pid  = $list[7];
                   for($i=5;$i<count($list);$i++)
                   {
                       $COMMAND .= $list[$i]." ";
                   }
-                  $kill="<button class=\"Kill btn btn-primary\" type=\"button\" value=\"$PID\" />";
+                  if( preg_match("/execute_bash\.sh |launch_cluster/",$COMMAND))
+                  $kill="<button class=\"Kill btn btn-primary btn-xs\" type=\"button\" value=\"$PID|$process_pid\" />$PID|$process_pid</button>";
                   $Data .= "<tr><td>$kill</td><td>$PID</td><td>$PPID</td><td>$STAT</td><td>$START</td><td>$TIME</td><td>$COMMAND</td></tr>\n";
                }
                $x++;
@@ -142,7 +159,7 @@ class Dashboard extends MY_Controller
                         list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue,$slots,$task_ID) = explode("\t",$val);
                     else
                             list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue) = explode("\t",$val);
-                    $kill="<button class=\"Qdel btn btn-primary btn-xs\" value=\"$processId\" />$processId</button>";
+                    $kill="<button class=\"Qdel btn btn-primary\" value=\"$job_ID\" />$job_ID</button>";
                     
                     $Data .= "<tr><td>$kill</td><td>$job_ID</td><td>$prior</td><td>$name</td><td>$user</td><td>$state</td><td>$submit</td><td>$queue</td><td>$slots</td><td>$task_ID</td></tr>\n";
                }
@@ -151,6 +168,8 @@ class Dashboard extends MY_Controller
            $Data .= "   </tbody>\n";
            $Data .= "</table>\n";
        }
+       $Data .= " <button class=\"qstat_shrt btn btn-primary btn-xs\" value=\"$current_pid\" />qstat shrt</button> &nbsp;";
+       $Data .= " <button class=\"qstat_long btn btn-primary btn-xs\" value=\"$current_pid\" />qstat</button> &nbsp;";
        $process->apache=$Data;
        return $process;
     }
@@ -162,14 +181,64 @@ class Dashboard extends MY_Controller
     * @return string $html 
     */   
     public function kill_process(){
-          $ProcessId=$_POST['ProcessId'];
+          list($ProcessId,$pid)=explode("|",$_POST['ProcessId']);
+          $work_scripts  = $this->config->item('work_scripts');
           
           $cmd = exec("kill -9 $ProcessId");
           $html= "ProcessId  $ProcessId / command: $cmd";
+          $cmd = exec("echo 'Admin kill running job ' >>$work_scripts/EndJob_$pid.txt");
+          $cmd = exec("echo '\nJob ended with code 20' >>$work_scripts/Job_$pid.txt");
           #redirect(base_url()."Dashboard/index", 'refresh');
           return $html;
     }
     
+    /**
+    * function  qstat_shrt
+    *   ajax show number of jobs on cluster
+    *
+    * @param string $param2 
+    * @return integer 
+    */  
+    public function qstat_shrt()
+    {
+          $ProcessId=$_POST['ProcessId'];
+          $qstat = $this->config->item('qstat');
+          $cmd = exec("$qstat |wc -l",$ret_cmd,$st);          
+          $html= $ret_cmd[0]." jobs on cluster<br />";
+          print  $html;
+    }
+    
+    /**
+    * function  qstat
+    *   list jobs on cluster
+    *
+    * @param string $param2 
+    * @return integer 
+    */  
+     public function qstat()
+    {
+        $ProcessId=$_POST['ProcessId'];
+        $qstat = $this->config->item('qstat');
+        $cmd = exec("$qstat",$ret_cmd,$st);
+        
+        $html= "";
+        $i=1;
+        foreach($ret_cmd as $key=>$val)
+        {
+            $val = preg_replace("/\s{1,}/","\t",$val);
+            $Fields=explode("\t",$val);
+            $nbFields= count($Fields);
+            $slots="";
+            if($nbFields==10)
+                list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue,$slots,$task_ID) = explode("\t",$val);
+            else
+                list($processId,$job_ID,$prior,$name,$user,$state,$submit,$queue) = explode("\t",$val);
+            
+            $html .= "$i\t$job_ID\t$prior\t$name\t$user\t$state\t$submit\t$queue\t$slots\t$task_ID\n";
+            $i++;
+        }
+        print  $html;
+    }
     
     /**
     * function qdel_process
@@ -179,9 +248,40 @@ class Dashboard extends MY_Controller
     * @return string $html 
     */  
     public function qdel_process(){
-          $ProcessId=$_POST['ProcessId'];          
-          $cmd = exec("qdel $ProcessId");
-          $html= "ProcessId  $ProcessId / command: $cmd";
-          return $html;
+          $ProcessId=$_POST['ProcessId'];
+          $qdel = $this->config->item('qdel');
+          
+          $apache_user = $this->config->item('apache_user');
+          $work_scripts  = $this->config->item('work_scripts');
+          $grep_cmd = "grep $ProcessId ${work_scripts}*|head -1|cut -d ' ' -f 1";
+          $do_grep= exec($grep_cmd,$grep);
+          $cmd = exec("$qdel $ProcessId",$ret1);
+          $html.= "ProcessId  $ProcessId / command: $cmd\n";
+          if(preg_match("/Job/",$do_grep))
+          {
+                $temp= substr($do_grep,strlen($work_scripts));
+                $temp = trim(strstr($temp,"_"),"_");
+                $pid=trim($temp,".txt:");
+                $cmd = exec("echo 'Admin kill running job ' >>$work_scripts/EndJob_$pid.txt");
+                $cmd = exec("echo '\nJob ended with code 20' >>$work_scripts/Job_$pid.txt");
+                $cmd = exec("bash ${work_scripts}clean.sh $ProcessId",$ret,$code);
+                $html .= "\n ret bash ${work_scripts}clean.sh $ProcessId code $code \n";
+                $returnV =exec("ps -U $apache_user -o pid:1,command:1|grep 'launch_cluster\|execute_bash\|sleep'",$return);
+                foreach($return as $key=>$val)
+                {
+                   if(!preg_match("/grep/",$val))
+                   {
+                      $list=explode(" ",$val);
+                      $PID = $list[0];
+                      $COMMAND = $list[1];
+                      $cmd = exec("kill -9 $PID");
+                   }
+                }
+          }
+          else
+          {
+              $html .= "Job have been stopped (timeout) ";
+          }
+          print "<pre>$html</pre>";
     }
 }

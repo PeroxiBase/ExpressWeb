@@ -215,6 +215,9 @@ class Create_table extends MY_Controller
                         $this->session->set_flashdata('message', $message);
                         redirect("create_table/upload_csv"); 
                     }
+                    ######### get Max_Size for this organism #############
+                    $organisms = $this->generic->get_organisms($id_organism); 
+                    $max_size = $organisms->result->Max_transcript_size;
                     
                     $data = array(
                        'title'=>"$this->header_name: Upload file $import_file",
@@ -238,6 +241,7 @@ class Create_table extends MY_Controller
                        'existing_tables' => $existing_tables,
                        'limit' => $limit,
                        'organism' => $id_organism,
+                       'max_size' => $max_size,
                        'required_tag' => $this->required_tag
                       );
                     $this->load->view("templates/template", $data);
@@ -343,10 +347,11 @@ class Create_table extends MY_Controller
                 #### check type
                 $type="unknown";
                 $option ="";
-                if(preg_match('/^[0-9]*$/',$cols)) $type="INT";
-                elseif(preg_match('/-?[\d*][\.,][0-9]*$/',$cols)) $type="DOUBLE";
+                if(preg_match('/^[0-9]+$/',$cols)) $type="INT";
+                
+                elseif(preg_match('/[-+]?([0-9]*\.[0-9]+|[0-9]+)/',$cols)) $type="DOUBLE";
                 elseif(preg_match('/[0-9]{2}-[0-9]{2}-[0-9]{4}/',$cols))  $type="DATE";
-                elseif(preg_match('/[a-zA-Z\s-]/',$cols)) 
+                if(preg_match('/[a-zA-Z-_]([0-9]{1,})?(\.[0-9]+)?$/',$cols)) 
                 {
                     $type="VARCHAR";
                     $cols=addslashes(trim($cols,'"'));
@@ -371,6 +376,9 @@ class Create_table extends MY_Controller
                   case 'DOUBLE': 
                       $option = "SIGNED";
                      break;
+                  case 'VARCHAR':
+                      $option = "";
+                      break;
                 }
                 
                  if($i==0)
@@ -392,7 +400,7 @@ class Create_table extends MY_Controller
                      if($type != $prev_type)
                      {
                          $max_value_col[$clnb]['type']= $type;
-                         if($prev_option == "SIGNED")
+                         if($prev_option == "SIGNED" && $type!= "VARCHAR")
                              $max_value_col[$clnb]['option']= "SIGNED";
                          else  $max_value_col[$clnb]['option']= $option;
                      }                         
@@ -808,18 +816,36 @@ class Create_table extends MY_Controller
             $tables=$this->generic->get_Subtables($id);
             if($tables->nbr==0)
             {
-                $this->generic->create_annot_table($annoTable,$id,15,$file_name);
+                $organisms = $this->generic->get_organisms($id_organism); 
+                $max_size = $organisms->result->Max_transcript_size;
+                log_message('debug',"Create_table::create_annot 813 ".print_r( $organisms,1)." max_size $max_size ");
+                $this->generic->create_annot_table($annoTable,$id,$max_size,$file_name);
                 $tables = array('TableName' =>$annoTable);
             }
 	}
 	else
 	{
 	    $organisms = $this->generic->get_organisms();
+	    foreach ($organisms->result as $row)
+            {
+                $id =$row['idOrganisms'];
+                $req= $this->db->query("SELECT TableName FROM tables WHERE TableName = 'Annotation_$id'");
+                $organism =$row['Organism'];
+                if($req->num_rows()>0)
+                {
+                    $OrgaOpt .= "<option value=\"$id\" >$organism !!</option>";
+                }
+                else
+                {
+                    $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+                }
+            }
+           
             $data = array(
                'title'=>"$this->header_name: Create annotation ",
                'contents' => 'upload/create_annotation',
                'footer_title' => $this->footer_title,
-               'organisms' => json_encode($organisms->result),
+               'organisms' => $OrgaOpt, //json_encode($organisms->result),
                'debug' => $debug,
                'success' => 'none',
               );
@@ -912,12 +938,26 @@ class Create_table extends MY_Controller
     public function update_annot_page()
     {
         $organisms = $this->generic->get_organisms();
+        foreach ($organisms->result as $row)
+        {
+            $id =$row['idOrganisms'];
+            $req= $this->db->query("SELECT TableName FROM tables WHERE TableName = 'Annotation_$id'");
+            $organism =$row['Organism'];
+            if($req->num_rows()>0)
+            {
+                $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+            }
+            else
+            {
+              #  $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+            }
+        }
         $data = array(
            'title'=>"$this->header_name: Edit annotation ",
            'contents' => 'upload/update_annotation',
            'footer_title' => $this->footer_title,
            'success' => 'none',
-           'organisms' => json_encode($organisms->result),
+           'organisms' => $OrgaOpt, //json_encode($organisms->result),
           );
         $this->load->view('templates/template', $data);
     }
@@ -928,8 +968,11 @@ class Create_table extends MY_Controller
     {
 	$this->load->dbforge();
 	$this->load->library('form_validation');
+	
 	if(isset($_POST['selectID']) && isset($_FILES['upload_file'] ) )
 	{
+	    $this->form_validation->set_rules('selectID','Organism name', 'trim|numeric|greater_than[0]|required');
+	    $this->form_validation->set_rules('upload_file','upload file', 'trim|required');
             $id = $this->input->post('selectID');
             $annoTable = "Annotation_$id";
             $file_name = $_FILES['upload_file']['name'];
@@ -941,7 +984,9 @@ class Create_table extends MY_Controller
            
             if($tables==0)
             {
-                $this->generic->create_annot_table($annoTable,$id,15,$file_name);
+                $organisms = $this->generic->get_organisms($id_organism); 
+                $max_size = $organisms->result->Max_transcript_size;
+                $this->generic->create_annot_table($annoTable,$id,$max_size,$file_name);
                 $tables = array('TableName' =>$annoTable);
             }
              
@@ -954,14 +999,14 @@ class Create_table extends MY_Controller
             $del=$this->expression_lib->readCSV($lines[0]);
             $good_del=$del->delimeter;
             $csv_count = count(str_getcsv($lines[0],"$good_del"));
-            if($csv_count >5 ) 
+            if($csv_count >5 OR $this->form_validation->run() == FALSE) 
             {
                 $data = array(
                         'title'=>"$this->header_name: Error in file",
                         'contents' => 'upload/error',
                         'footer_title' => $this->footer_title,
                         'success' => 'success',
-                        'error' => "File $file_name contains $csv_count fields !!. Upload aborted",
+                        'error' => "File $file_name contains $csv_count fields !!. Upload aborted".print_r($_POST,1),
                          
                      );
                 
@@ -1020,13 +1065,27 @@ class Create_table extends MY_Controller
 		// LOAD RESULTS VIEW //
 		
                 $organisms = $this->generic->get_organisms();
+                foreach ($organisms->result as $row)
+                {
+                    $id =$row['idOrganisms'];
+                    $req= $this->db->query("SELECT TableName FROM tables WHERE TableName = 'Annotation_$id'");
+                    $organism =$row['Organism'];
+                    if($req->num_rows()>0)
+                    {
+                        $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+                    }
+                    else
+                    {
+                      #  $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+                    }
+                }
                 $data = array(
-                        'title'=>"$this->header_name: Create annotation ",
-                        'contents' => 'upload/update_annotation',
-                        'footer_title' => $this->footer_title,
-                        'success' => 'success',
+                   'title'=>"$this->header_name: Edit annotation ",
+                   'contents' => 'upload/update_annotation',
+                   'footer_title' => $this->footer_title,
+                   'success' => 'none',
+                   'organisms' => $OrgaOpt, //json_encode($organisms->result),
                         'upload_error' => $upload_error,
-                        'organisms' => json_encode($organisms->result),
                      );
                 $this->load->view('templates/template', $data);
 	     }
@@ -1056,13 +1115,53 @@ class Create_table extends MY_Controller
         $OrgaOpt="";
         foreach ($organisms->result as $row)
         {
-            $id =$row['idOrganisms'] 	 ;
+            $id =$row['idOrganisms'];
+            $req= $this->db->query("SELECT TableName FROM tables WHERE TableName = 'Annotation_$id'");
             $organism =$row['Organism'];
-            $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+            if($req->num_rows()>0)
+            {
+                $OrgaOpt .= "<option value=\"$id\" >$organism !!</option>";
+            }
+            else
+            {
+                $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+            }
         }
         $data = array(
            'title'=>"$this->header_name: Upload Phytozome annotation",
            'contents' => 'upload/upload_phytozom',
+           'footer_title' => $this->footer_title,
+           'pid' =>$pid,
+           'organism' => $OrgaOpt
+          );
+        $this->load->view('templates/template', $data);
+    }
+    
+     public function update_phytozom()
+    {        
+        $this->session->unset_userdata('updated_table_phyto');
+        $GetWS=$this->expression_lib->working_space('','Upload');
+        if(isset($GetWS->Path))
+        {
+            $Path= $GetWS->Path;
+            $pid = $GetWS->pid;
+        }
+         # Get list of Organism
+        $organisms = $this->generic->get_organisms();
+        $OrgaOpt="";
+        foreach ($organisms->result as $row)
+        {
+            $id =$row['idOrganisms'];
+            $req= $this->db->query("SELECT TableName FROM tables WHERE TableName = 'Annotation_$id'");
+            $organism =$row['Organism'];
+            if($req->num_rows()>0)
+            {
+                $OrgaOpt .= "<option value=\"$id\" >$organism</option>";
+            }
+        }
+        $data = array(
+           'title'=>"$this->header_name: Update Phytozome annotation",
+           'contents' => 'upload/update_phytozom',
            'footer_title' => $this->footer_title,
            'pid' =>$pid,
            'organism' => $OrgaOpt
@@ -1135,7 +1234,7 @@ class Create_table extends MY_Controller
                    # $debug .=  "Path: $Path <br />";
                     $mem_use= memory_get_usage() ;
                     $debug .=  "Memory usage: $mem_use<br />";
-                     $table_name = "Annotation_$id_organism";
+                    $table_name = "Annotation_$id_organism";
                     $Table_already_set = $this->session->userdata('updated_table_phyto');
                     if($Force_Update ==1) 
                     {
@@ -1149,7 +1248,7 @@ class Create_table extends MY_Controller
                     {
                         $organisms = $this->generic->get_organisms($id_organism); 
                         $max_size = $organisms->result->Max_transcript_size;
-                        
+                        #log_message('debug',"Create_table::convert_phytozome_annot 1243 ".print_r( $organisms,1)." max_size $max_size ");
                         ####################  CREATE TABLE ####################################                       
                        #  print "create_annot_table($table_name,$id_organism,$max_size,$File2Upload)"; exit;
                         $sql_data_CT = $this->generic->create_annot_table($table_name,$id_organism,$max_size,$File2Upload);
@@ -1165,7 +1264,7 @@ class Create_table extends MY_Controller
                         * Initialise variables
                         */
                         $Data = new stdclass;
-                        $debug .="$sql_data_CT->info";
+                        #$debug .="$sql_data_CT->info";
                         $nbr_col = $nbr_header_col = $max_col = 0;
                         $type_col=array();
                         $max_value_col=array();
@@ -1219,7 +1318,7 @@ class Create_table extends MY_Controller
                         $ll=0;
                         $insertData_deb ="";
                         $insertData ="";
-                        
+                        $wrong_lines = 0;
                         $prev_lines =0;
                         $ColNames = "`Gene_Name`,`Analyse`,`Signature`,`Description`,`misc`";
                         
@@ -1250,6 +1349,7 @@ class Create_table extends MY_Controller
                             if($count_fields<6)
                             {
                                 log_message('debug', "convert_phytozome_annot $count_fields  : $lines");
+                                $wrong_lines++;
                                 continue;
                             }
                             $Content =explode($separator,$lines);
@@ -1374,7 +1474,7 @@ class Create_table extends MY_Controller
                             if($insert_size >100000)
                             {
                                 #$debug .= "create_table  insert_size: $insert_size <br />";
-                                log_message('debug', "convert_phytozome_annot insert_size >10K insert data");
+                                #log_message('debug', "convert_phytozome_annot insert_size >10K insert data");
                                 $insertData = trim($insertData,','); 
                                 $insertData .= ";";
                                 $lines= $ll - $prev_lines;
@@ -1386,11 +1486,11 @@ class Create_table extends MY_Controller
                             
                         } // end foreach(uploadFile)
                         
-                         $insertData = trim($insertData,','); 
+                        $insertData = trim($insertData,','); 
                         $DbInfo = array('table_name' => "$table_name",'line' => "$lines");
-                        #$insert_in_db = $this->generic->insert_Sql_data($insertData,$DbInfo);
                         $insert_in_db = $this->db->query($insertData);
-                        
+                        $debug .=  "lines inserted $ll <br>";                        
+                        $debug .= "lines with missings fields $wrong_lines . Look log files<br />";
                         $data = array(
                            'title'=>"$this->header_name: Upload file $import_file",
                            'contents' => 'upload/process_phytozom',
@@ -1402,7 +1502,6 @@ class Create_table extends MY_Controller
                            'info' => "$ll lines in file",                      
                            'organism' => $id_organism,
                            'table_name' => $table_name
-                          // 'required_tag' => $this->required_tag
                           );
                         $this->load->view("templates/template", $data);
                     }
@@ -1419,7 +1518,6 @@ class Create_table extends MY_Controller
                            'info' => "error",                      
                            'organism' => $id_organism,
                            'table_name' => $table_name
-                          // 'required_tag' => $this->required_tag
                           );
                         $this->load->view("templates/template", $data);
                     }

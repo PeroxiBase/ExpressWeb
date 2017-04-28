@@ -7,7 +7,7 @@
 *@author Sylvain PICARD<sylvain.picard@lrsv.ups-tlse.fr>
 *@version 1.0
 *@package ExpressWeb
-*@subpackage views
+*@subpackage view
 */
 ?>
 <!-- //////////////    corrPage  //////////////  -->

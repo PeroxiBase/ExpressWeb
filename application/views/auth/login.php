@@ -42,11 +42,6 @@
             <?php print form_password($password);?>
         </div>
         
-        <div class="form-group">
-            <?php print lang('login_remember_label', 'remember')."\n";?>
-            <?php print form_checkbox('remember', '1', FALSE, 'id="remember"');?>
-        </div>        
-        
         <p><?php print form_submit('submit', lang('login_submit_btn'));?></p>
         
         <?php print form_close();?>

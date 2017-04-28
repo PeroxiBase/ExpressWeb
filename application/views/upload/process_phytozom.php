@@ -15,7 +15,7 @@
     <div class="form-group">
         <h2>Process Phytozom</h2>
         
-        <?php echo anchor("create_table/upload_phytozom","Procees a new file");
+        <?php echo anchor("create_table/upload_phytozom","Process a new file");
         $this->session->set_userdata('updated_table_phyto', $table_name);
         ?>;
    </div>

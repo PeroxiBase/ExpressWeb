@@ -24,7 +24,7 @@
             
             print "<p>$message</p><br /><br />\n";
             
-            if(isset($ReportFile))
+            if(isset($ReportFile) && $ReportFile!="")
             {
                 
                 $anchorFile = anchor("${Path}$ReportFile","ReportFile",'target="_blank"');

@@ -239,7 +239,7 @@ class Visualizer extends CI_Model {
             
             if($this->db->table_exists($annoTable))
             {
-                $sql_query = "SELECT DISTINCT Analyse FROM `".$annoTable."`";
+                $sql_query = "SELECT DISTINCT Analyse FROM `".$annoTable."` ORDER BY Analyse";
                 $query=$this->db->query($sql_query);
                 $result->sql = $sql_query;
                 $result->nbr = $query->num_rows();

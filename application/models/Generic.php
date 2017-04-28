@@ -180,7 +180,7 @@ class Generic extends CI_Model
         public function get_tables_organism($id_orga)
         {
             $result = new stdClass();
-            $sql_query= "SELECT IdTables,TableName ,MasterGroup,name ,o.Organism ,idOrganisms,Submitter,version ,comment
+            $sql_query= "SELECT IdTables,TableName ,MasterGroup,name,Root ,o.Organism ,idOrganisms,Submitter,version ,comment
                         FROM tables as t
                         INNER JOIN Organisms as o on idOrganisms=t.Organism
                         INNER JOIN groups as g on g.id= MasterGroup 
@@ -448,7 +448,7 @@ class Generic extends CI_Model
         {
             if($time=='') $time=5;
             $result = new stdClass();
-            $sql_query= "SELECT ip_address,timestamp,
+            $sql_query= "SELECT DISTINCT ip_address,timestamp,
                             FROM_unixtime(timestamp) as date, CAST(data AS CHAR(10000) CHARACTER SET utf8) as data
                             FROM ci_sessions
                             WHERE timestamp > unix_timestamp(DATE_SUB(now(), INTERVAL $time MINUTE));";
@@ -457,7 +457,12 @@ class Generic extends CI_Model
             $result->nbr = $query->num_rows();
             $result->result = $query->result();
             $resultArr = array();
-            
+            $data_html = "<legend>Logged in users </legend>\n";
+            $data_html .= "<table class=\"table table-bordered table-condensed\">\n";
+            $data_html .= "       <thead>\n";
+            $data_html .= "          <tr><th>Username</th><th>@IP</th><th>Date</th><th>Login Time</th></tr>\n";
+            $data_html .= "       </thead>\n";
+            $data_html .= "       <tbody>\n";
             foreach($result->result as $row)
             {
                 #http://forum.codeigniter.com/thread-61330.html
@@ -491,8 +496,11 @@ class Generic extends CI_Model
                 $resultArr[$username]['timestamp'] = $row->timestamp ;
                 $resultArr[$username]['username'] = $username ;
                 
+                $data_html .= "          <tr><th>$username</th><th>$row->ip_address</th><th>$Day</th><th>$Time</th></tr>\n";
             }
-            $result->Data = $resultArr;
+            $data_html .= "   </tbody>\n";
+            $data_html .= "</table>\n";
+            $result->Data = $data_html; #$resultArr;
             return $result;
         }
         
@@ -918,6 +926,7 @@ class Generic extends CI_Model
         public function create_annot_table($table_name,$id_organism,$max_size,$file_name)
         {
             $result = new stdClass();
+            if($max_size == "" OR $max_size ==0) $max_size=15;
             $sql_query= "CREATE TABLE IF NOT EXISTS $table_name (
                               Annot_${id_organism}_ID int(10) unsigned NOT NULL AUTO_INCREMENT,
                               Gene_Name varchar($max_size) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -936,7 +945,7 @@ class Generic extends CI_Model
             if ($this->db->trans_status() === FALSE)
             {
                     $this->db->trans_rollback(); 
-                    $result->info .= "<br />Impossible de creer la Table  $table_name  : $sql_query<br />";  
+                    $result->info .= "<br />Impossible de creer la Table $table_name orga $id_organism GeneNameSize $max_size File Name $file_name <br /> : $sql_query<br />";  
                     $result->error=1;
             }
             else
@@ -949,7 +958,7 @@ class Generic extends CI_Model
                 $Organism = $organisms->result->Organism;
                 $UpdateData =array('table_name' => "$table_name",'Master_Group' => "1",
                               'IdOrganism' => "$id_organism",'submitter' => "$submitter",
-                              'version' => "1",'comment' => "Annotation file for organism $Organism",
+                              'version' => "1",'comment' => "Annotation file for organism $Organism \n Uploaded from $file_name",
                               'file_name'  => "$file_name",'Root' => '1','Child'=>'0');
                 $updTable= $this->update_table_info($UpdateData);
                 $result->info .= $updTable->info;
@@ -1009,13 +1018,16 @@ class Generic extends CI_Model
         public function create_toolbox_table($table_name,$id_organism,$file_name)
         {
             $result = new stdClass();
+            $get_size = $this->db->query("select Max_transcript_size from Organisms WHERE idOrganisms='$id_organism'");
+            $GeneNameSize=  $get_size->row('Max_transcript_size');
+            if($GeneNameSize === FALSE) $GeneNameSize =15;
             $sql_query= "CREATE TABLE IF NOT EXISTS $table_name (
                       toolbox_${id_organism}_ID int(10) NOT NULL AUTO_INCREMENT,
                       toolbox_name varchar(40) NOT NULL,
-                      gene_name varchar(15) NOT NULL,
-                      annotation varchar(25) DEFAULT NULL,
+                      gene_name varchar($GeneNameSize) NOT NULL,
+                      annotation varchar(100) DEFAULT NULL,
                       functional_class varchar(255) DEFAULT NULL,
-                      biological_activity text,
+                      biological_activity  varchar(255),
                       WB_Db varchar(10) NOT NULL,
                       PRIMARY KEY (toolbox_${id_organism}_ID),
                       KEY gene_name (gene_name)
@@ -1040,19 +1052,9 @@ class Generic extends CI_Model
                 $UpdateData =array('table_name' => "$table_name",'Master_Group' => "1",
                               'IdOrganism' => "$id_organism",'submitter' => "$submitter",
                               'version' => "1",'comment' => "Annotation file for organism $Organism",
-                              'file_name'  => "$file_name",'Root'=> '0','Child'=>'0');
+                              'file_name'  => "$file_name",'Root'=> '1','Child'=>'0');
                 $updTable= $this->update_table_info($UpdateData);
                 $result->info .= $updTable->info;
-                ##########  update tables_group #################
-                ## get Idtables
-                /* $IdTable = $updTable->IdTable;
-                 $UpdateGrpData = array(0 =>array('table_name'=>$table_name, 'table_id' => $IdTable ,'group_id'=> "1"),
-                                         1=>array('table_name'=>$table_name,'table_id' => $IdTable ,'group_id'=> "2")
-                                    );
-                # var_dump($UpdateGrpData);
-                $updTableGrp= $this->update_table_group_info($UpdateGrpData);
-                $result->info .= $updTableGrp->info;*/
-                
             }
             return $result;
         }

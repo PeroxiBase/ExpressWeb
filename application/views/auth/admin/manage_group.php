@@ -13,7 +13,7 @@
 ?>
 <!-- //////////////    auth/admin/manage_group      //////////////  -->
 <div class="row">
-    <div  id="param" class="page-header col-md-4 center-block "> 
+    <div  id="param" class="page-header col-md-8 center-block "> 
        <a href="../dashboard">Back to Users Account management</a><br /><br />
        <div class="form-group">
                 <h1><?php echo lang('list_group_heading');?></h1>

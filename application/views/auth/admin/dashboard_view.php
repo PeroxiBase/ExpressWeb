@@ -21,8 +21,8 @@ $base_url= base_url();
 ?>
 <!-- //////////////    auth/admin/dashboard_view      //////////////  -->
 <div class="row">
-        <div  id="param" class="page-header col-md-10 center-block"> 
-                <h2>Admin: Dashboard</h2>
+        <div  id="param" class="page-header col-md-12 center-block"> 
+                <h2>Users management</h2>
 	
 <!-- Main Content -->
 <?php if (! empty($message)) { ?>
@@ -43,11 +43,12 @@ $base_url= base_url();
             
                 <div class="tab-pane active" id="tabs-1">                        
                     <?php 
-                        if(isset($whoOnline->Data)) print "<pre> ".print_r($whoOnline->Data,1)."</pre>";
+                        if(isset($whoOnline->Data)) print "<pre> ".$whoOnline->Data."</pre>";
                         if( $ActiveProcess->apache!="") print "<pre>".print_r($ActiveProcess->apache,1)." </pre>"; ?>
+                        <div id=test_process></div>
                 </div>
                 
-	        <div class="tab-pane  " id="tabs-2">
+	        <div class="tab-pane" id="tabs-2">
                     <p>Manage the account details of all site users.</p>                     
                     <ul>
                       <li>
@@ -57,8 +58,8 @@ $base_url= base_url();
                 </div>
 					
                 <div class="tab-pane" id="tabs-3">
-                    <p>Manage the user groups that users can be assigned to.</p>
-                    <p>User groups are intended to be used to categorise the primary access rights of a user. User groups are completely customised.</p>
+                    <p>Manage the user groups that users and Dataset can be assigned to.</p>
+                    <p>User groups are intended to be used to categorise the primary access rights of a user.</p>
                     <ul>
                       <li>
                         <a href="<?php echo $base_url."auth/manage_groups"; ?>">Manage User Groups</a>			
@@ -94,7 +95,7 @@ $(".Kill").click(function()
                 data: 'ProcessId='+ProcessId,
                 dataType:'html',
                 success: function(code_html, statut)
-                { // success est toujours en place, bien sûr !
+                { 
                     // alert('Process '+ProcessId+' killed '+status+ ' mesg:'+code_html);
                     location.reload();
                 },
@@ -115,13 +116,58 @@ $(".Qdel").click(function()
                 data: 'ProcessId='+ProcessId,
                 dataType:'html',
                 success: function(code_html, statut)
-                { // success est toujours en place, bien sûr !
-                    // alert('Process '+ProcessId+' killed '+status+ ' mesg:'+code_html);
+                { 
+                      alert('Process '+ProcessId+' killed '+status+ ' mesg:'+code_html);
                     location.reload();
                 },
                 error: function(resultat, statut, erreur)
                 { 
                    alert('Process '+ProcessId+' not killed '+status);
+                    location.reload();
+                }
+        });
+    });
+$(".qstat_shrt").click(function()
+   {
+       var ProcessId = $(this).attr("value");
+       jQuery.ajax({ 
+                type:'post',
+                url:'dashboard/qstat_shrt',
+                data: 'ProcessId='+ProcessId,
+                dataType:'html',
+                success: function(code_html, statut)
+                { 
+                    // alert('Test Process "'+ProcessId+'" status "'+status+ '" mesg:'+code_html);
+                    $('#test_process').html('<pre>'+code_html+'</pre>');
+                    console.log('ProcessId='+ProcessId);
+                   
+                },
+                error: function(resultat, statut, erreur)
+                { 
+                   $('#test_process').html('ERROR: Process '+ProcessId+' not killed '+status);
+                    location.reload();
+                }
+        });
+    });
+
+$(".qstat_long").click(function()
+   {
+       var ProcessId = $(this).attr("value");
+       jQuery.ajax({ 
+                type:'post',
+                url:'dashboard/qstat',
+                data: 'ProcessId='+ProcessId,
+                dataType:'html',
+                success: function(code_html, statut)
+                { 
+                    // alert('Test Process "'+ProcessId+'" status "'+status+ '" mesg:'+code_html);
+                    $('#test_process').html('<pre>'+code_html+'</pre>');
+                    console.log('ProcessId='+ProcessId);
+                   // location.reload();
+                },
+                error: function(resultat, statut, erreur)
+                { 
+                   alert('ERROR: Process '+ProcessId+' not killed '+status);
                     location.reload();
                 }
         });

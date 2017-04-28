@@ -26,6 +26,8 @@
 *
 *       ['admin_name']          Name of administrator in Db. Default administrator
 *
+*       ['admin_email']         Email of administrator.
+*
 *       ['apache_user']         the user who run Apache . usually 'apache'
 *
 *	['network']             The full path of directory used for storing computed networks
@@ -44,28 +46,29 @@
 *	['maxError']            While submitting job to the cluster, script test connectivity
 *                               On overloaded cluster script will exit after maxError try
 *       
+*       ['qdelay']              Time in second while script will sleep before test running jobs
+*                               on cluster. Default 30sec
+*
 *       ['cluster_env']         Root path of cluster manager
 *
-*       ['cluster_app']        Full path of binary command for cluster operation (qsub,qstat,...)
+*       ['cluster_app']         Full path of binary command for cluster operation (qsub,qstat,...)
 *
 *       ['check_cluster']       command used to check job launched by 'apache_user' on the cluster
 *                               default command for cluster using SGE instructions.
+*
+*       ['qstat']               command qstat. Display list of qsub jobs on clusters
+*
+*       ['qdel']                command qdel. Delete 'apache_user' job on cluster
+*
 */
 $config['header_name'] = ' ';
 $config['web_path'] = ' ';
 $config['admin_name'] = 'administrator';
+$config['admin_email'] = ' ';
 $config['apache_user'] = 'apache';
 $web_path = $config['web_path'];
 $config['network'] = $web_path.'/assets/network/';
 $config['similarity'] = $web_path.'/assets/similarity/';
-
-$config['cluster_env'] = '/SGE/ogs';
-$config['cluster_app'] = '/SGE/ogs/bin/linux-x64';
-$cluster_env = $config['cluster_env'];
-$cluster_app = $config['cluster_app'];
-$apache_user = $config['apache_user'];
-$config['check_cluster'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat -u $apache_user ";
-
 $config['launch_cluster'] = $web_path.'/assets/scripts/launch_cluster.sh';
 $config['work_cluster'] = ' ';
 $config['work_files'] = $config['work_cluster'].'/files/';
@@ -75,4 +78,12 @@ $config['MaxGeneNameSize'] = '15';
 $config['maxError'] = '50';
 $config['qdelay'] = '30';
 
+$config['cluster_env'] = '/SGE/ogs';
+$config['cluster_app'] = '/SGE/ogs/bin/linux-x64';
+$cluster_env = $config['cluster_env'];
+$cluster_app = $config['cluster_app'];
+$apache_user = $config['apache_user'];
+$config['check_cluster'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat -u $apache_user ";
+$config['qstat'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat ";
+$config['qdel'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qdel ";
 ?>

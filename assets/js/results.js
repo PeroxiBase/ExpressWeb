@@ -239,7 +239,7 @@ $('.Container').highcharts({
     chart: {
       type: 'heatmap',
       margin: [60, 20, 80, 100],
-      height:800,
+      height:700,
       backgroundColor:'rgba(0, 0, 255, 0)',
     },
     credits: {

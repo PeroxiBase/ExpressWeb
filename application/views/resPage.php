@@ -97,7 +97,7 @@ $this->load->view("templates/pills");
 </div>
 
 <script type="text/javascript">
-var debug =0;
+var debug =1;
 $(function(){
 
 function extractValues(filename,orderName,seuil){
@@ -356,7 +356,7 @@ $('#downloadLink').click(function()
 
     $('#dlForm').append('<div id="moreDiv" style="display:none"></div>')
     $('#moreDiv').append('<div id="addAnnot" class="col-md-5 col-lg-5 col-md-offset-1 col-lg-offset-1" style="margin-top:5vh"></div>')
-    <?php if($this->ion_auth->in_group('members'))
+    <?php if($this->ion_auth->in_group('members') )
         { ?>
     $('#moreDiv').append('<div id="addToolbox" class="col-md-5 col-lg-5" style="margin-top:5vh"></div>')
     <?php } ?>
@@ -406,26 +406,37 @@ $('#downloadLink').click(function()
                 success:function(data){
                         if(data)
                             if(debug) { console.log('407 #downloadLink toolbox/getToolboxes data %s' + data); }
-                            data=JSON.parse(data)
-                            for(var i in data)
+                            if(data =="")
                             {
-                                if(data[i]['toolbox_name']==undefined || data == "")
-				{
-					$('#selToolbox2').append('<option value="">There is no toolbox for this organism i '+i+'</option>')
-					toolbox='';
-				}
-				else
-				{
-					toolbox=data[i]['toolbox_name']
-					$('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
-					if(debug) { console.log('420 toolbox/getToolboxes toolbox '+toolbox); }
-				}                                    
+                                var toolbox=''; $('#addToolbox').remove()
+                                if(debug) { console.log('415 #downloadLink toolbox/getToolboxes redefine toolbox %s' + toolbox); }
+                            }
+                            else
+                            {
+                                data=JSON.parse(data)
+                                for(var i in data)
+                                {
+                                    if(data[i]['toolbox_name']==undefined || data == "")
+                                    {
+                                            $('#selToolbox2').append('<option value="">There is no toolbox for this organism i '+i+'</option>')
+                                            toolbox='';if(debug) { console.log('425 #downloadLink toolbox/getToolboxes redefine toolbox %s' + toolbox); }
+                                    }
+                                    else
+                                    {
+                                            toolbox=data[i]['toolbox_name']
+                                            $('#selToolbox2').append('<option value="'+toolbox+'">'+toolbox+'</option>')
+                                            if(debug) { console.log('428 toolbox/getToolboxes toolbox '+toolbox); }
+                                    }                                    
+                                }
                             }
                             if(toolbox =='')
                             {
                                 $('#addToolbox').remove()
+                                $('#switch2').remove()
                             }
-                }
+                            if(debug) { console.log('436 toolbox/getToolboxes end ajax toolbox '+toolbox); }
+                } 
+                
         });
         
         $('#selToolbox2').change(function()
@@ -458,6 +469,7 @@ $('#downloadLink').click(function()
     //add annotation
     $('#dlBTN').click(function()
     {
+       // if(toolbox == undefined) { toolbox = '' }
             $('#noname').fadeOut()
             $('#dlLink').fadeOut()
             $('*').css('cursor','wait')
@@ -468,17 +480,21 @@ $('#downloadLink').click(function()
             }
             else
             {
-                    if(debug) { console.log('470 #downloadLink moreDiv len: ' ,$('#moreDiv').length); }
+                    if(debug) { console.log('470 #downloadLink toolbox "%s"',toolbox); }
                     annot=$('#annotArea').val()
-                    toolbox=$('#toolboxArea').val()
-                    annot=annot.split('\n')
-                    <?php if($this->ion_auth->in_group('members'))
-                    { ?>
-                    toolbox=toolbox.split('\n')
-                    <?php } else {  ?> 
+                    if(toolbox != '')
+                    {
+                        toolbox=$('#toolboxArea').val()
+                    }
+                    else
+                    {
                         var toolbox = ''
                         $('#toolboxArea').empty()
-                    <?php } ?>
+                    }
+                    annot=annot.split('\n')
+                    <?php if($this->ion_auth->in_group('members')) { ?>
+                        toolbox=toolbox.split('\n');                       
+                    <?php }   ?> 
                     if(debug) {
                         console.log('482  #downloadLink annot.length ' + annot.length);
                         console.log('483  #downloadLink annot  ' + annot );
@@ -489,7 +505,7 @@ $('#downloadLink').click(function()
                             annot.pop()
                     }
                     else{ var annot=[] }
-                    if(toolbox.length > 1)
+                    if(toolbox != undefined && toolbox.length > 1)
                     {
                             toolbox.pop()
                     }
@@ -658,6 +674,7 @@ $('#downloadLink').click(function()
 				{
 					$('#selToolbox').append('<option value="none">There is no toolbox for this organism i '+i+'</option>')
 					toolbox='';
+					$('#addToolbox').remove()
 				}
 				else
 				{
@@ -666,12 +683,12 @@ $('#downloadLink').click(function()
 					if(debug) { console.log('665 toolbox/getToolboxes toolbox '+toolbox); }
 				}
 			}
-			if(debug) { console.log('668 toolbox/getToolboxes data %s toolbox %s',data,toolbox); }
+			if(debug) { console.log('668 toolbox/getToolboxes data "%s" toolbox "%s" ',data,toolbox); }
 			// if no toolbox available (demo account) , remove toolbox button
 			if (toolbox =='')
                         {
-                            $('#swLabel2').remove()
-                            
+                            $('#addToolbox').remove()
+                             $('#swLabel2').remove()
                         }
 		}
 	});

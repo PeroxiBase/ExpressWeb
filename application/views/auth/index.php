@@ -13,7 +13,7 @@
 ?>
 <!-- //////////////    auth/index      //////////////  -->
 <div class="row">
-        <div  id="param" class="page-header col-md-6 center-block"> 
+        <div  id="param" class="page-header col-md-8 left-block"> 
         <a href="../dashboard">Back to Users management</a><br />
             <h1><?php echo lang('index_heading');?></h1>
             <p><?php echo lang('index_subheading');?></p>

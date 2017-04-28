@@ -12,7 +12,7 @@
 */
 print "<!-- //////////////    admin/manage_users  //////////////  -->\n";
 print "<div class=\"row\">\n";
-print "    <div  id=\"param\" class=\"col-md-8 center-block\"> \n";
+print "    <div  id=\"param\" class=\"col-md-10 center-block\"> \n";
 print "         <a href=\"../create_table\">back to Admin Express Db</a><br /><br />\n";
 print "         <table class=\"table table-condensed table-hover  table-bordered\" >\n";
 print "             <thead>\n";

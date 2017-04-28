@@ -37,12 +37,12 @@ print "     </div>\n";
 print "     <div class=\"form-group\">\n";
 
 print lang('create_user_email_label', 'email',array('class' =>"col-sm-4 control-label") )." ";                
-print form_input('email', $email)."<br />\n";
+print form_input('email', $email,array('size'=>30))."<br />\n";
 print "     </div>\n";
 print "     <div class=\"form-group\">\n";
 
 print lang('edit_user_company_label', 'company',array('class' =>"col-sm-4 control-label") )." ";
-print form_input('company', $company)."<br />\n";
+print form_input('company', $company,array('size'=>30))."<br />\n";
 print "     </div>\n"; 
 
 print "<br />\n";   

@@ -24,7 +24,7 @@
 <!--DIV RIGHT -->
 <div id="right">
         <?php 
-        print "$debug <br />";
+        #print "$debug <br />";
         print "createtable<pre>".print_r($createtable,1)."</pre>"; 
         if(isset($replicate))
         {

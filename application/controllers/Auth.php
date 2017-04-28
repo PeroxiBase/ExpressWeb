@@ -258,11 +258,11 @@ class Auth extends MY_Controller
             // setting validation rules by checking wheather identity is username or email
             if($this->config->item('identity', 'ion_auth') != 'email' )
             {
-               $this->form_validation->set_rules('identity', $this->lang->line('forgot_password_identity_label'), 'required');
+               $this->form_validation->set_rules('identity', $this->lang->line('forgot_password_identity_label'), 'trim|required');
             }
             else
             {
-               $this->form_validation->set_rules('identity', $this->lang->line('forgot_password_validation_email_label'), 'required|valid_email');
+               $this->form_validation->set_rules('identity', $this->lang->line('forgot_password_validation_email_label'), 'trim|required|valid_email');
             }
             if ($this->form_validation->run() == false)
             {
@@ -303,25 +303,32 @@ class Auth extends MY_Controller
                         $this->session->set_flashdata('message', $this->ion_auth->errors());
                         redirect("auth/admin/forgot_password", 'refresh');
                 }
-
-                // run the forgotten password method to email an activation code to the user
-                $forgotten = $this->ion_auth->forgotten_password($identity->{$this->config->item('identity', 'ion_auth')});
-
-                if ($forgotten)
+                if($this->input->post('identity') != "demo")
                 {
-                        // if there were no errors
-                        $this->session->set_flashdata('message', $this->ion_auth->messages());
-                        
-                        $this->data['title'] = "Re-new Password";
-                        $this->data['email'] = $forgotten;
-                        $this->data['message'] = $this->ion_auth->messages();
-                        $this->_render_page("auth/admin/confirm_forgot_password", $this->data);
-                        #redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+                    // run the forgotten password method to email an activation code to the user
+                    $forgotten = $this->ion_auth->forgotten_password($identity->{$this->config->item('identity', 'ion_auth')});
+    
+                    if ($forgotten)
+                    {
+                            // if there were no errors
+                            $this->session->set_flashdata('message', $this->ion_auth->messages());
+                            
+                            $this->data['title'] = "Re-new Password";
+                            $this->data['email'] = $forgotten;
+                            $this->data['message'] = $this->ion_auth->messages();
+                            $this->_render_page("auth/admin/confirm_forgot_password", $this->data);
+                            #redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+                    }
+                    else
+                    {
+                            $this->session->set_flashdata('message', $this->ion_auth->errors());
+                            redirect("auth/forgot_password", 'refresh');
+                    }
                 }
                 else
                 {
-                        $this->session->set_flashdata('message', $this->ion_auth->errors());
-                        redirect("auth/admin/forgot_password", 'refresh');
+                    $this->session->set_flashdata('message', "<b>Demo account can't be renew...</b>");
+                    redirect("auth/forgot_password", 'refresh');
                 }
             }
 	}
@@ -543,8 +550,8 @@ class Auth extends MY_Controller
                 {
                  
                     $data = array(
-                               'title'=>"MirBase: ",
-                               'contents' => 'upload/error',
+                               'title'=>"$this->header_name: Create User ",
+                               'contents' => 'auth/admin/create_user',
                                'error' =>  " Missing values ! ".print_r($this->form_validation->run(),1)."<br />"
                              
                                );
@@ -573,18 +580,21 @@ class Auth extends MY_Controller
                     'id'    => 'first_name',
                     'type'  => 'text',
                     'value' => $this->form_validation->set_value('first_name'),
+                    'required' =>  'required'
                 );
                 $this->data['last_name'] = array(
                     'name'  => 'last_name',
                     'id'    => 'last_name',
                     'type'  => 'text',
                     'value' => $this->form_validation->set_value('last_name'),
+                     'required' =>  'required'
                 );
                 $this->data['identity'] = array(
                     'name'  => 'identity',
                     'id'    => 'identity',
                     'type'  => 'text',
-                    'value' => $this->form_validation->set_value('identity'),
+                    'value' => $this->form_validation->set_value('identity'), 
+                    'required' =>  'required'
                 );
                 $this->data['email'] = array(
                     'name'  => 'email',
@@ -592,12 +602,14 @@ class Auth extends MY_Controller
                     'type'  => 'text',
                     'size' => 50,
                     'value' => $this->form_validation->set_value('email'),
+                    'required' =>  'required'
                 );
                 $this->data['company'] = array(
                     'name'  => 'company',
                     'id'    => 'company',
                     'type'  => 'text',
                     'value' => $this->form_validation->set_value('company'),
+                    'required' =>  'required'
                 );
                 $this->data['phone'] = array(
                     'name'  => 'phone',
@@ -612,12 +624,14 @@ class Auth extends MY_Controller
                     'id'    => 'password',
                     'type'  => 'password',
                     'value' => $this->form_validation->set_value('password'),
+                    'required' =>  'required'
                 );
                 $this->data['password_confirm'] = array(
                     'name'  => 'password_confirm',
                     'id'    => 'password_confirm',
                     'type'  => 'password',
                     'value' => $this->form_validation->set_value('password_confirm'),
+                    'required' =>  'required'
                 );
     
                 $this->_render_page("auth/admin/create_user", $this->data);

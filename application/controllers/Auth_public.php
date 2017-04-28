@@ -281,87 +281,134 @@ class Auth_public extends MY_Controller
     public function get_members_files()
     {
         // Get user id from session to use in the update function as a primary key.
-       $user_id = $this->session->user_id;
-       $Directory = $this->session->working_path;
-       $UserGroups = $this->session->groups;
-       $username  = $this->session->username;
-       $Admin_name = $this->config->item('admin_name'); ### name of super admin in db
-       $userTables=$this->generic->get_table_members($user_id); #### see Generic.php model
-       $tables=$tables_tmp=array();
-       $option_div =  "";
-       $web_path = $this->config->item('web_path');
-       $web_pathLen= strlen($web_path);
-       $out_network = $this->config->item('network');
-       $out_network = substr($out_network,$web_pathLen);
-       $out_similarity = $this->config->item('similarity');
-       $out_similarity = substr($out_similarity,$web_pathLen);
-       $File_list = "\n";
-       $File_list .= "<table class=\"table table-hover table-condensed table-bordered\" >\n";
-       $File_list .= "   <thead>\n";
-       $File_list .= "      <tr><th>TableName</th><th>version</th><th>MasterGroup</th><th>Threshold</th><th>Network</th><th>Similarity</th><th>Date</th></tr>\n";
-       $File_list .= "   </thead>\n";
-       $File_list .= "   <tbody>\n";
-       ###### for each $userTables search for precomputed Cluster
-       ###### result will be displayed on select in main view
-       foreach($userTables->result as $row)
-       {
-            $IdTables = $row['IdTables'];
-            $TableName = $row['TableName'];
-            $Root = $row['Root'];
-            $version = $row['version'];
-            $group_name = $row['group_name'];
-            ##### similarity data
-            
-            
-            $SimilarityFile =  anchor( $out_similarity."".$TableName."_Similarity",$TableName."_Similarity") ;
-            $get_child = $this->generic->get_child($IdTables);
-            if($get_child->nbr >0)
+        
+        $user_id = $this->session->user_id;
+        $Directory = $this->session->working_path;
+        $UserGroups = $this->session->groups;
+        $username  = $this->session->username;
+        $Admin_name = $this->config->item('admin_name'); ### name of super admin in db
+        $userTables=$this->generic->get_table_members($user_id); #### see Generic.php model
+        #### Load user folder. 
+        if(!$Directory)
+        {
+           $GetWS=$this->expression_lib->working_space('','Upload'); 
+           if(isset($GetWS->Path))
+           {
+                $pid = $GetWS->pid;
+                $this->session->set_userdata('pid',$pid);
+           }
+        }
+        $tables=$tables_tmp=array();
+        $option_div =  "";
+        $web_path = $this->config->item('web_path');
+        $web_pathLen= strlen($web_path);
+        $out_network = $this->config->item('network');
+        $out_network = substr($out_network,$web_pathLen);
+        $out_similarity = $this->config->item('similarity');
+        $out_similarity = substr($out_similarity,$web_pathLen);
+        ####################################################
+        $File_list = "";
+        if($userTables->nbr >0)
+        {
+            $File_list .= "<table class=\"table table-hover table-condensed table-bordered\" >\n";
+            $File_list .= "   <thead>\n";
+            $File_list .= "      <tr><th>TableName</th><th>version</th><th>MasterGroup</th><th>Threshold</th><th>Network</th><th>Similarity</th><th>Date</th></tr>\n";
+            $File_list .= "   </thead>\n";
+            $File_list .= "   <tbody>\n";
+            ###### for each $userTables search for precomputed Cluster
+            ###### result will be displayed on select in main view
+            foreach($userTables->result as $row)
             {
-                $tbl_seuil = 
-                $rowspan = 0; 
-                $File_list_tmp = "";
-                foreach($get_child->result as $row)
-                {$NetworkFile = "";
-                    $IdTables2 = $row->IdTables;
-                    $tableName2 = $row->TableName;
-                    
-                    $tbl_seuil = trim(preg_replace("/$TableName|_Cluster/","",$tableName2),"_");
-                    $dot_seuil = preg_replace("/_/",".",$tbl_seuil);
-                    if(file_exists(".".$out_network."Edges".$TableName."_".$tbl_seuil.".json"))
-                    {
-                        $date = date ("F d Y H:i:s.", filemtime(".".$out_network."Edges".$TableName."_".$tbl_seuil.".json"));
-                        $NetworkFile .= anchor( $out_network."Edges".$TableName."_".$tbl_seuil.".json","Edges $TableName $dot_seuil")."<br />\n" ;
-                        $NetworkFile .= anchor( $out_network."Nodes".$TableName."_".$tbl_seuil.".json","Nodes $TableName $dot_seuil")."<br />\n" ;
-                        if($rowspan==0) $File_list_tmp .=  "<td>$tbl_seuil</td><td>$NetworkFile</td><td>$SimilarityFile</td><td>$date</td></tr>\n";
-                        else $File_list_tmp .=  "           <tr><td>$tbl_seuil</td><td>$NetworkFile</td><td>$SimilarityFile</td><td>$date</td></tr>\n";
-                        $rowspan++;
-                    }
-                    else
-                    {
-                        $File_list_tmp .=  "                <td>$tbl_seuil</td><td colspan=3>oops! not computed files found</td></tr>\n";
-                    }
-                }                    
-            }
-            ###### combine result
-            
-            $File_list .=  "    <tr>\n";
-            if($Root)
-            {
-                if(in_array($group_name,$UserGroups) OR $username =="$Admin_name" )
+                $IdTables = $row['IdTables'];
+                $TableName = $row['TableName'];
+                $Root = $row['Root'];
+                $version = $row['version'];
+                $group_name = $row['group_name'];
+                ##### similarity data
+                
+                
+                $SimilarityFile =  anchor( $out_similarity."".$TableName."_Similarity",$TableName."_Similarity") ;
+                $get_child = $this->generic->get_child($IdTables);
+                if($get_child->nbr >0)
                 {
-                    $File_list .=  "            <th class=info rowspan=\"$rowspan\">$TableName</th><td rowspan=\"$rowspan\">$version</td><td rowspan=\"$rowspan\">$group_name</td>\n";
-                    $File_list .= $File_list_tmp;
+                    $tbl_seuil = 
+                    $rowspan = 0; 
+                    $File_list_tmp = "";
+                    foreach($get_child->result as $row)
+                    {$NetworkFile = "";
+                        $IdTables2 = $row->IdTables;
+                        $tableName2 = $row->TableName;
+                        
+                        $tbl_seuil = trim(preg_replace("/$TableName|_Cluster/","",$tableName2),"_");
+                        $dot_seuil = preg_replace("/_/",".",$tbl_seuil);
+                        if(file_exists(".".$out_network."Edges".$TableName."_".$tbl_seuil.".json"))
+                        {
+                            $date = date ("F d Y H:i:s.", filemtime(".".$out_network."Edges".$TableName."_".$tbl_seuil.".json"));
+                            $NetworkFile .= anchor( $out_network."Edges".$TableName."_".$tbl_seuil.".json","Edges $TableName $dot_seuil")."<br />\n" ;
+                            $NetworkFile .= anchor( $out_network."Nodes".$TableName."_".$tbl_seuil.".json","Nodes $TableName $dot_seuil")."<br />\n" ;
+                            if($rowspan==0) $File_list_tmp .=  "<td>$tbl_seuil</td><td>$NetworkFile</td><td>$SimilarityFile</td><td>$date</td></tr>\n";
+                            else $File_list_tmp .=  "           <tr><td>$tbl_seuil</td><td>$NetworkFile</td><td>$SimilarityFile</td><td>$date</td></tr>\n";
+                            $rowspan++;
+                        }
+                        else
+                        {
+                            $File_list_tmp .=  "                <td>$tbl_seuil</td><td colspan=3>oops! not computed files found</td></tr>\n";
+                        }
+                    }                    
+                }
+                ###### combine result
+                
+                $File_list .=  "    <tr>\n";
+                if($Root)
+                {
+                    if(in_array($group_name,$UserGroups) OR $username =="$Admin_name" )
+                    {
+                        $File_list .=  "            <th class=info rowspan=\"$rowspan\">$TableName</th><td rowspan=\"$rowspan\">$version</td><td rowspan=\"$rowspan\">$group_name</td>\n";
+                        $File_list .= $File_list_tmp;
+                    }
+                }
+                else
+                {
+                        $File_list .=  "            <td rowspan=\"$rowspan\">$TableName</td><td rowspan=\"$rowspan\">$version</td><td rowspan=\"$rowspan\">$group_name</td>\n";
+                        $File_list .= $File_list_tmp;
+                        
                 }
             }
-            else
+            $File_list .= "   </tbody>\n";
+            $File_list .= "</table>\n"; 
+        }
+        ##Report_Files for admin
+        $Report_Files = $HReport_Files = "";
+        
+        if($this->ion_auth->is_admin())
+        {
+            $HReport_Files .= "<table class=\"table table-hover table-condensed table-bordered\" >\n";
+            $HReport_Files .= "   <thead>\n";
+            $HReport_Files .= "      <tr><th>Filename</th><th>Size</th><th>Date</th><th>Operation</th></tr>\n";
+            $HReport_Files .= "   </thead>\n";
+            $HReport_Files .= "   <tbody>\n";
+            $d = dir(".$out_network");
+            while (false !== ($entry = $d->read())) 
             {
-                    $File_list .=  "            <td rowspan=\"$rowspan\">$TableName</td><td rowspan=\"$rowspan\">$version</td><td rowspan=\"$rowspan\">$group_name</td>\n";
-                    $File_list .= $File_list_tmp;
-                    
+                if(preg_match("/Report|EndJob/",$entry))
+                {
+                    $file_url= ".$out_network$entry";
+                    $file_size = filesize($file_url);
+                    $file_date = date ("Y/m/d H:i:s.", filemtime($file_url));
+                    $FileName  = anchor($file_url,$entry,"target='_blank'");
+                    $ope="<button class=\"delFile btn btn-primary\" value=\"$file_url\" />Delete</button>";
+                   
+                    $Report_Files  .= "<tr><td>$FileName</td><td>$file_size</td><td>$file_date</td><td>$ope</td></tr>\n";
+                }
             }
-       }
-        $File_list .= "   </tbody>\n";
-        $File_list .= "</table>\n"; 
+            $d->close();
+            if($Report_Files !="")
+            {
+                $HReport_Files .= $Report_Files;
+                $Report_Files .= "   </tbody>\n";
+                $Report_Files .= "</table>\n"; 
+            }
+        }
         // Set any returned status/error messages.
         $message = "";
         $data = array(
@@ -371,10 +418,22 @@ class Auth_public extends MY_Controller
             'message' =>  $message,
             'username' => $username,
             'File_list' => $File_list,
+            'Report_Files' => $Report_Files,
+            'Directory' => $Directory
          );
         $this->load->view('templates/template', $data);
-    }
+        }
  
+    public function delete_file(){
+          $FileName=$_POST['FileName'];
+          $work_scripts  = $this->config->item('work_scripts');
+          $cmd = exec("rm  $FileName",$st,$code);
+          if($code ==0)
+          $html= "FileName  $FileName deleted";
+          else $html= "FileName  $FileName not deleted. error :$code";
+          #log_message('debug',"L411 auth_public: $html ");
+          return $html;
+    }
     
     public function _get_csrf_nonce()
     {

@@ -17,15 +17,15 @@ waitForEndQsub ()
         echo "          user_id: $user_id  job_name: $jobid " 
     fi
     #Check running job
-    $qstat -u $user_id |grep $jobid >running_jobs
+    $qstat -u $user_id |grep $jobid >running_jobs_$jobid
     #count number of lines
-    wc=`cat running_jobs |wc -l`
+    wc=`cat running_jobs_$jobid |wc -l`
     #
     # loop: test every $Qdelay qsub status
     while [ $wc -gt '0' ]
     do
-        $qstat -u $user_id >running_jobs
-        wc=`cat running_jobs |wc -l`
+        $qstat -u $user_id >running_jobs_$jobid
+        wc=`cat running_jobs_$jobid |wc -l`
          
         if [ $wc -eq '0' ] 
         then
@@ -37,7 +37,7 @@ waitForEndQsub ()
     done
 
     #echo "End job"
-    rm running_jobs
+    rm running_jobs_$jobid
     rm -rf $jobFile
 }
 
@@ -56,8 +56,8 @@ check_qsub_state ()
     CQSmaxError=0
     
     ###### recover qstat state in running_jobs. Keep last line
-    $qstat -u $user_id |grep $jobid >running_jobs
-    qsub_state=`tail -1 running_jobs`
+    $qstat -u $user_id |grep $jobid >running_jobs_$jobid
+    qsub_state=`tail -1 running_jobs_$jobid`
     #7871197 0.00000 DBClusteri apache_user qw    03/03/2017 16:04:55 
     ## check qsub state !! qw or Eqw1
     IFS=' ' eval 'array=($qsub_state)'
@@ -75,9 +75,9 @@ check_qsub_state ()
         while [ "$job_state" == "qw" -o "$job_state" == "t" ]
         do
             ((CQSmaxError++))
-            $qstat -u $user_id |grep $jobid  >running_jobs
+            $qstat -u $user_id |grep $jobid  >running_jobs_$jobid
             
-            qsub_state=`tail -1 running_jobs`
+            qsub_state=`tail -1 running_jobs_$jobid`
             IFS=' ' eval 'array=($qsub_state)'
             job_state=${array[4]}
             
@@ -98,6 +98,8 @@ check_qsub_state ()
                 err_mesg="      check_qsub_state:: Qsub job not launched on cluster after $MaxError retry "
                 cat "$err_mesg" >>EndJob_$pid.txt
                 echo "Job ended with code 10" 
+                rm running_jobs_$jobid
+                $qdel $jobid
                 kill -9 $current_pid
                 exit 10
             fi
@@ -108,6 +110,8 @@ check_qsub_state ()
                 err_mesg="      check_qsub_state:: Qsub job $jobid in error state"
                 cat "$err_mesg" >>EndJob_$pid.txt
                 echo "Job ended with code 10"
+                rm running_jobs_$jobid
+                $qdel $jobid
                 kill -9 $current_pid
                 exit 10
             fi
@@ -163,8 +167,8 @@ then
     echo "debug $debug"
     echo "Qdelay $Qdelay"
     current_pid=$$
-    echo "PID du processus launcher : $launcher_pid"
-    echo "PID du processus courant : $current_pid"
+    echo "PID_launcher : $launcher_pid"
+    echo "PID_current : $current_pid"
     echo "-----------------------------------------"
 fi
 
@@ -240,6 +244,7 @@ do
      $message .= "launch execute_bash script on command line for debugging purpose"
      cat $message >>EndJob_$pid.txt
      echo "Job ended with code 1"
+     sh ./clean.sh $jobid
      kill -9 $current_pid
      exit 1
   fi
@@ -252,6 +257,8 @@ echo ""
 echo "  Job DBClustering done $(date +"%T") ! processing time $process_1" # or create dummy file for php
 echo ""
 
+##########      Clean temp directory DBClustering.R.*$pid ##########
+sh ./clean.sh $jobid
 ##############################################
 ###              launch command 2 .        ###
 ##############################################
@@ -319,10 +326,11 @@ do
      $message .= "launch execute_bash script on command line for debugging purpose"
      cat $message >>EndJob_$pid.txt
      echo "Job ended with code 2"
+     sh ./clean.sh $jobid
      kill -9 $current_pid
      exit 2
   fi
-  sleep $Qdelay
+  sleep 5
 done
 
 process_diff=$((date_end_qsub2 - date_start_qsub1 ))
@@ -376,7 +384,7 @@ echo ""
 echo "--------------  Clean script directory and temp directory ----------"
 
 rm $output/*
-sh ./clean.sh
+sh ./clean.sh $jobid
 enddate=$(date +"%T")
 
 ##########              Write endjob file and exit      ##########

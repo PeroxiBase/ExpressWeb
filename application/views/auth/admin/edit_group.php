@@ -13,7 +13,7 @@
 ?>
 <!-- //////////////    auth/admin/edit_group      //////////////  -->
 <div class="row">
-    <div  id="param" class="page-header col-md-4 center-block"> 
+    <div  id="param" class="page-header col-md-8 center-block"> 
           <a href="../manage_groups">Back to Groups management</a><br /><br />
        <div class="form-group">
            <h1><?php echo lang('edit_group_heading');?></h1>

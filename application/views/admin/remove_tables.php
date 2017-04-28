@@ -41,7 +41,7 @@ foreach($tables->result as $row)
     $Engine = $Nbrlines = $Size = $CreatedDate = "";
     print form_open(uri_string(),"id='form_$id_form'",'target="_blank"');
     print form_hidden('TableName',$TableName);
-    if($Root)
+    if($Root )
     {
         print "                 <tr>\n";
         print "                     <td>$TableName</td>\n";
@@ -70,6 +70,7 @@ foreach($tables->result as $row)
                    {
                        $Dependencies .="<input type=checkbox name=\"delete_table[]\" value='$Table' /> $Table<br />";
                    }
+                   
                   $Engine .= $ENGINE."<br />";
                   $Nbrlines .= $TABLE_ROWS."<br />";
                   $Size .= $DATA_LENGTH."<br />";

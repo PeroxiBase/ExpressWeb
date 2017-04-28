@@ -16,7 +16,7 @@
     <h3>Your file </h3>
     data uploaded<br />
     
-    <?php echo anchor("create_table/update_annot_page","new file"); ?>
+    <?php echo anchor("create_table/update_annot_page","new file"); print validation_errors(); ?>
 </div> 
 
 <!--DIV RIGHT -->

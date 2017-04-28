@@ -13,7 +13,7 @@
 
 print "<!-- //////////////    start      //////////////  -->\n\n";
 print "     <div class=\"row\">\n";
-print "         <div  id=\"param\" class=\"page-header col-md-8 center-block\"> \n";
+print "         <div  id=\"param\" class=\" col-md-8 center-block\"><br /><br /> \n";
 
 if($groups)
 {
@@ -66,7 +66,7 @@ if($groups)
     }
     else
     {
-        print "             You can access only to Demo Db \n";
+        print "             No Dataset are available \n";
     }
     
     print "         </div> <!-- End DIV param -->\n";

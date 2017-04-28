@@ -37,6 +37,7 @@
         $Organism   = $row['Organism'];
         $Submitter  = $row['Submitter'];
         $version    = $row['version'];
+        $Root = $row['Root'];
         $table_list .= "$TableName,";
        if($i==1) 
        {
@@ -47,6 +48,7 @@
            print "  </thead>\n";
            print "  <tbody>\n";
        }
+       if($Root ==1 && !preg_match("/Annot|Toolbox/",$TableName))
        print "      <tr><td>$TableName</td><td>$GroupName</td><td>$Submitter</td><td>$version</td></tr>\n";
            
        $i++;
@@ -98,7 +100,7 @@
                 Resubmit this form:<br />Table will be dropped an recreated with new columns definition.<hr />
                 <b>WARNING:</b> Don't try to delete an existing Table from here !!. Go to Expression Db menu to proceed  \" </a>";
     $help_Comment ="<a class=\"glyphicon glyphicon-question-sign \" data-toggle=\"popover\" title=\"Comment field\" 
-                data-content=\"Value in Gene_Name column can't exceed 15 characters. <br />If you want to keep this information, check this box<br />
+                data-content=\"Value in Gene_Name column can't exceed $max_size characters. <br />If you want to keep this information, check this box<br />
                 A comment field will be add to the table\"></a>";
     ########################
     print "<p>$required_tag Required input</p>\n";
@@ -126,7 +128,7 @@
     print "             <td> <input name=\"force_dump\" class=nul_field type=\"checkbox\"  value='1' /> $help_Drop</td>\n";
     print "     </tr>\n";
     print "     <tr>\n";
-    print "             <td colspan=\"2\"><b>WARNING</b> GeneName will be truncated at 15 characters !</td>\n";
+    print "             <td colspan=\"2\"><b>WARNING</b> GeneName will be truncated at $max_size characters !</td>\n";
     print "     </tr>\n";
     print "     <tr>\n";
     print "             <td>Store full Name in comment field ?</td>\n";
@@ -134,6 +136,7 @@
     print "     </tr>";
     print "</table>\n";
     print "<br /><br />";
+    print "<i>Displayed values in this table match first line of submited file $file_name </i><br /><br />\n";
     print "<table class=\"table-collapse\" border=1>\n";
     print "     <thead>\n";
     print "       <tr><th>N.</th><th>Title</th><th>Value</th>\n";
@@ -175,8 +178,10 @@
         print "     <td>$type_select</td>\n";
         print "     <td>$option_select</td>\n";
         
-        if($i==1)
-        {   print "     <td><input type=\"text\" name=\"SqlSize[]\" value=\"$size\" size=\"5\"/ max =\"15\" /></td>\n";
+        if($i==1)            
+        {   
+            if($size != $max_size) $size = $max_size;
+            print "     <td><input type=\"text\" name=\"SqlSize[]\" value=\"$size\" size=\"5\"/ max =\"$max_size\" /></td>\n";
             print "     <td><input type='checkbox' name='is_index[]' value=\"1\" checked disabled /></td>\n";
             print "     <td><input type=\"checkbox\" class=\"finc\" id=\"finc_$key\" name=\"include[$key]\"  value=\"1\" checked disabled />
             <input type=\"hidden\" class=\"finc\" name=\"include[$key]\"  value=\"1\" checked  />
@@ -194,7 +199,7 @@
         }
         print "</tr>\n";
         $i++;
-    } 
+    }
     print "</tbody>\n";
     print "</table>\n";
     print "<input name=\"Do_Sql\" value='1' type=\"hidden\" />";
@@ -205,6 +210,8 @@
     
   
     $max_mem= memory_get_usage(TRUE);
+    print "<br /><b>Note</b> Value in column <b>Size</b> indicate max value found for this column in your whole file !! <br />\n";
+    print "This may not reflect value displayed in this table (first line of data)<br />\n";
     print  "<hr />back parse memory_get_usage TRUE: $max_mem<hr />";
     
 ?>

@@ -13,13 +13,12 @@
 ?>
 <!-- //////////////    upload/update_annotation  //////////////  -->
 <div class="container-fluid">
-
+    <br />
     <a href="../create_table">back to Admin Db</a><br />
-    <div class="row">    
-        <div class="col-md-12 col-lg-12 ">
-            <h2>Upload your annotation File</h2>
+    <div id="form-group">
+            <h2>Update your annotation File</h2>
             File will be converted to mysql table and will upgrade the organism Annotation Table.<br /><br />
-            <div class="label-danger col-md-6"><strong>WARNING</strong><br />
+            <div class="label-danger col-md-8"><strong>WARNING</strong><br />
                 Organism annotation table are used by Toolbox and Dataset annotation !<br />
                 Don't forget to regenerate existing annotation table !  
                 (<?php print anchor ("create_table/update_tables_annot","Regenerate Annotation","target='_blank'"); ?>)<br /><br />
@@ -33,10 +32,12 @@
             <!-- FORM -->
             <form id="edit_annot_form" class="form-inline" method="post" enctype= "multipart/form-data" action="<?php echo base_url()?>create_table/load_annot" >
                 <div class="form-group edit-group">
-                        <select id="selectOrg" class="form-control" name="selectID"></select>	
+                        <!--<select id="selectOrg" class="form-control" name="selectID"></select>-->
+                        <?php print form_dropdown('selectID',$organisms,'',array('id'=>'selectOrg')); ?>
+                        <div id="MsgOrga" style="color:red;"></div>
                 </div>
                 <div class="form-group edit-group">
-                        <input type="file" id="annotFile" name="upload_file">
+                        <input type="file" id="annotFile" name="upload_file" required>
                 </div>
                  <br /><br />
                         <input type="checkbox" id="header" name="header" value="1"> check if header<br />
@@ -45,11 +46,12 @@
                 
                 <br /><br />
                 <button id="submitAnnot" type="submit" class="btn btn-info btn-sm">Upload Annotation</button>
-           
-            
+                <button id="resetAnnot" type="reset" class="btn btn-info btn-sm">Reset</button>
+                <br /><br />
                 
-              </form>   
-            <div class="col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1" id="tableDiv" style="margin-top:10vh">
+              </form>
+              
+            <div class="col-md-10 col-lg-10 " id="tableDiv" >
                 <p><b>Please structure your annotation file this way before upload</b></p><br /><br />
                 <table class="table table-hover" style="text-align:left">
                     <tr>
@@ -108,24 +110,15 @@
 
 <script type="text/javascript">
 $(function(){
-	var success='<?php print_r($success); ?>';
-	if(success == 'success'){ $('#successDiv').fadeIn() }
-	var organisms=JSON.parse('<?php print_r($organisms); ?>');
-	$('#selectOrg').append('<option value=none>Choose Organism</option>')
-	for (var org in organisms){
-		current=organisms[org]
-		id=current['idOrganisms']
-		name=current['Organism']
-		$('#selectOrg').append('<option value='+id+'>'+name+'</option>')
-	}
 	$('#submitAnnot').click(function(e){
-		if( $('#selectOrg').val() == 'none' ){
+		if( $('#selectOrg').val()=='0' ){
+		    $('#MsgOrga').html("Select organism")
 			$('#errorDiv').fadeOut()
 			$('#errorDiv').fadeIn()
 			e.preventDefault();
 			return false
 		}
 	})
-})
+}) 
 </script>
 <!-- //////////////    End upload/update_annotation  //////////////  -->

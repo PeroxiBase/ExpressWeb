@@ -13,7 +13,7 @@
 print "<!-- //////////////    admin/manage_tables  //////////////  -->\n";
 print "<div class=\"row\">\n";
 
-print "     <div  id=\"param\" class=\"col-md-8 center-block\"> \n";
+print "     <div  id=\"param\" class=\"col-md-10 center-block\"> \n";
 print "         <a href=\"../create_table\">back to Admin Express Db</a><br /><br />\n";
 
 print "         <table class=\"table table-hover table-condensed table-bordered\" >\n";
