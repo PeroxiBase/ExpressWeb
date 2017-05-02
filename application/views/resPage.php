@@ -106,7 +106,7 @@ $this->load->view("templates/pills");
 </div>
 
 <script type="text/javascript">
-var debug =1;
+var debug =0;
 $(function(){
 
 function extractValues(filename,orderName,seuil){
