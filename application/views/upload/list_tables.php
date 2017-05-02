@@ -49,6 +49,9 @@ foreach($tables->result as $row)
             $table_annotRes = preg_match("/Annotation_\d$/",$TableName);
             $table_annot = $table_annotRes;
     }
+    elseif( preg_match("/Toolbox_/",$TableName))
+    {
+    }
     else $table_annot = TRUE;
     if($Root && $table_annot)
     {
@@ -70,7 +73,7 @@ foreach($tables->result as $row)
             {
                 if($Table == "Annotation_$TableName")
                 {
-                   $Dependencies .="<input type=radio name=\"update_table\" value='$TableName' /> $Table<br />";
+                   $Dependencies .="<input type=radio name=\"update_table[$IdTable]\" value='$TableName' /> $Table<br />";
                    $Dependencies .="<input type=hidden name=\"organism[$TableName]\" value='$idOrganisms' /><br />";
                    $anc_action =   form_submit('submit', "Re-Generate",'target="_blank"'); 
                    #$Nbrlines = $this->db->query("select count(*) as Nblines from $Table")->row('Nblines');
@@ -92,7 +95,7 @@ foreach($tables->result as $row)
         }//End foreach(ListTbl)
         if(!in_array($TableName,$tbl_checked))
         {
-           $Dependencies .="<input type=radio name=\"update_table\" value='$TableName' /> process";           
+           $Dependencies .="<input type=radio name=\"update_table[$IdTable]\" value='$TableName' /> process";           
            $Dependencies .="<input type=hidden name=\"organism[$TableName]\" value='$idOrganisms' /><br />";
            $anc_action =   form_submit('submit', "Generate",'target="_blank"'); 
         }
