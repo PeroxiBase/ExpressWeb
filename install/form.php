@@ -263,8 +263,9 @@ if (isset($_POST['btn-install']))
         $content_Express = preg_replace("/config\['MaxGeneNameSize'\] = '.*';/","config['MaxGeneNameSize'] = '$MaxGeneNameSize';", $content_Express);
         $content_Express = preg_replace("/config\['maxError'\] = '.*';/","config['maxError'] = '$maxError';", $content_Express);
         $content_Express = preg_replace("/config\['qdelay'\] = '.*';/","config['qdelay'] = '$qdelay';", $content_Express);
-        $content_Express = preg_replace("/config\['ExtDb'\] = false;/","config['qdelay'] = $ExtDb;", $ExtDb);        
-        $content_Express = preg_replace("/config\['ExtDbName'\] = '.*';/","config['ExtDbName'] = '$ExtDbName';", $ExtDbName);
+        $content_Express = preg_replace("/config\['ExtDb'\] = false;/","config['ExtDb'] = $ExtDb;", $content_Express);        
+        $content_Express = preg_replace("/config\['ExtDbName'\] = '.*';/","config['ExtDbName'] = '$ExtDbName';", $content_Express);
+        
         print "<pre>Write $file_Express</pre><br />\n";
         file_put_contents($file_Express, $content_Express);
         $check_cluster = "export SGE_ROOT= $cluster_env && ${cluster_app}/qstat -u $input_apache_user ";
