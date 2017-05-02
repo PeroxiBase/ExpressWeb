@@ -172,6 +172,16 @@ if (isset($_POST['btn-install']))
     if ($maxError == '' ) $maxError = '50';
     $qdelay = trim($_POST['input_qdelay']);
     if ($qdelay == '' ) $qdelay = '30';
+    
+    $ExtDb = $_POST['input_ExtDb'];
+    $ExtDbName = trim($_POST['input_ExtDbName']);
+    if(isset($ExtDb) && $ExtDb == 'true' && $ExtDbName =="")
+    {
+        $message = "You check toolbox external db but Db name '$ExtDbName' is empty  !!";
+        show_error( $message,$_POST);
+        $success=0;
+        exit;
+    }
     ////////////////////////////////////////
     //// check directory existance !!
     ////////////////////////////////////////
@@ -253,6 +263,8 @@ if (isset($_POST['btn-install']))
         $content_Express = preg_replace("/config\['MaxGeneNameSize'\] = '.*';/","config['MaxGeneNameSize'] = '$MaxGeneNameSize';", $content_Express);
         $content_Express = preg_replace("/config\['maxError'\] = '.*';/","config['maxError'] = '$maxError';", $content_Express);
         $content_Express = preg_replace("/config\['qdelay'\] = '.*';/","config['qdelay'] = '$qdelay';", $content_Express);
+        $content_Express = preg_replace("/config\['ExtDb'\] = false;/","config['qdelay'] = $ExtDb;", $ExtDb);        
+        $content_Express = preg_replace("/config\['ExtDbName'\] = '.*';/","config['ExtDbName'] = '$ExtDbName';", $ExtDbName);
         print "<pre>Write $file_Express</pre><br />\n";
         file_put_contents($file_Express, $content_Express);
         $check_cluster = "export SGE_ROOT= $cluster_env && ${cluster_app}/qstat -u $input_apache_user ";
