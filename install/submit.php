@@ -57,6 +57,8 @@ if(isset($_SESSION['post']) )
     $input_MaxGeneNameSize = $_POST['input_MaxGeneNameSize'];
     $input_maxError = $_POST['input_maxError'];
     $input_qdelay = $_POST['input_qdelay'];
+    $input_ExtDb = $_POST['input_ExtDb'];
+    $input_ExtDbName = $_POST['input_ExtDbName'];
 }
 else
 {
@@ -309,7 +311,19 @@ If 'DB Hostname' use DNS name, 'DB Hostname for cluster' will used same value
             </div>
             <pre>Full path of bash command</pre>
         </div>
-        
+            
+        <!-- ////////////////////////////////////////////////////////////////// -->
+        <hr />
+        <legend>Toolbox reference database</legend>
+        <div class="control-group">
+            <label class="control-label">Reference Db Name</label>
+            <div class="controls">
+                <input type="checkbox" name="input_ExtDb" value="true" /> Use <br />
+                Db name: <input type="text" name="input_ExtDbName" value="<?php print $input_ExtDbName; ?>" placeholder="WallProt Db" size="35" />
+            </div>
+            <pre> Toolbox may indicate if gene annotation are present in local external reference database. If checked, give a name to this database  </pre>
+        </div>
+            
         <div class="control-group">
             <div class="controls">
                 <input type="reset" class="btn" name="btn" value="Reset"/>
