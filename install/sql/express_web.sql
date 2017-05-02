@@ -57,14 +57,14 @@ DROP TABLE IF EXISTS `tables`;
 CREATE TABLE IF NOT EXISTS `tables` (
   `IdTables` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `TableName` varchar(255) NOT NULL,
-  `MasterGroup` int(11) DEFAULT NULL,
-  `Organism` int(11) DEFAULT NULL,
+  `MasterGroup` int(11) NOT NULL,
+  `Organism` int(11) NOT NULL,
   `Submitter` varchar(15) NOT NULL,
   `version` char(5) NOT NULL,
   `comment` text NOT NULL,
   `original_file` varchar(50) NOT NULL,
   `Root` int(10) unsigned NOT NULL,
-  `Child` int(10) unsigned NOT NULL,
+  `Child` int(10) unsigned NULL DEFAULT 0,
   PRIMARY KEY (`IdTables`),
   UNIQUE KEY `TableName` (`TableName`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
