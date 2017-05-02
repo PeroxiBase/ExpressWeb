@@ -48,7 +48,13 @@
                         <th>Annotation</th>
                         <th>Functional Class</th>
                         <th>Biological Activity</th>
-                        <th>Presence in WallProt Database</th>
+                        <?php if($this->config->item("ExtDb"))
+                      { 
+                          $ExtDbName = $this->config->item("ExtDbName");
+                          print "<th>Presence in $ExtDbName</th>\n";
+                      }
+                    ?>
+                        
                     </tr>
                     <tr>
                         <td>Flavonoid biosynthesis</td>
@@ -56,7 +62,12 @@
                         <td>PAL1, AtPAL1</td>
                         <td>Flavonoid metabolism</td>
                         <td>Phe ammonia lyase</td>
-                        <td>NO</td>
+                        
+                        <?php if($this->config->item("ExtDb"))
+                      { 
+                        print "<td>NO</td>\n";
+                      }
+                      ?>
                     </tr>
                 </table>
             </div>
