@@ -634,7 +634,7 @@ class Generic extends CI_Model
             {
                     $Data->info .= print_r($this->db->last_query(), TRUE);
                     $this->db->trans_rollback(); 
-                    $Data->info .= "<br />Impossible de MAJ Tables $table_name  $update_tables<br />";
+                    $Data->info = "<br />Impossible de MAJ Tables $table_name  $update_tables<br />";
                     $Data->info .= "";
                     $this->session->set_flashdata('message', $Data);
                    # redirect("create_table/load_csv");
@@ -646,7 +646,7 @@ class Generic extends CI_Model
                  $IdTableQ= $this->db->query("SELECT IdTables FROM tables where TableName='$table_name'")->row();
                  $IdTable= $IdTableQ->IdTables;
                  $Data->IdTable = $IdTable;
-                 $Data->info .= "<br />table Tables a jour IdTable $IdTable . Tables updated: $update_tables<hr />";
+                 $Data->info = "<br />table Tables a jour IdTable $IdTable . Tables updated: $update_tables<hr />";
                 
             }
             
@@ -811,7 +811,7 @@ class Generic extends CI_Model
         * @param integer $update            1 to truncate table 0 create new annotation 
         * @return integer 
         */      
-         public function extract_annot($annot_table,$data_table,$child,$update="0")
+         public function extract_annot($annot_table,$data_table,$child="0",$update="0")
          {
              $this->load->dbforge();
              $result = new stdClass();
