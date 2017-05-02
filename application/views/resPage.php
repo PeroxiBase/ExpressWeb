@@ -62,12 +62,21 @@ $this->load->view("templates/pills");
                 <select class="form-control searcher" id="selfClass">
                         <option id="ChooseF" value="none" selected>Functional Class</option>
                 </select>
-        
+	       <?php 
+		  if($this->config->item("ExtDb"))
+                  { 
+                     $ExtDbName = $this->config->item("ExtDbName");
+              ?>
                 <select class="form-control searcher" id="wpCheck">
                         <option id="ChooseP" value="all" selected>ALL Proteins</option>
-                        <option value="YES">Present in WallProt DB</option>
-                        <option value="NO">Absent in WallProt Db</option>
+                        <option value="YES">In <?php print $ExtDbName; ?></option>
+                        <option value="NO">Not in <?php print $ExtDbName; ?></option>
                 </select>
+               <?php }
+               else
+               {
+                   print form_input(array("name" =>"wpCheck", "type" =>"hidden", "id" =>"wpCheck","value" => "all"));
+               } ?>
         
                 <button type="button" id="searchTB" class="btn btn-sm btn-success" style="margin-top:10px;float:right">Search</button>
         </div>
