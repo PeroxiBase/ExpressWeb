@@ -102,10 +102,10 @@ class Auth_public extends MY_Controller
         $currentGroups = $this->ion_auth->get_users_groups($id)->result();
 
         // validate form input
-        $this->form_validation->set_rules('first_name', $this->lang->line('edit_user_validation_fname_label'), 'required');
-        $this->form_validation->set_rules('last_name', $this->lang->line('edit_user_validation_lname_label'), 'required');
-        //$this->form_validation->set_rules('phone', $this->lang->line('edit_user_validation_phone_label'), 'required');
-        $this->form_validation->set_rules('company', $this->lang->line('edit_user_validation_company_label'), 'required');
+        $this->form_validation->set_rules('first_name', $this->lang->line('edit_user_validation_fname_label'), 'trim|required');
+        $this->form_validation->set_rules('last_name', $this->lang->line('edit_user_validation_lname_label'), 'trim|required');
+        $this->form_validation->set_rules('email', $this->lang->line('edit_user_validation_email_label'), 'trim|valid_email|required');
+        $this->form_validation->set_rules('company', $this->lang->line('edit_user_validation_company_label'), 'trim|required');
 
         if (isset($_POST) && !empty($_POST))
         {
@@ -130,7 +130,7 @@ class Auth_public extends MY_Controller
                         'last_name'  => $this->input->post('last_name'),
 			'email'  => $this->input->post('email'),
                         'company'    => $this->input->post('company'),
-                        'username'   => $this->input->post('identity'),
+                        'username'   => $this->input->post('username'),
                 );
 
                 // update the password if it was posted
