@@ -30,20 +30,20 @@
 *
 *       ['apache_user']         the user who run Apache . usually 'apache'
 *
-*	['network']             The full path of directory used for storing computed networks
+*       ['network']             The full path of directory used for storing computed networks
 *
-*	['similarity']          The full path of directory used for storing computed similarity
+*       ['similarity']          The full path of directory used for storing computed similarity
 *
-*	['launch_cluster']      The full path to the script who start clustering job.
+*       ['launch_cluster']      The full path to the script who start clustering job.
 *                               Need to allow apache to access SGE cluster. Used in ctrl/Visual.php
 *
-*	['work_cluster']        The full path to writing directory on cluster.
+*       ['work_cluster']        The full path to writing directory on cluster.
 *                               Your cluster should be able to write in this directory !!
 *
-*	['MaxGeneNameSize']     The maximum length of gene name. 
+*       ['MaxGeneNameSize']     The maximum length of gene name. 
 *                               Limit size for a better display in heatmap and network display
 *
-*	['maxError']            While submitting job to the cluster, script test connectivity
+*       ['maxError']            While submitting job to the cluster, script test connectivity
 *                               On overloaded cluster script will exit after maxError try
 *       
 *       ['qdelay']              Time in second while script will sleep before test running jobs
@@ -51,7 +51,7 @@
 *
 *       ['cluster_env']         Root path of cluster manager
 *
-*       ['cluster_app']         Full path of binary command for cluster operation (qsub,qstat,...)
+*       ['cluster_app']        Full path of binary command for cluster operation (qsub,qstat,...)
 *
 *       ['check_cluster']       command used to check job launched by 'apache_user' on the cluster
 *                               default command for cluster using SGE instructions.
