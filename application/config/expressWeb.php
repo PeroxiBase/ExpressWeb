@@ -60,6 +60,10 @@
 *
 *       ['qdel']                command qdel. Delete 'apache_user' job on cluster
 *
+*       ['ExtDb']              use externalDb reference for toolbox
+*
+*       ['ExtDbName']           Name of external refereence db
+*
 */
 $config['header_name'] = ' ';
 $config['web_path'] = ' ';
@@ -86,4 +90,7 @@ $apache_user = $config['apache_user'];
 $config['check_cluster'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat -u $apache_user ";
 $config['qstat'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qstat ";
 $config['qdel'] = "export SGE_ROOT=$cluster_env && ${cluster_app}/qdel ";
+
+$config['ExtDb'] = false;
+$config['ExtDbName'] = ' ';
 ?>
