@@ -28,7 +28,6 @@
          
         <ul  class="nav nav-tabs" role="tablist">
             <li role="presentation"  class="active"><a href="#account" role="tab" data-toggle="tab" aria-controls="account" >Account Details</a></li>
-            <li role="presentation" ><a href="#email" role="tab" data-toggle="tab" aria-controls="email">Email Address</a></li>
             <li role="presentation" ><a href="#files" role="tab" data-toggle="tab" aria-controls="files">File Managment</a></li>
             <li role="presentation"><a href="#workspace" role="tab" data-toggle="tab" aria-controls="workspace" >Working space</a></li>                
         </ul>
@@ -40,15 +39,6 @@
                 <ul>
                   <li>
                     <a href="<?php echo base_url();?>auth_public/edit_user">Update Account Details</a>
-                  </li>	
-                </ul>
-            </div>
-            
-            <div class="tab-pane"  id="email">
-                <p>Update your email address via email verification.</p>
-                <ul>
-                  <li>
-                    <a href="<?php echo base_url();?>auth_public/update_email">Update Email Address via Email Verification</a>
                   </li>	
                 </ul>
             </div>
