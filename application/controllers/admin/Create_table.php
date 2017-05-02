@@ -870,7 +870,12 @@ class Create_table extends MY_Controller
 	    if(isset($_POST['update_table'])  )
 	    {	        
 	        $type_submit = $this->input->post('submit');
-	        $table_name = $this->input->post('update_table');
+	        $update_table = $this->input->post('update_table');
+	        foreach($update_table as $key=>$val)
+	        {
+	            $child=$key;
+	            $table_name = $val;	            
+	        }
 	        $id= $this->input->post('organism');
 	        $id= $id[$table_name];
 	        #### check if user resubmit same page !!
@@ -889,13 +894,13 @@ class Create_table extends MY_Controller
                     $annoTable="Annotation_$id";
                     if( $type_submit == "Re-Generate")
                     {
-                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,0,1); 
+                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,$child,1); 
                         #$tables = array('TableName' =>$annoTable);*/
                         $process =" renew";
                     }
                     else
                     {
-                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,0,0);     
+                        $create_annot = $this->generic->extract_annot($annoTable,$table_name,$child,0);     
                         $process =" new";
                     }                
                 
