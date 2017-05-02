@@ -128,8 +128,9 @@ class Auth_public extends MY_Controller
                 $data = array(
                         'first_name' => $this->input->post('first_name'),
                         'last_name'  => $this->input->post('last_name'),
+			'email'  => $this->input->post('email'),
                         'company'    => $this->input->post('company'),
-                        'username'      => $this->input->post('username'),
+                        'username'   => $this->input->post('identity'),
                 );
 
                 // update the password if it was posted
@@ -259,18 +260,7 @@ class Auth_public extends MY_Controller
         $this->_render_page("auth/public/edit_user", $this->data);
     }
     
-    public function update_email()
-    {        
-        $data = array(
-          'title'=> "$this->header_name: Email",
-          'contents' => 'auth/public/email_update',
-          'message' => '',
-          'footer_title' => $this->footer_title
-          );
-        $this->load->view("templates/template", $data);
-    }
-
-    
+     
     #####################################
     /**
     * function get_members_files()
